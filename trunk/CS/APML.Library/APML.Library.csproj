@@ -1,0 +1,109 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{E633A76B-048A-49F0-9643-933E46BBFCDB}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>APML</RootNamespace>
+    <AssemblyName>APML.Library-0.6</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="APMLDocumentFactory.cs" />
+    <Compile Include="IAPMLComponent.cs" />
+    <Compile Include="IAPMLDocument.cs" />
+    <Compile Include="IAPMLLockable.cs" />
+    <Compile Include="IApplication.cs" />
+    <Compile Include="IAttention.cs" />
+    <Compile Include="IConcept.cs" />
+    <Compile Include="IDevice.cs" />
+    <Compile Include="IExplicitAuthor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="IExplicitSource.cs" />
+    <Compile Include="IGenericItem.cs" />
+    <Compile Include="IImplicitAuthor.cs" />
+    <Compile Include="IImplicitConcept.cs" />
+    <Compile Include="IImplicitSource.cs" />
+    <Compile Include="IProfile.cs" />
+    <Compile Include="ISource.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReadOnlyDictionary.cs" />
+    <Compile Include="Utilities\XmlHelper.cs" />
+    <Compile Include="IImplicitAttention.cs" />
+    <Compile Include="XmlWrappers\Common\APMLFileBase.cs" />
+    <Compile Include="XmlWrappers\Common\XmlAPMLComponentBase.cs" />
+    <Compile Include="XmlWrappers\Common\XmlWrapperBase.cs" />
+    <Compile Include="XmlWrappers\v0_5\APMLFile0_5.cs" />
+    <Compile Include="XmlWrappers\v0_5\XmlExplicitConceptNode.cs" />
+    <Compile Include="XmlWrappers\v0_5\XmlImplicitConceptNode.cs" />
+    <Compile Include="XmlWrappers\v0_5\XmlApplicationNode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="XmlWrappers\v0_5\XmlAttentionNodeBase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="XmlWrappers\v0_5\XmlAuthorNode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="XmlWrappers\v0_5\XmlDeviceNode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="XmlWrappers\v0_5\XmlGenericItemNode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="XmlWrappers\v0_5\XmlProfileNode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="XmlWrappers\v0_5\XmlSourceNode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="XmlWrappers\v0_6\APMLFile0_6.cs" />
+    <Compile Include="XmlWrappers\v0_6\XmlApplicationNode.cs" />
+    <Compile Include="XmlWrappers\v0_6\XmlAttentionNodeBase.cs" />
+    <Compile Include="XmlWrappers\v0_6\XmlDeviceNode.cs" />
+    <Compile Include="XmlWrappers\v0_6\XmlExplicitAuthorNode.cs" />
+    <Compile Include="XmlWrappers\v0_6\XmlExplicitConceptNode.cs" />
+    <Compile Include="XmlWrappers\v0_6\XmlExplicitSourceNode.cs" />
+    <Compile Include="XmlWrappers\v0_6\XmlGenericItemNode.cs" />
+    <Compile Include="XmlWrappers\v0_6\XmlImplicitAuthorNode.cs" />
+    <Compile Include="XmlWrappers\v0_6\XmlImplicitConceptNode.cs" />
+    <Compile Include="XmlWrappers\v0_6\XmlImplicitNodeHelper.cs" />
+    <Compile Include="XmlWrappers\v0_6\XmlImplicitSourceNode.cs" />
+    <Compile Include="XmlWrappers\v0_6\XmlProfileNode.cs" />
+    <Compile Include="XmlWrappers\v0_6\XmlSourceNodeHelper.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
