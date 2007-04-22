@@ -31,7 +31,8 @@ namespace APML {
     /// </summary>
     /// <param name="pKey">the key of the concept</param>
     /// <param name="pValue">the value of the concept</param>
-    void AddExplicitConcept(string pKey, double pValue);
+    /// <returns>the generated explicit concept</returns>
+    IExplicitConcept AddExplicitConcept(string pKey, double pValue);
 
     /// <summary>
     /// Adds a new implicit concept to the user's profile. Note that the
@@ -39,7 +40,8 @@ namespace APML {
     /// </summary>
     /// <param name="pKey">the key of the concept</param>
     /// <param name="pValue">the value of the concept</param>
-    void AddImplicitConcept(string pKey, double pValue);
+    /// <returns>the generated implicit concept</returns>
+    IImplicitConcept AddImplicitConcept(string pKey, double pValue);
 
     /// <summary>
     /// Adds a new explicit source to the user's profile.
@@ -48,7 +50,8 @@ namespace APML {
     /// <param name="pValue">the value for this source</param>
     /// <param name="pName">the friendly name for the source</param>
     /// <param name="pType">the type of the source, expressed as a mime-type</param>
-    void AddExplicitSource(string pKey, double pValue, string pName, string pType);
+    /// <returns>the generated explicit source</returns>
+    IExplicitSource AddExplicitSource(string pKey, double pValue, string pName, string pType);
 
     /// <summary>
     /// Adds a new implicit source to the user's profile. Note that the
@@ -58,6 +61,7 @@ namespace APML {
     /// <param name="pValue">the value for this source</param>
     /// <param name="pName">the friendly name for the source</param>
     /// <param name="pType">the type of the source, expressed as a mime-type</param>
+    /// <returns>the generated implicit source</returns>
     IImplicitSource AddImplicitSource(string pKey, double pValue, string pName, string pType);
 
     /// <summary>

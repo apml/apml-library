@@ -14,6 +14,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml;
 
 namespace APML {
   /// <summary>
@@ -52,5 +53,10 @@ namespace APML {
     /// <param name="pAttrName">the name of the attribute</param>
     /// <returns>the value of the attribute, or null if the attribute isn't set</returns>
     string GetExtraAttribute(string pAttrName);
+
+    /// <summary>
+    /// Provides access to the underlying XmlNode.
+    /// </summary>
+    XmlNode Node { get; }
   }
 }
