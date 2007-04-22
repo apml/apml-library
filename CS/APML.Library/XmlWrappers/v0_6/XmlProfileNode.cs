@@ -56,7 +56,7 @@ namespace APML.XmlWrappers.v0_6 {
       set { FireNameChanged(SetAttribute("name", value), value); }
     }
 
-    public void AddExplicitConcept(string pKey, double pValue) {
+    public IExplicitConcept AddExplicitConcept(string pKey, double pValue) {
       using (OpenWriteSession()) {
         EnsureExplicitConceptCacheExists();
 
@@ -72,10 +72,12 @@ namespace APML.XmlWrappers.v0_6 {
         mExplicitConcepts.Add(pKey, conceptNode);
         conceptNode.KeyChanged += mExplicitConceptKeyChanged;
         conceptNode.Removed += mExplicitConceptRemoved;
+
+        return conceptNode;
       }
     }
 
-    public void AddImplicitConcept(string pKey, double pValue) {
+    public IImplicitConcept AddImplicitConcept(string pKey, double pValue) {
       using (OpenWriteSession()) {
         EnsureImplicitConceptCacheExists();
 
@@ -92,10 +94,12 @@ namespace APML.XmlWrappers.v0_6 {
         mImplicitConcepts[pKey].Add(conceptNode);
         conceptNode.KeyChanged += mImplicitConceptKeyChanged;
         conceptNode.Removed += mImplicitConceptRemoved;
+
+        return conceptNode;
       }
     }
 
-    public void AddExplicitSource(string pKey, double pValue, string pName, string pType) {
+    public IExplicitSource AddExplicitSource(string pKey, double pValue, string pName, string pType) {
       using (OpenWriteSession()) {
         EnsureExplicitSourceCacheExists();
 
@@ -112,6 +116,8 @@ namespace APML.XmlWrappers.v0_6 {
         mExplicitSources.Add(pKey, sourceNode);
         sourceNode.KeyChanged += mExplicitSourceKeyChanged;
         sourceNode.Removed += mExplicitSourceRemoved;
+
+        return sourceNode;
       }
     }
 

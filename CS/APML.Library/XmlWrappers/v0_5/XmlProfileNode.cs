@@ -37,23 +37,26 @@ namespace APML.XmlWrappers.v0_5 {
       set { SetAttribute("Type", value); }
     }
 
-    public void AddExplicitConcept(string pName, double pValue) {
+    public IExplicitConcept AddExplicitConcept(string pName, double pValue) {
       using (OpenWriteSession()) {
+        EnsureExplicitConceptCacheExists();
+
         XmlNode concept = AddChildNode(
           "ExplicitConcepts", "Concept",
           new XAttribute("Phrase", pName), new XAttribute("Rank", pValue.ToString("f2")));
 
-        if (mExplicitConcepts != null) {
-          XmlExplicitConceptNode conceptNode = new XmlExplicitConceptNode(File, concept);
+        
+        XmlExplicitConceptNode conceptNode = new XmlExplicitConceptNode(File, concept);
 
-          mExplicitConcepts.Add(pName, conceptNode);
-          conceptNode.KeyChanged += new KeyChangedEventHandler<IExplicitConcept>(ExplicitConcepts_KeyChanged);
-          conceptNode.Removed += new APMLComponentRemovedHandler(ExplicitConcepts_ConceptRemoved);
-        }
+        mExplicitConcepts.Add(pName, conceptNode);
+        conceptNode.KeyChanged += new KeyChangedEventHandler<IExplicitConcept>(ExplicitConcepts_KeyChanged);
+        conceptNode.Removed += new APMLComponentRemovedHandler(ExplicitConcepts_ConceptRemoved);
+
+        return conceptNode;
       }
     }
 
-    public void AddImplicitConcept(string pName, double pValue) {
+    public IImplicitConcept AddImplicitConcept(string pName, double pValue) {
       using (OpenWriteSession()) {
         EnsureImplicitConceptCacheExists();
 
@@ -69,23 +72,28 @@ namespace APML.XmlWrappers.v0_5 {
         mImplicitConcepts[pName].Add(conceptNode);
         conceptNode.KeyChanged += new KeyChangedEventHandler<IImplicitConcept>(ImplicitConcepts_KeyChanged);
         conceptNode.Removed += new APMLComponentRemovedHandler(ImplicitConcepts_ConceptRemoved);
+
+        return conceptNode;
       }
     }
 
-    public void AddExplicitSource(string pKey, double pValue, string pName, string pType) {
+    public IExplicitSource AddExplicitSource(string pKey, double pValue, string pName, string pType) {
       using (OpenWriteSession()) {
+        EnsureSourceCacheExists();
+
         XmlNode source = AddChildNode(
           "ExplicitSources", "Source",
           new XAttribute("Url", pKey), new XAttribute("Rank", pValue.ToString("f2")),
           new XAttribute("Value", pName));
 
-        if (mSources != null) {
-          XmlSourceNode sourceNode = new XmlSourceNode(File, source);
+        
+        XmlSourceNode sourceNode = new XmlSourceNode(File, source);
 
-          mSources.Add(pName, sourceNode);
-          sourceNode.KeyChanged += new KeyChangedEventHandler<IExplicitSource>(Sources_KeyChanged);
-          sourceNode.Removed += new APMLComponentRemovedHandler(Sources_SourceRemoved);
-        }
+        mSources.Add(pName, sourceNode);
+        sourceNode.KeyChanged += new KeyChangedEventHandler<IExplicitSource>(Sources_KeyChanged);
+        sourceNode.Removed += new APMLComponentRemovedHandler(Sources_SourceRemoved);
+
+        return sourceNode;
       }
     }
 
