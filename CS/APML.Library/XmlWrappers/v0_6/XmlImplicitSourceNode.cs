@@ -42,7 +42,7 @@ namespace APML.XmlWrappers.v0_6 {
       set { mSourceHelper.Name = value; }
     }
 
-    public void AddAuthor(string pKey, double pValue) {
+    public IImplicitAuthor AddAuthor(string pKey, double pValue) {
       using (OpenWriteSession()) {
         EnsureAuthorCacheExists();
 
@@ -59,6 +59,8 @@ namespace APML.XmlWrappers.v0_6 {
         mAuthors[pKey].Add(authorNode);
         authorNode.KeyChanged += new KeyChangedEventHandler<IImplicitAuthor>(Authors_KeyChanged);
         authorNode.Removed += new APMLComponentRemovedHandler(Authors_AuthorRemoved);
+
+        return authorNode;
       }
     }
 
