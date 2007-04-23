@@ -25,7 +25,8 @@ namespace APML {
     /// </summary>
     /// <param name="pKey">the key for the author</param>
     /// <param name="pValue">the value for the author</param>
-    void AddAuthor(string pKey, double pValue);
+    /// <returns>the added author</returns>
+    IImplicitAuthor AddAuthor(string pKey, double pValue);
 
     /// <summary>
     /// The authors attached to this source.
