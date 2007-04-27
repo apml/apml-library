@@ -152,7 +152,6 @@ namespace APML.XmlWrappers.v0_5 {
 
         AddProfile("Home");
         SetDefaultProfile("Home");
-        DefaultProfile.AddExplicitSource("http://feeds.reuters.com/reuters/topNews/", 4, "Reuters: Top News", "application/rss+xml");
       }
       Save();
     }
