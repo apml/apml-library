@@ -172,15 +172,11 @@ namespace APML.XmlWrappers.v0_6 {
         SetVersion();
         //Xml.Schemas.Add("", "http://www.apml.org/apml-0.6");
 
-        //Touchstone Only
-        //SaveHeader("Touchstone APML File", "Touchstone", DateTime.Now.ToLongDateString(), Base.CurrentUser.EmailAddress);
-
         AddHead();
         AddBody();
 
         AddProfile("Home");
         SetDefaultProfile("Home");
-        DefaultProfile.AddExplicitSource("http://feeds.reuters.com/reuters/topNews/", 4, "Reuters: Top News", "application/rss+xml");
       }
       Save();
     }
