@@ -57,7 +57,7 @@ namespace APML {
       if (docElAttr["Version"] != null && docElAttr["Version"].Value == "0.5") {
         if (pShouldUpgrade) {
           // Backup the old version
-          File.Copy(pFile, BuildBackupName(pFile, "0.5"));
+          File.Copy(pFile, BuildBackupName(pFile, "0.5", true));
 
           return UpgradeDocument(new APMLFile0_5(pFile, doc), UpgradeOption.SPLIT_EXPLICIT_AUTHORS);
         }
@@ -106,14 +106,18 @@ namespace APML {
         if (HasOption(pOptions, UpgradeOption.SPLIT_EXPLICIT_AUTHORS)) {
           foreach (IExplicitSource source in oldProfile.ExplicitSources.Values) {
             if (source.Value != 0) {
-              newProfile.AddExplicitSource(source.Key, source.Value, source.Name, source.Type);
+              if (!newProfile.ExplicitSources.ContainsKey(source.Key)) {
+                newProfile.AddExplicitSource(source.Key, source.Value, source.Name, source.Type);
+              }
             } else {
               newProfile.AddImplicitSource(source.Key, source.Value, source.Name, source.Type);
             }
           }
         } else {
           foreach (IExplicitSource source in oldProfile.ExplicitSources.Values) {
-            newProfile.AddExplicitSource(source.Key, source.Value, source.Name, source.Type);
+            if (!newProfile.ExplicitSources.ContainsKey(source.Key)) {
+              newProfile.AddExplicitSource(source.Key, source.Value, source.Name, source.Type);
+            }
           }
           foreach (IList<IImplicitSource> sourceList in oldProfile.ImplicitSources.Values) {
             foreach (IImplicitSource source in sourceList) {
@@ -124,7 +128,9 @@ namespace APML {
 
         // Add all of the concepts to the new profile
         foreach (IExplicitConcept concept in oldProfile.ExplicitConcepts.Values) {
-          newProfile.AddExplicitConcept(concept.Key, concept.Value);
+          if (!newProfile.ExplicitConcepts.ContainsKey(concept.Key)) {
+            newProfile.AddExplicitConcept(concept.Key, concept.Value);
+          }
         }
         foreach (IList<IImplicitConcept> conceptList in oldProfile.ImplicitConcepts.Values) {
           foreach (IImplicitConcept concept in conceptList) {
@@ -162,19 +168,37 @@ namespace APML {
 
     /// <summary>
     /// Builds a name for a backup file. For instance C:\apml.apml will become C:\apml-0.5.apml when
-    /// backing up a version 0.5 file.
+    /// backing up a version 0.5 file. Note that if pMustNotExist is true, and C:\apml-0.5.apml exists,
+    /// then C:\apml-0.5-1.apml will be generated. If this exists, then C:\apml-0.5-2.apml
     /// </summary>
     /// <param name="pFileName">the name of the file that should be backed up</param>
     /// <param name="pCurrentVersion">the version of the apml file</param>
+    /// <param name="pMustNotExist">whether the backup file should be a unique name</param>
     /// <returns>the backup name</returns>
-    private static string BuildBackupName(string pFileName, string pCurrentVersion) {
+    private static string BuildBackupName(string pFileName, string pCurrentVersion, bool pMustNotExist) {
       FileInfo fileInfo = new FileInfo(pFileName);
 
       // Get the name without its extension
       string nameWithoutExtension = fileInfo.Name.Substring(0, fileInfo.Name.Length - fileInfo.Extension.Length);
+      
+      // Work out the name base
+      string baseApmlName = Path.Combine(fileInfo.DirectoryName, nameWithoutExtension + "-" + pCurrentVersion);
+
+      // If no uniqueness check is required, then just return the name
+      if (!pMustNotExist) {
+        return baseApmlName + fileInfo.Extension;
+      }
+
+      // Find a name that isn't used
+      int curCounter = 0;
+      string curBase = baseApmlName;
+
+      while (File.Exists(curBase + fileInfo.Extension)) {
+        curBase = baseApmlName + "-" + ++curCounter;
+      }
 
       // Build the new name
-      return Path.Combine(fileInfo.DirectoryName, nameWithoutExtension + "-" + pCurrentVersion + fileInfo.Extension);
+      return curBase + fileInfo.Extension;
     }
   }
 
