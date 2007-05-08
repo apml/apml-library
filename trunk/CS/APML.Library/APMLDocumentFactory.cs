@@ -79,7 +79,9 @@ namespace APML {
     }
 
     private static IAPMLDocument UpgradeDocument(IAPMLDocument pOld, params UpgradeOption[] pOptions) {
-      string tempFile = Path.GetTempFileName();
+      // Generate the temporary file name, and make sure it doesn't exist
+      string tempFile = pOld.Filename + ".apmlupgrade";
+      File.Delete(tempFile);
 
       APMLFile0_6 newDoc = new APMLFile0_6(tempFile);
       newDoc.ApplicationID = DefaultApplicationId;
