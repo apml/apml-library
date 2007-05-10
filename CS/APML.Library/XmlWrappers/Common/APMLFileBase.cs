@@ -85,6 +85,12 @@ namespace APML.XmlWrappers.Common {
     /// Cache of the default profile value.
     /// </summary>
     private string mDefaultProfile;
+
+    /// <summary>
+    /// Lock used for serializing access to the on-disk file. This is done outside of the main lock since
+    /// we don't need exclusive access to the APML structure - just the disk file.
+    /// </summary>
+    private object mFileAccessLock = new object();
     #endregion
 
     #region Enums
@@ -226,13 +232,16 @@ namespace APML.XmlWrappers.Common {
 
     public void Save() {
       using (OpenReadSession()) {
-        // Save to a temp file first
-        string mTempFilename = mFilename + ".tmp";
-        mXML.Save(mTempFilename);
+        // Open an exclusive lock for the file
+        lock (mFileAccessLock) {
+          // Save to a temp file first
+          string mTempFilename = mFilename + ".tmp";
+          mXML.Save(mTempFilename);
 
-        // Delete the actual APML file, and store the APML instead of it
-        File.Delete(mFilename);
-        File.Move(mTempFilename, mFilename);
+          // Delete the actual APML file, and store the APML instead of it
+          File.Delete(mFilename);
+          File.Move(mTempFilename, mFilename);
+        }
       }
     }
 
