@@ -48,8 +48,9 @@ namespace APML.XmlWrappers.v0_5 {
       set { FireNameChanged(SetAttribute("Name", value), value); }
     }
 
-    public void AddAuthor(string pKey, double pValue) {
+    public IExplicitAuthor AddAuthor(string pKey, double pValue) {
       // Ignored
+      return null;
     }
 
     public IReadOnlyDictionary<string, IExplicitAuthor> Authors {
