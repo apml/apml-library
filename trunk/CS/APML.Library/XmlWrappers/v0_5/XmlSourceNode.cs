@@ -13,6 +13,7 @@
 /// limitations under the License.
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using System.Xml;
 using APML.XmlWrappers.Common;
@@ -30,7 +31,7 @@ namespace APML.XmlWrappers.v0_5 {
 
     public override double Value {
       get { return double.Parse(GetAttribute("Rank")) / 5.0; }
-      set { FireValueChanged(SetAttribute("Rank", (value*5.0).ToString("f2")), value*5.0); }
+      set { FireValueChanged(SetAttribute("Rank", (value * 5.0).ToString("f2", CultureInfo.InvariantCulture)), value * 5.0); }
     }
     #endregion
 

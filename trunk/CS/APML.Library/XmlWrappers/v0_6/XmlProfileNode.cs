@@ -14,6 +14,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Text;
 using System.Xml;
 using APML.XmlWrappers.Common;
@@ -66,7 +67,7 @@ namespace APML.XmlWrappers.v0_6 {
 
         XmlNode concept = AddChildNode(
           "ExplicitData/Concepts", "Concept",
-          new XAttribute("key", pKey), new XAttribute("value", pValue.ToString("f2")));
+          new XAttribute("key", pKey), new XAttribute("value", pValue.ToString("f2", CultureInfo.InvariantCulture)));
 
         XmlExplicitConceptNode conceptNode = new XmlExplicitConceptNode(File, concept);
         mExplicitConcepts.Add(pKey, conceptNode);
@@ -83,7 +84,7 @@ namespace APML.XmlWrappers.v0_6 {
 
         XmlNode concept = AddChildNode(
           "ImplicitData/Concepts", "Concept",
-          new XAttribute("key", pKey), new XAttribute("value", pValue.ToString("f2")));
+          new XAttribute("key", pKey), new XAttribute("value", pValue.ToString("f2", CultureInfo.InvariantCulture)));
         AddImplicitAttributes(concept);
 
         XmlImplicitConceptNode conceptNode = new XmlImplicitConceptNode(File, concept);
@@ -109,7 +110,7 @@ namespace APML.XmlWrappers.v0_6 {
 
         XmlNode source = AddChildNode(
           "ExplicitData/Sources", "Source",
-          new XAttribute("key", pKey), new XAttribute("value", pValue.ToString("f2")),
+          new XAttribute("key", pKey), new XAttribute("value", pValue.ToString("f2", CultureInfo.InvariantCulture)),
           new XAttribute("name", pName), new XAttribute("type", pType));
 
         XmlExplicitSourceNode sourceNode = new XmlExplicitSourceNode(File, source);
@@ -127,7 +128,7 @@ namespace APML.XmlWrappers.v0_6 {
 
         XmlNode source = AddChildNode(
           "ImplicitData/Sources", "Source",
-          new XAttribute("key", pKey), new XAttribute("value", pValue.ToString("f2")),
+          new XAttribute("key", pKey), new XAttribute("value", pValue.ToString("f2", CultureInfo.InvariantCulture)),
           new XAttribute("name", pName), new XAttribute("type", pType));
         AddImplicitAttributes(source);
 

@@ -14,6 +14,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Text;
 using System.Xml;
 using APML.XmlWrappers.Common;
@@ -50,7 +51,7 @@ namespace APML.XmlWrappers.v0_6 {
 
         XmlNode author = AddChildNode(
           null, "Author",
-          new XAttribute("key", pKey), new XAttribute("value", pValue.ToString("f2")));
+          new XAttribute("key", pKey), new XAttribute("value", pValue.ToString("f2", CultureInfo.InvariantCulture)));
 
         XmlExplicitAuthorNode authorNode = new XmlExplicitAuthorNode(File, author);
         mAuthors.Add(pKey, authorNode);
