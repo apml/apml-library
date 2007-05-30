@@ -13,6 +13,7 @@
 /// limitations under the License.
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using System.Xml;
 using APML.XmlWrappers.Common;
@@ -43,7 +44,7 @@ namespace APML.XmlWrappers.v0_5 {
 
         XmlNode concept = AddChildNode(
           "ExplicitConcepts", "Concept",
-          new XAttribute("Phrase", pName), new XAttribute("Rank", pValue.ToString("f2")));
+          new XAttribute("Phrase", pName), new XAttribute("Rank", pValue.ToString("f2", CultureInfo.InvariantCulture)));
 
         
         XmlExplicitConceptNode conceptNode = new XmlExplicitConceptNode(File, concept);
@@ -62,7 +63,7 @@ namespace APML.XmlWrappers.v0_5 {
 
         XmlNode concept = AddChildNode(
           "ImplicitConcepts", "Concept",
-          new XAttribute("Phrase", pName), new XAttribute("Rank", pValue.ToString("f2")));
+          new XAttribute("Phrase", pName), new XAttribute("Rank", pValue.ToString("f2", CultureInfo.InvariantCulture)));
 
         XmlImplicitConceptNode conceptNode = new XmlImplicitConceptNode(File, concept);
         if (!mImplicitConcepts.ContainsKey(pName)) {
@@ -83,7 +84,7 @@ namespace APML.XmlWrappers.v0_5 {
 
         XmlNode source = AddChildNode(
           "ExplicitSources", "Source",
-          new XAttribute("Url", pKey), new XAttribute("Rank", pValue.ToString("f2")),
+          new XAttribute("Url", pKey), new XAttribute("Rank", pValue.ToString("f2", CultureInfo.InvariantCulture)),
           new XAttribute("Value", pName));
 
         

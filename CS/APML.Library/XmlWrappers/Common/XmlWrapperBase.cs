@@ -13,6 +13,7 @@
 /// limitations under the License.
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using System.Xml;
 
@@ -96,7 +97,17 @@ namespace APML.XmlWrappers.Common {
             return (double) mAttrCache[pAttrName];
           }
 
-          double result = double.Parse(APMLFileBase.GetValue(mNode, pAttrName));
+          string strValue = APMLFileBase.GetValue(mNode, pAttrName);
+          double result = 0;
+
+          if (CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator == "," && strValue.Contains(",")) {
+            // We need to parse in the local culture, cause otherwise a 1,00 would be interpreted as 100
+            result = double.Parse(strValue);
+          } else {
+            result = double.Parse(strValue, CultureInfo.InvariantCulture);
+          }
+
+          
           mAttrCache[pAttrName] = result;
 
           return result;
@@ -123,7 +134,7 @@ namespace APML.XmlWrappers.Common {
     protected double SetAttributeAsDouble(string pAttrName, double pAttrValue) {
       using (OpenWriteSession()) {
         mAttrCache[pAttrName] = pAttrValue;
-        return double.Parse(APMLFileBase.AddXmlAttribute(mNode, pAttrName, pAttrValue.ToString("f2")));
+        return double.Parse(APMLFileBase.AddXmlAttribute(mNode, pAttrName, pAttrValue.ToString("f2", CultureInfo.InvariantCulture)), CultureInfo.InvariantCulture);
       }
     }
 
