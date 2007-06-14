@@ -150,13 +150,52 @@ namespace APML.XmlWrappers.v0_6 {
         ClearChildContainer("ImplicitData/Concepts");
 
         if (mImplicitConcepts != null) {
-          foreach (IImplicitConcept concept in mImplicitConcepts.Values) {
-            concept.KeyChanged -= mImplicitConceptKeyChanged;
-            concept.Removed -= mImplicitConceptRemoved;
+          foreach (IList<IImplicitConcept> conceptList in mImplicitConcepts.Values) {
+            foreach (IImplicitConcept concept in conceptList) {
+              concept.KeyChanged -= mImplicitConceptKeyChanged;
+              concept.Removed -= mImplicitConceptRemoved;
+            }
           }
 
           mImplicitConcepts.Clear();
         } 
+      }
+    }
+
+    public void ClearImplicitConcepts(string pFrom) {
+      using (OpenWriteSession()) {
+        ClearChildContainer("ImplicitData/Concepts");
+
+        if (mImplicitConcepts != null) {
+          List<string> lRemove = new List<string>();
+
+          foreach (string conceptName in mImplicitConcepts.Keys) {
+            IList<IImplicitConcept> conceptList = mImplicitConcepts[conceptName];
+
+            List<IImplicitConcept> cRemove = new List<IImplicitConcept>();
+
+            foreach (IImplicitConcept concept in conceptList) {
+              if (concept.From == pFrom) {
+                concept.KeyChanged -= mImplicitConceptKeyChanged;
+                concept.Removed -= mImplicitConceptRemoved;
+
+                cRemove.Add(concept);
+              }
+            }
+
+            foreach (IImplicitConcept r in cRemove) {
+              conceptList.Remove(r);
+            }
+
+            if (conceptList.Count == 0) {
+              lRemove.Add(conceptName);
+            }
+          }
+
+          foreach (string r in lRemove) {
+            mImplicitConcepts.Remove(r);
+          }
+        }
       }
     }
 
