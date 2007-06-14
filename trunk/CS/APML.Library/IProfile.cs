@@ -70,6 +70,12 @@ namespace APML {
     void ClearImplicitConcepts();
 
     /// <summary>
+    /// Clears the user's set of implicit concepts, where the provided from tag is matched.
+    /// <param name="pFrom">the application to clear the concepts from</param>
+    /// </summary>
+    void ClearImplicitConcepts(string pFrom);
+
+    /// <summary>
     /// Retrieves all of the user's explicit concepts.
     /// </summary>
     IReadOnlyDictionary<string, IExplicitConcept> ExplicitConcepts { get; }

@@ -105,17 +105,27 @@ namespace APML.XmlWrappers.v0_5 {
 
     public void ClearImplicitConcepts() {
       using (OpenWriteSession()) {
-        ClearChildContainer("ImplicitConcepts");
+        ClearChildContainer("ImplicitData/Concepts");
 
         if (mImplicitConcepts != null) {
-          foreach (IImplicitConcept concept in mImplicitConcepts.Values) {
-            concept.KeyChanged -= new KeyChangedEventHandler<IImplicitConcept>(ImplicitConcepts_KeyChanged);
-            concept.Removed -= new APMLComponentRemovedHandler(ImplicitConcepts_ConceptRemoved);
+          foreach (IList<IImplicitConcept> conceptList in mImplicitConcepts.Values) {
+            foreach (IImplicitConcept concept in conceptList) {
+              concept.KeyChanged -= new KeyChangedEventHandler<IImplicitConcept>(ImplicitConcepts_KeyChanged);
+              concept.Removed -= new APMLComponentRemovedHandler(ImplicitConcepts_ConceptRemoved);
+            }
           }
 
           mImplicitConcepts.Clear();
-        } 
+        }
       }
+    }
+
+    /// <summary>
+    /// This overload is not valid for a 0.5 APML file, as the from property is not available.
+    /// </summary>
+    /// <param name="pFrom"></param>
+    public void ClearImplicitConcepts(string pFrom) {
+      throw new NotSupportedException("The From property is not recorded in APML 0.5");
     }
 
     public IReadOnlyDictionary<string, IExplicitConcept> ExplicitConcepts {
