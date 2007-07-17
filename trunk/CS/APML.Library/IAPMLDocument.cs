@@ -86,6 +86,11 @@ namespace APML {
     void Save();
 
     /// <summary>
+    /// Configures whether the document should perform background saves.
+    /// </summary>
+    bool EnableBackgroundSave { get; set; }
+
+    /// <summary>
     /// Sets the active profile.
     /// </summary>
     /// <param name="pName">the profile that should be active.</param>
@@ -119,5 +124,17 @@ namespace APML {
     /// Whether this object just created the APML document.
     /// </summary>
     bool WasCreated { get; }
+
+    /// <summary>
+    /// Event indicating that a background save operation has failed.
+    /// </summary>
+    event BackgroundSaveFailureHandler BackgroundSaveFailed;
   }
+
+  /// <summary>
+  /// Delegate used to indicate that a background save has failed.
+  /// </summary>
+  /// <param name="pDocument">the document that the error originated in</param>
+  /// <param name="pException">the exception that occurred</param>
+  public delegate void BackgroundSaveFailureHandler(IAPMLDocument pDocument, Exception pException);
 }
