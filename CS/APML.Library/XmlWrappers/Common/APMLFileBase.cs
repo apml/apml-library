@@ -17,6 +17,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Xml;
 using APML.Utilities;
 using APML.XmlWrappers;
@@ -91,6 +92,11 @@ namespace APML.XmlWrappers.Common {
     /// we don't need exclusive access to the APML structure - just the disk file.
     /// </summary>
     private object mFileAccessLock = new object();
+
+    /// <summary>
+    /// Whether we background save.
+    /// </summary>
+    private bool mEnableBackgroundSave = false;
     #endregion
 
     #region Enums
@@ -231,17 +237,12 @@ namespace APML.XmlWrappers.Common {
     }
 
     public void Save() {
-      using (OpenReadSession()) {
-        // Open an exclusive lock for the file
-        lock (mFileAccessLock) {
-          // Save to a temp file first
-          string mTempFilename = mFilename + ".tmp";
-          mXML.Save(mTempFilename);
-
-          // Delete the actual APML file, and store the APML instead of it
-          File.Delete(mFilename);
-          File.Move(mTempFilename, mFilename);
-        }
+      if (mEnableBackgroundSave) {
+        Thread saveThread = new Thread(BackgroundSave);
+        saveThread.IsBackground = false;
+        saveThread.Start();
+      } else {
+        SaveInternal();
       }
     }
 
@@ -273,6 +274,14 @@ namespace APML.XmlWrappers.Common {
     public bool WasCreated {
       get { return mWasCreated; }
     }
+
+
+    public bool EnableBackgroundSave {
+      get { return mEnableBackgroundSave; }
+      set { mEnableBackgroundSave = value; }
+    }
+
+    public event BackgroundSaveFailureHandler BackgroundSaveFailed;
     #endregion
 
     #region Public Methods
@@ -582,6 +591,37 @@ namespace APML.XmlWrappers.Common {
           return "";
         } else {
           return headAttr.InnerText;
+        }
+      }
+    }
+
+    private void BackgroundSave() {
+      try {
+        SaveInternal();
+      } catch (Exception ex) {
+        BackgroundSaveFailureHandler handler = BackgroundSaveFailed;
+        if (handler != null) {
+          handler(this, ex);
+        }
+      }
+    }
+
+    private void SaveInternal() {
+      using (OpenReadSession()) {
+        // Open an exclusive lock for the file
+        lock (mFileAccessLock) {
+          // Save to a temp file first
+          string mTempFilename = mFilename + ".tmp";
+          mXML.Save(mTempFilename);
+
+          if (!File.Exists(mFilename)) {
+            // Make the temp file the real file
+            File.Move(mTempFilename, mFilename);
+          } else {
+            string backupName = mFilename + "~";
+
+            File.Replace(mTempFilename, mFilename, backupName);
+          }
         }
       }
     }
