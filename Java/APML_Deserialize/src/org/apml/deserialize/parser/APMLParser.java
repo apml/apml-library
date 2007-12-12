@@ -104,7 +104,7 @@ public class APMLParser
 				{
 					String key = n.getAttributes().getNamedItem("key").getNodeValue();
 					String value = n.getAttributes().getNamedItem("value").getNodeValue();
-					String uri = n.getAttributes().getNamedItem("uri").getNodeValue();
+					String uri = "";  // Placeholder for future spec
 					String from = n.getAttributes().getNamedItem("from").getNodeValue();
 					String updated = n.getAttributes().getNamedItem("updated").getNodeValue();
 					Profile p = (Profile) apmlDoc.getBody().getProfiles().get(n.getParentNode().getParentNode().getParentNode().getAttributes().getNamedItem("name").getNodeValue());
