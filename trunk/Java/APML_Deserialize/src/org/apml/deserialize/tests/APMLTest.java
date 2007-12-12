@@ -16,7 +16,7 @@ public class APMLTest
 		// ****************************************
 		// Deserialize the file into an APML object
 		// ****************************************
-		APML apml = new APMLParser("C:\\example_large.apml").deserialize();
+		APML apml = new APMLParser("example_large.apml").deserialize();
 		
 		// ******************************************
 		// Gets Head and Body information of the file
