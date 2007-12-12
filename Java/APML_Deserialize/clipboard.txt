@@ -1,0 +1,24 @@
+				/*if(n.getNodeName().equalsIgnoreCase("Head"))
+				{
+					if(n.hasChildNodes())
+					{
+						NodeList nodeList = n.getChildNodes();
+						int i = 0;
+						for(i = 0; i < nodeList.getLength(); i++)
+						{
+							Node aNode = nodeList.item(i);
+							if(aNode.getNodeType() == 1)
+								System.out.println(aNode.getNodeName() + " = " + aNode.getTextContent());
+						}
+					}
+				}
+				else if(n.getNodeName().equalsIgnoreCase("Body"))
+				{
+					if(n.hasAttributes())
+					{
+						if(n.getAttributes().getNamedItem("defaultprofile") == null)
+							System.out.println("defaultprofile cannot be null");
+					}
+				}*/
+				
+new Concept(nMap.getNamedItem("key").getNodeValue(), nMap.getNamedItem("value").getNodeValue(), nMap.getNamedItem("from").getNodeValue(), nMap.getNamedItem("updated").getNodeValue())
