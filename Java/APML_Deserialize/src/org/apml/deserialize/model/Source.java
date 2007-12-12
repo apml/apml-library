@@ -3,6 +3,7 @@ package org.apml.deserialize.model;
 public class Source
 {
 	private String key = "";
+	private String name = "";
 	private String value = "";
 	private String type = "";
 	private String from = "";
@@ -11,9 +12,10 @@ public class Source
 	
 	public Source(){}
 	
-	public Source(String key, String value, String type, String from, String updated)
+	public Source(String key, String name, String value, String type, String from, String updated)
 	{
 		this.key = key;
+		this.name = name;
 		this.value = value;
 		this.type = type;
 		this.from = from;
@@ -57,5 +59,13 @@ public class Source
 
 	public void setAuthor(Author author) {
 		this.author = author;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 }
