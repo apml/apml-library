@@ -3,6 +3,8 @@ package org.apml.deserialize.parser;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.traversal.NodeFilter;
 import org.xml.sax.SAXException;
@@ -19,6 +21,7 @@ import org.apml.deserialize.model.Generator;
 import org.apml.deserialize.model.Head;
 import org.apml.deserialize.model.ImplicitData;
 import org.apml.deserialize.model.Profile;
+import org.apml.deserialize.model.Source;
 import org.apml.deserialize.model.Title;
 import org.apml.deserialize.model.UserEmail;
 
@@ -70,7 +73,7 @@ public class APMLParser
 			while ((n = nIterator.nextNode()) != null)
 			{
 				String nodeName = n.getNodeName();
-				
+
 				if(nodeName.equals("APML"))
 					apmlDoc = new APML(n.getAttributes().getNamedItem("version").getNodeValue());
 				else if(nodeName.equals("Head"))
@@ -102,16 +105,38 @@ public class APMLParser
 				}
 				else if(nodeName.equals("Concept"))
 				{
-					String key = n.getAttributes().getNamedItem("key").getNodeValue();
-					String value = n.getAttributes().getNamedItem("value").getNodeValue();
+					NamedNodeMap nMap = n.getAttributes();
+					String key = nMap.getNamedItem("key").getNodeValue();
+					String value = nMap.getNamedItem("value").getNodeValue();
 					String uri = "";  // Placeholder for future spec
-					String from = n.getAttributes().getNamedItem("from").getNodeValue();
-					String updated = n.getAttributes().getNamedItem("updated").getNodeValue();
+					String from = nMap.getNamedItem("from").getNodeValue();
+					String updated = nMap.getNamedItem("updated").getNodeValue();
+					
 					Profile p = (Profile) apmlDoc.getBody().getProfiles().get(n.getParentNode().getParentNode().getParentNode().getAttributes().getNamedItem("name").getNodeValue());
 					if(n.getParentNode().getParentNode().getNodeName().equals("ImplicitData"))
 						p.getImplicitData().getConcepts().add(new Concept(key, value, uri, from, updated));
 					else if(n.getParentNode().getParentNode().getNodeName().equals("ExplicitData"))
 						p.getExplicitData().getConcepts().add(new Concept(key, value, uri, from, updated));
+				}
+				else if(nodeName.equals("Source"))
+				{
+					NamedNodeMap nMap = n.getAttributes();
+					String key = nMap.getNamedItem("key").getNodeValue();
+					String name = nMap.getNamedItem("name").getNodeValue();
+					String value = nMap.getNamedItem("value").getNodeValue();
+					String type = nMap.getNamedItem("type").getNodeValue();
+					String from = nMap.getNamedItem("from").getNodeValue();
+					String updated = nMap.getNamedItem("updated").getNodeValue();
+					
+					Profile p = (Profile) apmlDoc.getBody().getProfiles().get(n.getParentNode().getParentNode().getParentNode().getAttributes().getNamedItem("name").getNodeValue());
+					if(n.getParentNode().getParentNode().getNodeName().equals("ImplicitData"))
+						p.getImplicitData().getSources().add(new Source(key, name, value, type, from, updated));
+					else if(n.getParentNode().getParentNode().getNodeName().equals("ExplicitData"))
+						p.getExplicitData().getSources().add(new Source(key, name, value, type, from, updated));
+				}
+				else if(nodeName.equals("Application"))
+				{
+					
 				}
 			}
 		}	

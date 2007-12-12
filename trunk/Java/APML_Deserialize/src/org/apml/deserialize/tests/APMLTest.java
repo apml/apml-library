@@ -16,7 +16,7 @@ public class APMLTest
 		// ****************************************
 		// Deserialize the file into an APML object
 		// ****************************************
-		APML apml = new APMLParser("example_large.apml").deserialize();
+		APML apml = new APMLParser("example.apml").deserialize();
 		
 		// ******************************************
 		// Gets Head and Body information of the file
@@ -46,9 +46,9 @@ public class APMLTest
 		Concepts concepts = implicitData.getConcepts();
 		Sources sources = implicitData.getSources();
 		
-		// ****************************************
+		// *****************************************************
 		// Iterate through all ImplicitData Concepts and display
-		// ****************************************
+		// *****************************************************
 		Iterator iConcepts = concepts.iterator();
 		int i = 0;
 		while(iConcepts.hasNext())
@@ -58,13 +58,13 @@ public class APMLTest
 			i++;
 		}
 		long finish = System.currentTimeMillis();
-		System.out.println("Processed " + i + " entries in " + ((finish - start) / 1000.00) + " seconds");
+		System.out.println("Processed " + i + " Concepts in " + ((finish - start) / 1000.00) + " seconds");
 		
-		// ***************************************
+		// ************************************************
 		// Iterate through the Implicit Sources and display
-		// ***************************************
+		// ************************************************
 		Iterator iSources = sources.iterator();
-		while(sources.iterator().hasNext())
+		while(iSources.hasNext())
 		{
 			Source source = (Source) iSources.next();
 			System.out.println(source.getKey() + "," + source.getValue() + "," + source.getFrom() + "," + source.getType() + "," + source.getUpdated());
