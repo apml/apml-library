@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="C:/SDK/xerces-2_9_1/xercesImpl.jar"/>
-	<classpathentry kind="lib" path="C:/SDK/xerces-2_9_1/xml-apis.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/Tim Schultz/workspace/APML_Deserialize/lib/xercesImpl.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/Tim Schultz/workspace/APML_Deserialize/lib/xml-apis.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
