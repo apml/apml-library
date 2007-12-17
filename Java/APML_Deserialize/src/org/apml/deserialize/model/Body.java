@@ -14,6 +14,7 @@ public class Body
 	{
 		this.defaultProfile = defaultProfile;
 		this.profiles = new Profiles();
+		this.applications = new Applications();
 	}
 
 	public String getDefaultProfile() {

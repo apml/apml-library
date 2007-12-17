@@ -1,5 +1,8 @@
 package org.apml.deserialize.model;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 public class Profile
 {
 	private String name = "";
@@ -8,7 +11,7 @@ public class Profile
 	
 	public Profile(){}
 	
-	public Profile(String profileName)
+	public Profile(String name)
 	{
 		this.name = name;
 	}
@@ -35,5 +38,31 @@ public class Profile
 
 	public void setExplicitData(ExplicitData explicitData) {
 		this.explicitData = explicitData;
+	}
+	
+	public ArrayList getAllImplicitConceptsFrom(String from)
+	{
+		ArrayList fromList = new ArrayList();
+		Iterator iIConcept = this.implicitData.getConcepts().iterator();
+		while(iIConcept.hasNext())
+		{
+			Concept currCon = (Concept) iIConcept.next();
+			if(currCon.getFrom().equals(from))
+				fromList.add(currCon);
+		}
+		return fromList;
+	}
+	
+	public ArrayList getAllExplicitConceptsFrom(String from)
+	{
+		ArrayList fromList = new ArrayList();
+		Iterator iIConcept = this.explicitData.getConcepts().iterator();
+		while(iIConcept.hasNext())
+		{
+			Concept currCon = (Concept) iIConcept.next();
+			if(currCon.getFrom().equals(from))
+				fromList.add(currCon);
+		}
+		return fromList;
 	}
 }
