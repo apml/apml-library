@@ -17,7 +17,7 @@ public class APMLTest
 		// ****************************************
 		// Deserialize the file into an APML object
 		// ****************************************
-		APML apml = new APMLParser("./temp/example.apml.xml").deserialize();
+		APML apml = new APMLParser("./tmp/example.apml").deserialize();
 		
 		// ******************************************
 		// Gets Head and Body information of the file
@@ -36,7 +36,7 @@ public class APMLTest
 		Profile profile = null;
 		try
 		{
-			profile = allProfiles.getProfile("Home");
+			profile = allProfiles.getProfile("wine");
 		}
 		catch(ProfileDoesNotExistException pEx)
 		{
@@ -52,22 +52,21 @@ public class APMLTest
 		// **************************************
 		// Gets all Implicit Concepts and Sources
 		// **************************************
-		Concepts concepts = implicitData.getConcepts();
+		Concepts imConcepts = implicitData.getConcepts();
 		Sources sources = implicitData.getSources();
 		
 		// *****************************************************
 		// Iterate through all ImplicitData Concepts and display
 		// *****************************************************
-		Iterator iConcepts = concepts.iterator();
+		Iterator iIConcepts = imConcepts.iterator();
 		int i = 0;
-		while(iConcepts.hasNext())
+		while(iIConcepts.hasNext())
 		{
-			Concept concept = (Concept) iConcepts.next();
+			Concept concept = (Concept) iIConcepts.next();
 			System.out.println(concept.getKey() + "," + concept.getValue() + "," + concept.getURI() + "," + concept.getFrom() + "," + concept.getUpdated());
 			i++;
 		}
-		long finish = System.currentTimeMillis();
-		System.out.println("Processed " + i + " Concepts in " + ((finish - start) / 1000.00) + " seconds");
+		System.out.println("Processed " + i + " ImplicitConcept's\n");
 		
 		// ************************************************
 		// Iterate through the Implicit Sources and display
@@ -79,7 +78,22 @@ public class APMLTest
 			System.out.println(source.getKey() + "," + source.getValue() + "," + source.getFrom() + "," + source.getType() + "," + source.getUpdated());
 			// Gets the source author
 			Author author = source.getAuthor();
-			System.out.println("Author: " + author.getKey());
+			System.out.println("Author: " + author.getKey() + "\n");
 		}
+		
+		// *************************************************************
+		// Iterate through the Explicit concepts and sources and display
+		// *************************************************************
+		Concepts exConcepts = explicitData.getConcepts();
+		Sources exSources = explicitData.getSources();
+		Iterator iEConcepts = exConcepts.iterator();
+		int x = 0;
+		while(iEConcepts.hasNext())
+		{
+			Concept exConcept = (Concept) iEConcepts.next();
+			System.out.println(exConcept.getKey() + "," + exConcept.getValue() + "," + exConcept.getURI() + "," + exConcept.getFrom() + "," + exConcept.getUpdated());
+			x++;
+		}
+		System.out.println("Processed " + x + " ExplicitConcept's");
 	}
 }

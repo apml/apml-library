@@ -101,7 +101,6 @@ public class APMLParser
 				{
 					Profile p = (Profile) apmlDoc.getBody().getProfiles().get(n.getParentNode().getAttributes().getNamedItem("name").getNodeValue());
 					p.setExplicitData(new ExplicitData());
-
 				}
 				else if(nodeName.equals("Concept"))
 				{
@@ -184,7 +183,6 @@ public class APMLParser
 						name = n.getAttributes().getNamedItem("name").getNodeValue();
 					
 					// TODO How to handle application-specific data?
-					
 					apmlDoc.getBody().getApplications().add(new Application(name, appData));
 				}
 			}
