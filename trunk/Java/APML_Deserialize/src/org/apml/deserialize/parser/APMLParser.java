@@ -3,7 +3,6 @@ package org.apml.deserialize.parser;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.traversal.NodeFilter;
@@ -13,6 +12,8 @@ import org.apache.xerces.dom.NodeIteratorImpl;
 import org.apache.xerces.dom.DocumentImpl;
 import java.io.IOException;
 import org.apml.deserialize.model.APML;
+import org.apml.deserialize.model.Application;
+import org.apml.deserialize.model.Author;
 import org.apml.deserialize.model.Body;
 import org.apml.deserialize.model.Concept;
 import org.apml.deserialize.model.DateCreated;
@@ -51,14 +52,13 @@ public class APMLParser
 	
 	public APML deserialize()
 	{		
-		// TODO Finish reading all nodes
-		// TODO Check for nulls
-		
 		DocumentImpl document = null;
 		Node root = null;
 		NodeIteratorImpl nIterator = null;
 		Node n = null;
+		NamedNodeMap nMap = null;
 		APML apmlDoc = null;
+		Source tmpSource = null;
 		
 		try
 		{
@@ -69,7 +69,7 @@ public class APMLParser
 			nIterator = (NodeIteratorImpl)document.createNodeIterator(root, NodeFilter.SHOW_ELEMENT, null, true);
 			n = null;
 
-			// Iterate through the nodes
+			// Iterate through the nodes, and build objects according to spec
 			while ((n = nIterator.nextNode()) != null)
 			{
 				String nodeName = n.getNodeName();
@@ -91,7 +91,7 @@ public class APMLParser
 				else if(nodeName.equals("Body"))
 					apmlDoc.setBody(new Body(n.getAttributes().getNamedItem("defaultprofile").getNodeValue()));
 				else if(nodeName.equals("Profile"))
-					apmlDoc.getBody().getProfiles().put(n.getAttributes().getNamedItem("name").getNodeValue(), new Profile());
+					apmlDoc.getBody().getProfiles().put(n.getAttributes().getNamedItem("name").getNodeValue(), new Profile(n.getAttributes().getNamedItem("name").getNodeValue()));
 				else if(nodeName.equals("ImplicitData"))
 				{
 					Profile p = (Profile) apmlDoc.getBody().getProfiles().get(n.getParentNode().getAttributes().getNamedItem("name").getNodeValue());
@@ -105,12 +105,20 @@ public class APMLParser
 				}
 				else if(nodeName.equals("Concept"))
 				{
-					NamedNodeMap nMap = n.getAttributes();
-					String key = nMap.getNamedItem("key").getNodeValue();
-					String value = nMap.getNamedItem("value").getNodeValue();
-					String uri = "";  // Placeholder for future spec
-					String from = nMap.getNamedItem("from").getNodeValue();
-					String updated = nMap.getNamedItem("updated").getNodeValue();
+					nMap = n.getAttributes();
+					String key = "";
+					String value = "";
+					String uri = "";	// Placeholder for future spec?
+					String from = "";
+					String updated = "";
+					if(nMap.getNamedItem("key") != null)
+						key = nMap.getNamedItem("key").getNodeValue();
+					if(nMap.getNamedItem("value") != null)
+						value = nMap.getNamedItem("value").getNodeValue();
+					if(nMap.getNamedItem("from") != null)
+						from = nMap.getNamedItem("from").getNodeValue();
+					if(nMap.getNamedItem("updated") != null)
+						updated = nMap.getNamedItem("updated").getNodeValue();
 					
 					Profile p = (Profile) apmlDoc.getBody().getProfiles().get(n.getParentNode().getParentNode().getParentNode().getAttributes().getNamedItem("name").getNodeValue());
 					if(n.getParentNode().getParentNode().getNodeName().equals("ImplicitData"))
@@ -120,23 +128,64 @@ public class APMLParser
 				}
 				else if(nodeName.equals("Source"))
 				{
-					NamedNodeMap nMap = n.getAttributes();
-					String key = nMap.getNamedItem("key").getNodeValue();
-					String name = nMap.getNamedItem("name").getNodeValue();
-					String value = nMap.getNamedItem("value").getNodeValue();
-					String type = nMap.getNamedItem("type").getNodeValue();
-					String from = nMap.getNamedItem("from").getNodeValue();
-					String updated = nMap.getNamedItem("updated").getNodeValue();
+					nMap = n.getAttributes();
+					String key = "";
+					String name = "";
+					String value = "";
+					String type = "";
+					String from = "";
+					String updated = "";
+					if(nMap.getNamedItem("key") != null)
+						key = nMap.getNamedItem("key").getNodeValue();
+					if(nMap.getNamedItem("name") != null)
+						name = nMap.getNamedItem("name").getNodeValue();
+					if(nMap.getNamedItem("value") != null)
+						value = nMap.getNamedItem("value").getNodeValue();
+					if(nMap.getNamedItem("type") != null)
+							type = nMap.getNamedItem("type").getNodeValue();
+					if(nMap.getNamedItem("from") != null)
+						from = nMap.getNamedItem("from").getNodeValue();
+					if(nMap.getNamedItem("updated") != null)
+						updated = nMap.getNamedItem("updated").getNodeValue();
 					
 					Profile p = (Profile) apmlDoc.getBody().getProfiles().get(n.getParentNode().getParentNode().getParentNode().getAttributes().getNamedItem("name").getNodeValue());
+					
+					tmpSource = new Source(key, name, value, type, from, updated);
 					if(n.getParentNode().getParentNode().getNodeName().equals("ImplicitData"))
-						p.getImplicitData().getSources().add(new Source(key, name, value, type, from, updated));
+						p.getImplicitData().getSources().add(tmpSource);
 					else if(n.getParentNode().getParentNode().getNodeName().equals("ExplicitData"))
-						p.getExplicitData().getSources().add(new Source(key, name, value, type, from, updated));
+						p.getExplicitData().getSources().add(tmpSource);
+				}
+				else if(nodeName.equals("Author"))
+				{
+					nMap = n.getAttributes();
+					String key = "";
+					String value = "";
+					String from = "";
+					String updated = "";
+					if(nMap.getNamedItem("key") != null)
+						key = nMap.getNamedItem("key").getNodeValue();
+					if(nMap.getNamedItem("value") != null)
+						value = nMap.getNamedItem("value").getNodeValue();
+					if(nMap.getNamedItem("from") != null)
+						from = nMap.getNamedItem("from").getNodeValue();
+					if(nMap.getNamedItem("updated") != null)
+						updated = nMap.getNamedItem("updated").getNodeValue();
+					
+					tmpSource.setAuthor(new Author(key, value, from, updated));
 				}
 				else if(nodeName.equals("Application"))
 				{
+					nMap = n.getAttributes();
+					String name = "";
+					String appData = "";
 					
+					if(n.getAttributes().getNamedItem("name") != null)
+						name = n.getAttributes().getNamedItem("name").getNodeValue();
+					
+					// TODO How to handle application-specific data?
+					
+					apmlDoc.getBody().getApplications().add(new Application(name, appData));
 				}
 			}
 		}	
@@ -153,6 +202,7 @@ public class APMLParser
 		
 		finally
 		{
+			// In case we're working with tons and/or huge APML files, let's do some cleanup now...
 			document = null;
 			root = null;
 			nIterator = null;

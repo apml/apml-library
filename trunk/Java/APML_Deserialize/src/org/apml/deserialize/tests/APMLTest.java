@@ -3,6 +3,7 @@ package org.apml.deserialize.tests;
 import java.util.Iterator;
 
 import org.apml.deserialize.parser.APMLParser;
+import org.apml.deserialize.exceptions.ProfileDoesNotExistException;
 import org.apml.deserialize.model.*;;
 
 public class APMLTest
@@ -16,7 +17,7 @@ public class APMLTest
 		// ****************************************
 		// Deserialize the file into an APML object
 		// ****************************************
-		APML apml = new APMLParser("example.apml").deserialize();
+		APML apml = new APMLParser("./temp/example.apml.xml").deserialize();
 		
 		// ******************************************
 		// Gets Head and Body information of the file
@@ -32,7 +33,15 @@ public class APMLTest
 		// ***********************
 		// Gets a specific Profile
 		// ***********************
-		Profile profile = allProfiles.getProfile("Home");
+		Profile profile = null;
+		try
+		{
+			profile = allProfiles.getProfile("Home");
+		}
+		catch(ProfileDoesNotExistException pEx)
+		{
+			System.out.println(pEx.toString());
+		}
 		
 		// **********************************************
 		// Gets the Implicit and Explicit data structures
@@ -70,6 +79,7 @@ public class APMLTest
 			System.out.println(source.getKey() + "," + source.getValue() + "," + source.getFrom() + "," + source.getType() + "," + source.getUpdated());
 			// Gets the source author
 			Author author = source.getAuthor();
+			System.out.println("Author: " + author.getKey());
 		}
 	}
 }
