@@ -18,6 +18,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\APML.Library-0.6.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -26,6 +27,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\APML.Library-0.6.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -35,6 +37,27 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="APMLDocumentFactory.cs" />
+    <Compile Include="AutoWrapper\AttributeHelper.cs" />
+    <Compile Include="AutoWrapper\AutoWrapperBase.cs" />
+    <Compile Include="AutoWrapper\AutoWrapperGenerator.cs" />
+    <Compile Include="AutoWrapper\AutoWrapperKeyAttribute.cs" />
+    <Compile Include="AutoWrapper\GenerationContext.cs" />
+    <Compile Include="AutoWrapper\IAutoWrapper.cs" />
+    <Compile Include="AutoWrapper\MethodHelper.cs" />
+    <Compile Include="AutoWrapper\Strategies\AddMethodStrategy.cs" />
+    <Compile Include="AutoWrapper\Strategies\AttributeStrategy.cs" />
+    <Compile Include="AutoWrapper\Strategies\BaseStrategy.cs" />
+    <Compile Include="AutoWrapper\Strategies\ComplexElementStrategy.cs" />
+    <Compile Include="AutoWrapper\Strategies\IMethodStrategy.cs" />
+    <Compile Include="AutoWrapper\Strategies\InitMethodStrategy.cs" />
+    <Compile Include="AutoWrapper\Strategies\IPropertyStrategy.cs" />
+    <Compile Include="AutoWrapper\Strategies\IStrategy.cs" />
+    <Compile Include="AutoWrapper\Strategies\SequenceArrayPropertyStrategy.cs" />
+    <Compile Include="AutoWrapper\Strategies\PrimitiveElementStrategy.cs" />
+    <Compile Include="AutoWrapper\Strategies\SequenceDictionaryOfListsPropertyStrategy.cs" />
+    <Compile Include="AutoWrapper\Strategies\SequenceDictionaryPropertyStrategy.cs" />
+    <Compile Include="AutoWrapper\Strategies\SequenceListPropertyStrategy.cs" />
+    <Compile Include="AutoWrapper\Strategies\SequencePropertyStrategy.cs" />
     <Compile Include="IAPMLComponent.cs" />
     <Compile Include="IAPMLDocument.cs" />
     <Compile Include="IAPMLLockable.cs" />
@@ -45,10 +68,12 @@
     <Compile Include="IExplicitAuthor.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="IExplicitData.cs" />
     <Compile Include="IExplicitSource.cs" />
     <Compile Include="IGenericItem.cs" />
     <Compile Include="IImplicitAuthor.cs" />
     <Compile Include="IImplicitConcept.cs" />
+    <Compile Include="IImplicitData.cs" />
     <Compile Include="IImplicitSource.cs" />
     <Compile Include="IProfile.cs" />
     <Compile Include="ISource.cs" />
