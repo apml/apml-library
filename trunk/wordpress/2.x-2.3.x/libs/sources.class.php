@@ -75,7 +75,7 @@ class WordPressSources {
     global $wpdb;
 
     if ($wp_version >= 2.3) {
-      $cat_max = $wpdb->get_var("SELECT MAX(count) FROM $wpdb->term_taxonomy WHERE taxonomy = 'category';");
+      $cat_max = $wpdb->get_var("SELECT MAX(count) FROM $wpdb->term_taxonomy WHERE taxonomy = 'category'");
     } elseif ($wp_version >= 2.0) {
       $cat_max = $wpdb->get_var("SELECT MAX(category_count) FROM $wpdb->categories");
     } else {
@@ -97,6 +97,37 @@ class WordPressSources {
       return null;
     } else {
       return $results;
+    }
+  }
+  
+  function getFeedLinks() {
+    global $wpdb;
+    $sql = "SELECT link_rss, link_name, link_rel, link_rating
+      FROM $wpdb->links
+      WHERE link_visible = 'Y' AND link_rss != ''
+      ORDER BY link_name" ;
+
+    $results = $wpdb->get_results($sql);
+    if (!$results) {
+      return null;
+    } else {
+      return $results;
+    }
+  }
+  
+  function getTagsArray() {
+    global $wpdb;
+    $sql = "SELECT name
+      FROM $wpdb->terms";
+
+    $results = $wpdb->get_results($sql, 'ARRAY_N');
+    if (!$results) {
+      return null;
+    } else {
+    	foreach($results as $result) {
+    		$r[] = strtolower($result[0]);
+    	}
+      return $r;
     }
   }
 }
