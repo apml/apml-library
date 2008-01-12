@@ -12,12 +12,14 @@
 /// See the License for the specific language governing permissions and 
 /// limitations under the License.
 using System.Xml;
+using System.Xml.Serialization;
 
 namespace APML {
   public interface IApplication {
     /// <summary>
     /// Name of the Application
     /// </summary>
+    [XmlAttribute]
     string Name { get; }
 
     /// <summary>

@@ -74,12 +74,16 @@ namespace APML.AutoWrapper.Strategies {
         getElementsInvoke = new CodeMethodInvokeExpression(
           new CodeBaseReferenceExpression(), "GetAllElements",
           new CodePrimitiveExpression(null),
-          new CodePrimitiveExpression(AttributeHelper.SelectXmlElementName(pProp)));
+          new CodePrimitiveExpression(null),
+          new CodePrimitiveExpression(AttributeHelper.SelectXmlElementName(pProp)),
+          new CodePrimitiveExpression(AttributeHelper.SelectXmlElementNamespace(pProp)));
       } else {
         getElementsInvoke = new CodeMethodInvokeExpression(
           new CodeThisReferenceExpression(), "GetAllElements",
           new CodePrimitiveExpression(arrAttr.ElementName ?? null),
-          new CodePrimitiveExpression((arrItemAttr != null && arrItemAttr.ElementName != null) ? arrItemAttr.ElementName : pProp.Name));
+          new CodePrimitiveExpression(arrAttr.Namespace),
+          new CodePrimitiveExpression((arrItemAttr != null && arrItemAttr.ElementName != null) ? arrItemAttr.ElementName : pProp.Name),
+          new CodePrimitiveExpression((arrItemAttr != null && arrItemAttr.ElementName != null) ? arrItemAttr.Namespace : arrAttr.Namespace));
       }
       CodeVariableDeclarationStatement elementsDecl = new CodeVariableDeclarationStatement(
         typeof(XmlElement[]), "elements", getElementsInvoke);
@@ -194,18 +198,21 @@ namespace APML.AutoWrapper.Strategies {
       addMethod.ReturnType = new CodeTypeReference(GetElementType(pProp));
       addMethod.Parameters.AddRange(ProvideMandatoryAddParameters(pContext, pProp));
 
-      // TODO: Generate body!
       CodeMethodInvokeExpression addElementInvoke;
       if (elAttr != null) {
         addElementInvoke = new CodeMethodInvokeExpression(
           new CodeThisReferenceExpression(), "AddElement",
           new CodePrimitiveExpression(null),
-          new CodePrimitiveExpression(AttributeHelper.SelectXmlElementName(pProp)));
+          new CodePrimitiveExpression(null),
+          new CodePrimitiveExpression(AttributeHelper.SelectXmlElementName(pProp)),
+          new CodePrimitiveExpression(AttributeHelper.SelectXmlElementNamespace(pProp)));
       } else {
         addElementInvoke = new CodeMethodInvokeExpression(
           new CodeBaseReferenceExpression(), "AddElement",
           new CodePrimitiveExpression(arrAttr.ElementName ?? null),
-          new CodePrimitiveExpression((arrItemAttr != null && arrItemAttr.ElementName != null) ? arrItemAttr.ElementName : pProp.Name));
+          new CodePrimitiveExpression(arrAttr.Namespace),
+          new CodePrimitiveExpression((arrItemAttr != null && arrItemAttr.ElementName != null) ? arrItemAttr.ElementName : pProp.Name),
+          new CodePrimitiveExpression((arrItemAttr != null && arrItemAttr.ElementName != null) ? arrItemAttr.Namespace : arrAttr.Namespace));
       }
       CodeVariableDeclarationStatement resultElDecl = new CodeVariableDeclarationStatement(typeof(XmlElement), "resultEl", addElementInvoke);
       addMethod.Statements.Add(resultElDecl);

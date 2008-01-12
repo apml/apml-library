@@ -1,6 +1,7 @@
 using System;
 using System.CodeDom;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Reflection;
 using System.Xml;
 
@@ -22,7 +23,8 @@ namespace APML.AutoWrapper {
         new CodeMethodInvokeExpression(
           new CodeBaseReferenceExpression(), 
           "ClearElement", 
-          new CodePrimitiveExpression(AttributeHelper.SelectXmlElementName(pProp))));
+          new CodePrimitiveExpression(AttributeHelper.SelectXmlElementName(pProp)),
+          new CodePrimitiveExpression(AttributeHelper.SelectXmlElementNamespace(pProp))));
       pClass.Members.Add(method);
     }
 
@@ -41,7 +43,8 @@ namespace APML.AutoWrapper {
           new CodeMethodInvokeExpression(
             new CodeBaseReferenceExpression(),
             "InitElement",
-            new CodePrimitiveExpression(AttributeHelper.SelectXmlElementName(pProp)))));
+            new CodePrimitiveExpression(AttributeHelper.SelectXmlElementName(pProp)),
+            new CodePrimitiveExpression(AttributeHelper.SelectXmlElementNamespace(pProp)))));
       pClass.Members.Add(method);
     }
 
@@ -51,9 +54,24 @@ namespace APML.AutoWrapper {
     /// </summary>
     /// <param name="pMethod">the method to find the property for</param>
     /// <param name="pMethodNamePrefix">the prefix on the method</param>
-    /// <returns>the relevant property</returns>
+    /// <returns>the relevant property, or null if the property wasn't found</returns>
     public static PropertyInfo FindRelevantProperty(MethodInfo pMethod, string pMethodNamePrefix) {
-      return pMethod.DeclaringType.GetProperty(pMethod.Name.Substring(pMethodNamePrefix.Length));
+      string propName = pMethod.Name.Substring(pMethodNamePrefix.Length);
+      
+      // Check for the direct version
+      PropertyInfo prop = pMethod.DeclaringType.GetProperty(propName);
+      if (prop != null) {
+        return prop;
+      }
+
+      // See if we have a plural version
+      string pluralPropName = propName + "s";
+      PropertyInfo pluralProp = pMethod.DeclaringType.GetProperty(pluralPropName);
+      if (pluralProp != null) {
+        return pluralProp;
+      }
+
+      return null;
     }
 
     /// <summary>
@@ -69,7 +87,7 @@ namespace APML.AutoWrapper {
 
       // For each parameter, find a property that matches
       foreach (ParameterInfo param in pMethod.GetParameters()) {
-        foreach (PropertyInfo childProp in pPropertyType.GetProperties()) {
+        foreach (PropertyInfo childProp in TypeHelper.GetAllProperties(pPropertyType)) {
           if (childProp.Name.ToLower() == param.Name.ToLower()) {
             // We've found the property that we want
             CodeAssignStatement assign = new CodeAssignStatement(
@@ -142,7 +160,7 @@ namespace APML.AutoWrapper {
     ///<param name="pProp">the property being cached</param>
     ///<returns>a member definition for the cache</returns>
     public static CodeTypeMember GenerateCacheField(PropertyInfo pProp) {
-      if (pProp.PropertyType.IsPrimitive) {
+      if (TypeHelper.RequiresNullableWrapperForNullCheck(pProp.PropertyType)) {
         return GenerateCacheField(pProp, typeof (Nullable<>).MakeGenericType(pProp.PropertyType));
       } else {
         return GenerateCacheField(pProp, pProp.PropertyType);
@@ -176,11 +194,110 @@ namespace APML.AutoWrapper {
     ///<returns>a statement for returning the cached value</returns>
     public static CodeMethodReturnStatement GenerateCacheReturnStatement(PropertyInfo pProp) {
       CodeExpression cacheRef = GenerateCacheExpression(pProp);
-      if (pProp.PropertyType.IsPrimitive) {
+      if (TypeHelper.RequiresNullableWrapperForNullCheck(pProp.PropertyType)) {
         return new CodeMethodReturnStatement(new CodePropertyReferenceExpression(cacheRef, "Value"));
       } else {
         return new CodeMethodReturnStatement(cacheRef);
       }
     }
+
+    
+
+    /// <summary>
+    /// Generates a method for retrieving the value of a simple parameter.
+    /// </summary>
+    /// <param name="pProp">the property being generated</param>
+    /// <param name="pGetRetrieveDelegate">delegate for generating retrieve method</param>
+    /// <returns>the statements necessary to implement the get method</returns>
+    public static CodeStatement[] GenerateSimpleGetMethod(PropertyInfo pProp, GenerateValueRetrieveDelegate pGetRetrieveDelegate) {
+      CodeExpression cacheRef = GenerateCacheExpression(pProp);
+      CodeStatement cacheTest = GenerateCheckCacheAndReturnValue(pProp, cacheRef);
+      DefaultValueAttribute defaultValue = AttributeHelper.GetAttribute<DefaultValueAttribute>(pProp);
+      CodeExpression getInvoke;
+
+      // See if we have a custom converter, and build the correct getter method based on it
+      AutoWrapperFieldConverterAttribute converterAttr = AttributeHelper.GetAttribute<AutoWrapperFieldConverterAttribute>(pProp);
+      if (converterAttr != null) {
+        if (defaultValue != null) {
+          throw new ArgumentException(
+            "DefaultValue is not supported in conjunction with AutoWrapperFieldConverter. Found on " +
+            pProp.DeclaringType.FullName + "." + pProp.Name);
+        }
+        Type converterType = converterAttr.ConverterType;
+        Type requiredConverterType = typeof (IFieldConverter<>).MakeGenericType(pProp.PropertyType);
+        if (!requiredConverterType.IsAssignableFrom(converterType)) {
+          throw new ArgumentException("Converter for " + pProp.DeclaringType.FullName + "." + pProp.Name +
+                                      " does not inherit from IFieldConverter<" +
+                                      pProp.PropertyType + ">");
+        }
+
+        CodeExpression getStringInvoke = pGetRetrieveDelegate(typeof (string), null);
+        getInvoke = new CodeMethodInvokeExpression(
+          new CodeCastExpression(requiredConverterType, new CodeObjectCreateExpression(converterAttr.ConverterType)),
+                                 "FromString",
+                                 getStringInvoke);
+      } else {
+        getInvoke = pGetRetrieveDelegate(pProp.PropertyType, defaultValue != null ? defaultValue.Value : null);  
+      }
+
+      CodeStatement cacheStoreStmt = GenerateCacheStoreStatement(pProp, getInvoke);
+      CodeMethodReturnStatement getStmt = GenerateCacheReturnStatement(pProp);
+
+      return new CodeStatement[] { cacheTest, cacheStoreStmt, getStmt };
+    }
+
+    /// <summary>
+    /// Generates a method for setting the value of a simple parameter.
+    /// </summary>
+    /// <param name="pProp">the property being generated</param>
+    /// <param name="pSetRetrieveDelegate">delegate for generating store method</param>
+    /// <returns>the statements necessary to implement the set method</returns>
+    public static CodeStatement[] GenerateSimpleSetMethod(PropertyInfo pProp, GenerateValueStoreDelegate pSetRetrieveDelegate) {
+      CodeExpression setInvoke;
+
+      // See if we have a custom converter, and build the correct getter method based on it
+      AutoWrapperFieldConverterAttribute converterAttr = AttributeHelper.GetAttribute<AutoWrapperFieldConverterAttribute>(pProp);
+      if (converterAttr != null) {
+        Type converterType = converterAttr.ConverterType;
+        Type requiredConverterType = typeof(IFieldConverter<>).MakeGenericType(pProp.PropertyType);
+        if (!requiredConverterType.IsAssignableFrom(converterType)) {
+          throw new ArgumentException("Converter for " + pProp.DeclaringType.FullName + "." + pProp.Name +
+                                      " does not inherit from IFieldConverter<" +
+                                      pProp.PropertyType + ">");
+        }
+
+        CodeExpression convertToString = new CodeMethodInvokeExpression(
+          new CodeCastExpression(requiredConverterType, new CodeObjectCreateExpression(converterAttr.ConverterType)),
+                                 "ToString",
+                                 new CodePropertySetValueReferenceExpression());
+        setInvoke = pSetRetrieveDelegate(typeof(string), convertToString);
+      } else {
+        setInvoke = pSetRetrieveDelegate(pProp.PropertyType, new CodePropertySetValueReferenceExpression());
+      }
+
+      CodeExpressionStatement setStmt = new CodeExpressionStatement(setInvoke);
+
+      return new CodeStatement[] { setStmt, GenerateCacheStoreStatement(pProp, new CodePropertySetValueReferenceExpression()) };
+    }
   }
+
+  /// <summary>
+  /// Delegate provided to the getter method that will generate an expression that fetches a value of the given type.
+  /// </summary>
+  /// <param name="pRetrieveType">the type that is be being retrieved</param>
+  /// <returns>the expression that will perform the retrieval</returns>
+  /// <param name="pDefaultValue">the default value that should be used</param>
+  public delegate CodeExpression GenerateValueRetrieveDelegate(Type pRetrieveType, object pDefaultValue);
+
+  /// <summary>
+  /// Delegate provided to the setter method that will generate an expression that stores a value for the given type.
+  /// </summary>
+  /// <remarks>
+  /// This method accepts its parameter as an expression. However, it should be noted that only expression that reference variables (fields, params, locals)
+  /// should be used, as if the expression passed had side-effects, bad things could happen.
+  /// </remarks>
+  /// <param name="pStoreType">the type that is being stored</param>
+  /// <param name="pStoreVariable">a variable containing the variable to be stored</param>
+  /// <returns></returns>
+  public delegate CodeExpression GenerateValueStoreDelegate(Type pStoreType, CodeExpression pStoreVariable);
 }

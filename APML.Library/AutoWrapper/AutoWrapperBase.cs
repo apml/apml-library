@@ -8,7 +8,7 @@ namespace APML.AutoWrapper {
   /// </summary>
   public class AutoWrapperBase : IAutoWrapper {
     private readonly XmlElement mElement;
-    private readonly AutoWrapperGenerator mGenerator;
+    private readonly AutoWrapperGenerator mWrapperGenerator;
 
     /// <summary>
     /// Creates a new AutoWrapper base that wraps the given node.
@@ -20,7 +20,7 @@ namespace APML.AutoWrapper {
     /// </param>
     public AutoWrapperBase(XmlElement pElement, AutoWrapperGenerator pGenerator) {
       mElement = pElement;
-      mGenerator = pGenerator;
+      mWrapperGenerator = pGenerator;
     }
 
     #region IAutoWrapper Members
@@ -32,19 +32,26 @@ namespace APML.AutoWrapper {
     /// <typeparam name="T">the type of the interface that should be implemented</typeparam>
     /// <returns>the interface implemented as an autowrapper</returns>
     public T As<T>() where T : class {
-      if (mGenerator == null) {
+      if (mWrapperGenerator == null) {
         throw new System.NotSupportedException("No generator is available");
       }
 
-      return mGenerator.GenerateWrapper<T>(mElement);
+      return mWrapperGenerator.GenerateWrapper<T>(mElement);
     }
     #endregion
 
     /// <summary>
-    /// Retrieves access to the Generator in the wrapper.
+    /// The underlying XML node.
     /// </summary>
-    protected AutoWrapperGenerator Generator {
-      get { return mGenerator; }
+    public virtual XmlNode Node {
+      get { return mElement; }
+    }
+
+    /// <summary>
+    /// Retrieves access to the WrapperGenerator in the wrapper.
+    /// </summary>
+    protected AutoWrapperGenerator WrapperGenerator {
+      get { return mWrapperGenerator; }
     }
 
     /// <summary>
@@ -83,10 +90,11 @@ namespace APML.AutoWrapper {
     /// </summary>
     /// <typeparam name="T">the type of the element</typeparam>
     /// <param name="pElName">the name of the element</param>
+    /// <param name="pElNamespace">the element namespace</param>
     /// <param name="pDefaultValue">the default value</param>
     /// <returns>the value, or the default</returns>
-    protected T GetElementOrDefault<T>(string pElName, T pDefaultValue) {
-      XmlElement element = FindElement(pElName, false);
+    protected T GetElementOrDefault<T>(string pElName, string pElNamespace, T pDefaultValue) {
+      XmlElement element = FindElement(pElName, pElNamespace, false);
       if (element == null) {
         return pDefaultValue;
       }
@@ -98,9 +106,10 @@ namespace APML.AutoWrapper {
     /// Sets the value of a child element.
     /// </summary>
     /// <param name="pElName">the name of the element</param>
+    /// <param name="pElNamespace">the element namespace</param>
     /// <param name="pValue">the new value of the element</param>
-    protected void SetElement<T>(string pElName, T pValue) {
-      XmlElement element = FindElement(pElName, true);
+    protected void SetElement<T>(string pElName, string pElNamespace, T pValue) {
+      XmlElement element = FindElement(pElName, pElNamespace, true);
       element.InnerText = TypeDescriptor.GetConverter(typeof(T)).ConvertToString(pValue);
     }
 
@@ -111,19 +120,19 @@ namespace APML.AutoWrapper {
     ///   the name of the container for these elements, or null if they 
     ///   should be found directly under the current node
     /// </param>
+    /// <param name="pContainerNamespace">the namespace of the container</param>
     /// <param name="pElName">the element name</param>
+    /// <param name="pElNamespace">expected namespace for the element</param>
     /// <returns>the list of elements</returns>
-    protected XmlElement[] GetAllElements(string pContainerName, string pElName) {
+    protected XmlElement[] GetAllElements(string pContainerName, string pContainerNamespace, string pElName, string pElNamespace) {
       XmlNode searchNode = mElement;
       if (pContainerName != null) {
-        searchNode = FindElement(pContainerName, false);
+        searchNode = FindElement(pContainerName, pContainerNamespace, false);
       }
 
-      // TODO: Make this namespace aware!
       List<XmlElement> result = new List<XmlElement>();
-
       foreach (XmlNode node in searchNode.ChildNodes) {
-        if (node.NodeType == XmlNodeType.Element && node.Name == pElName) {
+        if (node.NodeType == XmlNodeType.Element && node.Name == pElName && CompareNamespace(node.NamespaceURI, pElNamespace)) {
           result.Add((XmlElement) node);
         }
       }
@@ -135,19 +144,18 @@ namespace APML.AutoWrapper {
     /// Attempts to find a given child element.
     /// </summary>
     /// <param name="pElName">the name of the element</param>
+    /// <param name="pElNamespace">the namespace of the element</param>
     /// <param name="pCanCreate">whether the element can be created</param>
     /// <returns>the found (or created) element, or null if it was found and couldn't be created</returns>
-    protected XmlElement FindElement(string pElName, bool pCanCreate) {
-      // TODO: Make this namespace aware!
-
+    protected XmlElement FindElement(string pElName, string pElNamespace, bool pCanCreate) {
       foreach (XmlNode node in mElement.ChildNodes) {
-        if (node.NodeType == XmlNodeType.Element && node.Name == pElName) {
+        if (node.NodeType == XmlNodeType.Element && node.Name == pElName && CompareNamespace(node.NamespaceURI, pElNamespace)) {
           return (XmlElement) node;
         }
       }
 
       if (pCanCreate) {
-        XmlElement el = mElement.OwnerDocument.CreateElement(pElName);
+        XmlElement el = mElement.OwnerDocument.CreateElement(pElName, pElNamespace);
         mElement.AppendChild(el);
 
         return el;
@@ -160,8 +168,9 @@ namespace APML.AutoWrapper {
     /// Removes the given element.
     /// </summary>
     /// <param name="pElName">the name of the lement</param>
-    protected void ClearElement(string pElName) {
-      XmlElement element = FindElement(pElName, false);
+    /// <param name="pElNamespace">the namespace of the element</param>
+    protected void ClearElement(string pElName, string pElNamespace) {
+      XmlElement element = FindElement(pElName, pElNamespace, false);
       element.ParentNode.RemoveChild(element);
     }
 
@@ -169,9 +178,10 @@ namespace APML.AutoWrapper {
     /// Initialises the given element, adding it if necessary.
     /// </summary>
     /// <param name="pElName">the name of the element</param>
+    /// <param name="pElNamespace">the namespace of the element</param>
     /// <returns>the element</returns>
-    protected XmlElement InitElement(string pElName) {
-      return FindElement(pElName, true);
+    protected XmlElement InitElement(string pElName, string pElNamespace) {
+      return FindElement(pElName, pElNamespace, true);
     }
 
     /// <summary>
@@ -179,14 +189,33 @@ namespace APML.AutoWrapper {
     /// container element.
     /// </summary>
     /// <param name="pContainerName">the name of the container element, or null if the element belongs directly under this element</param>
+    /// <param name="pContainerNamespace">the namespace of the container element</param>
     /// <param name="pElName">the element name</param>
+    /// <param name="pElNamespace">the namespace of the element</param>
     /// <returns>the created element</returns>
-    protected XmlElement AddElement(string pContainerName, string pElName) {
-      XmlElement container = pContainerName != null ? FindElement(pContainerName, true) : mElement;
-      XmlElement result = container.OwnerDocument.CreateElement(pElName);
+    protected XmlElement AddElement(string pContainerName, string pContainerNamespace, string pElName, string pElNamespace) {
+      XmlElement container = pContainerName != null ? FindElement(pContainerName, pContainerNamespace, true) : mElement;
+      XmlElement result = container.OwnerDocument.CreateElement(pElName, pElNamespace);
       container.AppendChild(result);
 
       return result;
+    }
+
+    /// <summary>
+    /// Compares a node namespace and an expected namespace.
+    /// </summary>
+    /// <param name="pNodeNamespace">the namespace of the declared node</param>
+    /// <param name="pExpectedNamespace">the expected namespace</param>
+    /// <returns>true - the namespaces are identitical</returns>
+    private bool CompareNamespace(string pNodeNamespace, string pExpectedNamespace) {
+      if (pNodeNamespace == pExpectedNamespace) {
+        return true;
+      }
+      if (pNodeNamespace == string.Empty && pExpectedNamespace == null) {
+        return true;
+      }
+
+      return false;
     }
   }
 }

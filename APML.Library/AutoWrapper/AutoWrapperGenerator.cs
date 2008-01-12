@@ -41,6 +41,7 @@ namespace APML.AutoWrapper {
       mGeneratedTypes = new Dictionary<Type, Type>();
 
       mPropStrategies = new List<IPropertyStrategy>();
+      mPropStrategies.Add(new BaseClassHandledStrategy());
       mPropStrategies.Add(new AttributeStrategy());
       mPropStrategies.Add(new PrimitiveElementStrategy());
       mPropStrategies.Add(new ComplexElementStrategy());
@@ -52,6 +53,7 @@ namespace APML.AutoWrapper {
       mMethodStrategies = new List<IMethodStrategy>();
       mMethodStrategies.Add(new InitMethodStrategy());
       mMethodStrategies.Add(new AddMethodStrategy());
+      mMethodStrategies.Add(new ClearMethodStrategy());
     }
 
     /// <summary>
@@ -98,9 +100,15 @@ namespace APML.AutoWrapper {
 
         Generate(context, unit, ns, nextName, next);
       }
-      
+
       // Compile the assembly
       CSharpCodeProvider csp = new CSharpCodeProvider();
+#if DEBUG
+      // Write out the generated code
+      StreamWriter sw = new StreamWriter(string.Format("{0}.{1}.cs", ns.Name, pType.Name));
+      csp.GenerateCodeFromCompileUnit(unit, sw, new CodeGeneratorOptions());
+      sw.Close();
+#endif
       CompilerParameters compileParams = new CompilerParameters();
       CompilerResults result = csp.CompileAssemblyFromDom(compileParams, unit);
       if (result.Errors.HasErrors) {
@@ -151,20 +159,11 @@ namespace APML.AutoWrapper {
         EnsureAssembly(pUnit, type);
 
         // Generate all of the properties
-        GenerateProperties(pContext, clsDecl, pUnit, type);
+        GenerateProperties(pContext, clsDecl, pUnit, type, clsConstructor);
 
         // Generate all of the methods
         GenerateMethods(pContext, clsDecl, pUnit, type);
       }
-
-#if DEBUG
-      CSharpCodeProvider csp = new CSharpCodeProvider();
-
-      // Write out the generated code
-      StreamWriter sw = new StreamWriter(string.Format("{0}.{1}.cs", pNs.Name, pName));
-      csp.GenerateCodeFromCompileUnit(pUnit, sw, new CodeGeneratorOptions());
-      sw.Close();
-#endif
     }
 
     /// <summary>
@@ -174,26 +173,46 @@ namespace APML.AutoWrapper {
     /// <param name="pClass">the class being generated</param>
     /// <param name="pUnit">the codecompile unit the class belongs to</param>
     /// <param name="pType">the type being wrapped</param>
-    private void GenerateProperties(GenerationContext pContext, CodeTypeDeclaration pClass, CodeCompileUnit pUnit, Type pType) {
-      PropertyInfo[] props = pType.GetProperties();
-      foreach (PropertyInfo prop in props) {
-        // Determine the strategy to use
-        IPropertyStrategy[] strategies = SelectPropertyStrategies(prop);
-        
-        // Build the property
-        CodeMemberProperty cProp = new CodeMemberProperty();
-        cProp.Name = prop.Name;
-        cProp.Type = new CodeTypeReference(prop.PropertyType);
-        cProp.Attributes = MemberAttributes.Public;
+    /// <param name="pConstructor">the constructor for the type</param>
+    private void GenerateProperties(GenerationContext pContext, CodeTypeDeclaration pClass, CodeCompileUnit pUnit, Type pType, CodeConstructor pConstructor) {
+      foreach (PropertyInfo prop in TypeHelper.GetAllProperties(pType)) {
+        if (!IsPropertyGenerated(pClass, prop)) {
+          // Determine the strategy to use
+          IPropertyStrategy[] strategies = SelectPropertyStrategies(prop);
 
-        // Run each of the strategies
-        foreach (IPropertyStrategy strategy in strategies) {
-          strategy.Apply(pContext, prop, cProp, pClass);
+          // Build the property
+          CodeMemberProperty cProp = new CodeMemberProperty();
+          cProp.Name = prop.Name;
+          cProp.Type = new CodeTypeReference(prop.PropertyType);
+          cProp.Attributes = MemberAttributes.Public;
+
+          // Run each of the strategies
+          foreach (IPropertyStrategy strategy in strategies) {
+            strategy.Apply(pContext, prop, cProp, pClass);
+          }
+
+          // Add the property, and ensure the type's assembly is listed
+          pClass.Members.Add(cProp);
+          EnsureAssembly(pUnit, prop.PropertyType);
+
+          // Check if we need to force it to init
+          AutoWrapperAutoInitAttribute autoInit = AttributeHelper.GetAttribute<AutoWrapperAutoInitAttribute>(prop);
+          if (autoInit != null) {
+            if (IsMethodGenerated(pClass, "Init" + prop.Name)) {
+              pConstructor.Statements.Add(
+                new CodeMethodInvokeExpression(
+                  new CodeThisReferenceExpression(), 
+                  "Init" + prop.Name));
+            } else if (prop.CanWrite) {
+              pConstructor.Statements.Add(
+                new CodeAssignStatement(
+                  new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), prop.Name),
+                  new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), prop.Name)));
+            } else {
+              throw new ArgumentException("Cannot auto-init " + prop.DeclaringType.FullName + "." + prop.Name);
+            }
+          }
         }
-
-        // Add the property, and ensure the type's assembly is listed
-        pClass.Members.Add(cProp);
-        EnsureAssembly(pUnit, prop.PropertyType);
       }
     }
 
@@ -271,6 +290,43 @@ namespace APML.AutoWrapper {
     }
 
     /// <summary>
+    /// Determines whether a method with the given name has already been generated.
+    /// </summary>
+    /// <param name="pClass">the class to search</param>
+    /// <param name="pMethodName">the method name to search for</param>
+    /// <returns>true - the method has been generated</returns>
+    private static bool IsMethodGenerated(CodeTypeDeclaration pClass, string pMethodName) {
+      foreach (CodeTypeMember member in pClass.Members) {
+        if (member is CodeMemberMethod) {
+          CodeMemberMethod cMethod = (CodeMemberMethod)member;
+          if (pMethodName.Equals(cMethod.Name)) {
+            return true;
+          }
+        }
+      }
+
+      return false;
+    }
+
+    /// <summary>
+    /// Determines whether the given property has already been generated.
+    /// </summary>
+    /// <param name="pClass">the generated class</param>
+    /// <param name="pProperty">the property to be checked for</param>
+    /// <returns>true - a definition already exists</returns>
+    private static bool IsPropertyGenerated(CodeTypeDeclaration pClass, PropertyInfo pProperty) {
+      foreach (CodeTypeMember member in pClass.Members) {
+        if (member is CodeMemberProperty) {
+          if (pProperty.Name.Equals(member.Name)) {
+            return true;
+          }
+        }
+      }
+
+      return false;
+    }
+
+    /// <summary>
     /// Determines whether the given method matches the generated method.
     /// </summary>
     /// <param name="pMethod">the interface method</param>
@@ -307,7 +363,7 @@ namespace APML.AutoWrapper {
         }
       }
       if (result.Count == 0) {
-        throw new ArgumentException("Property " + pProp.Name + " does not have any recognised attributes");
+        throw new ArgumentException("Property " + pProp.DeclaringType.Name + "." + pProp.Name + " does not have any recognised attributes");
       }
 
       // Sort the strategies

@@ -14,6 +14,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml.Serialization;
+using APML.AutoWrapper;
 
 namespace APML {
   /// <summary>
@@ -23,13 +25,16 @@ namespace APML {
     /// <summary>
     /// Creates a new author for this source.
     /// </summary>
-    /// <param name="pKey">the key for the author</param>
-    /// <param name="pValue">the value for the author</param>
-    IExplicitAuthor AddAuthor(string pKey, double pValue);
+    /// <param name="key">the key for the author</param>
+    /// <param name="value">the value for the author</param>
+    IExplicitAuthor AddAuthor(string key, double value);
 
     /// <summary>
     /// The authors attached to this source.
     /// </summary>
+    [XmlElement("Author", Namespace = APMLConstants.NAMESPACE_0_6)]
+    [XmlArray("Authors", Namespace = APMLConstants.NAMESPACE_0_6)]
+    [AutoWrapperKey("Key")]
     IReadOnlyDictionary<string, IExplicitAuthor> Authors { get; }
   }
 }

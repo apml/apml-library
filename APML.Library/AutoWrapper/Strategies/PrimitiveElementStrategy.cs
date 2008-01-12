@@ -1,8 +1,6 @@
 using System;
 using System.CodeDom;
-using System.ComponentModel;
 using System.Reflection;
-using System.Xml;
 using System.Xml.Serialization;
 
 namespace APML.AutoWrapper.Strategies {
@@ -40,46 +38,36 @@ namespace APML.AutoWrapper.Strategies {
 
       // Generate the properties
       if (pProp.CanRead) {
-        pGeneratedProp.GetStatements.AddRange(GetPrimitiveElementStrategy(pProp));
+        pGeneratedProp.GetStatements.AddRange(MethodHelper.GenerateSimpleGetMethod(
+          pProp, delegate(Type pType, object pDefaultValue) {
+                   CodeMethodInvokeExpression getInvoke = new CodeMethodInvokeExpression(
+                     new CodeThisReferenceExpression(), "GetElementOrDefault",
+                     new CodePrimitiveExpression(AttributeHelper.SelectXmlElementName(pProp)),
+                     new CodePrimitiveExpression(AttributeHelper.SelectXmlElementNamespace(pProp)),
+                     new CodePrimitiveExpression(pDefaultValue));
+                   getInvoke.Method.TypeArguments.Add(new CodeTypeReference(pType));
+
+                   return getInvoke;
+                 }));
       }
       if (pProp.CanWrite) {
-        pGeneratedProp.SetStatements.AddRange(SetPrimitiveElementStrategy(pProp));
+        pGeneratedProp.SetStatements.AddRange(MethodHelper.GenerateSimpleSetMethod(
+          pProp, delegate(Type pType, CodeExpression pValueExpr) {
+                   CodeMethodInvokeExpression setExpr = new CodeMethodInvokeExpression(
+                     new CodeThisReferenceExpression(), "SetElement",
+                     new CodePrimitiveExpression(AttributeHelper.SelectXmlElementName(pProp)),
+                     new CodePrimitiveExpression(AttributeHelper.SelectXmlElementNamespace(pProp)),
+                     pValueExpr
+                     );
+                   setExpr.Method.TypeArguments.Add(new CodeTypeReference(pType));
+                   return setExpr;
+                 }));
       }
 
       // Add our various default support methods
       MethodHelper.GenerateClearMethod(pProp, pClass);
       MethodHelper.GenerateBaseInitMethod(pProp, pClass);
     }
-
     #endregion
-
-    private static CodeStatement[] GetPrimitiveElementStrategy(PropertyInfo prop) {
-      DefaultValueAttribute defaultValue = AttributeHelper.GetAttribute<DefaultValueAttribute>(prop);
-      CodeExpression cacheRef = MethodHelper.GenerateCacheExpression(prop);
-      CodeStatement cacheTest = MethodHelper.GenerateCheckCacheAndReturnValue(prop, cacheRef);
-
-      // Build the get method
-      CodeMethodInvokeExpression getInvoke = new CodeMethodInvokeExpression(
-        new CodeThisReferenceExpression(), "GetElementOrDefault",
-        new CodePrimitiveExpression(AttributeHelper.SelectXmlElementName(prop)),
-        new CodePrimitiveExpression(defaultValue != null ? defaultValue.Value : null));
-      getInvoke.Method.TypeArguments.Add(new CodeTypeReference(prop.PropertyType));
-      CodeStatement cacheStoreStmt = MethodHelper.GenerateCacheStoreStatement(prop, getInvoke);
-      CodeMethodReturnStatement getStmt = MethodHelper.GenerateCacheReturnStatement(prop);
-
-      return new CodeStatement[] { cacheTest, cacheStoreStmt, getStmt };
-    }
-
-    private static CodeStatement[] SetPrimitiveElementStrategy(PropertyInfo prop) {
-      CodeMethodInvokeExpression setExpr = new CodeMethodInvokeExpression(
-          new CodeThisReferenceExpression(), "SetElement",
-          new CodePrimitiveExpression(AttributeHelper.SelectXmlElementName(prop)),
-          new CodePropertySetValueReferenceExpression()
-          );
-      setExpr.Method.TypeArguments.Add(new CodeTypeReference(prop.PropertyType));
-      CodeExpressionStatement setStmt = new CodeExpressionStatement(setExpr);
-
-      return new CodeStatement[] { setStmt, MethodHelper.GenerateCacheStoreStatement(prop, new CodePropertySetValueReferenceExpression()) };
-    }
   }
 }

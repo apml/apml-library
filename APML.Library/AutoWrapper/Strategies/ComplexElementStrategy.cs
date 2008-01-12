@@ -45,7 +45,7 @@ namespace APML.AutoWrapper.Strategies {
         pGeneratedProp.GetStatements.AddRange(GetComplexElementStrategy(pContext, pProp));
       }
       if (pProp.CanWrite) {
-        throw new ArgumentException("Setters are not supported on complex elements");
+        throw new ArgumentException("Setters are not supported on complex elements (found on " + pClass.Name + "." + pGeneratedProp.Name + ")");
       }
 
       // Add our various default support methods
@@ -61,6 +61,7 @@ namespace APML.AutoWrapper.Strategies {
       CodeMethodInvokeExpression findElementInvoke = new CodeMethodInvokeExpression(
         new CodeThisReferenceExpression(), "FindElement",
         new CodePrimitiveExpression(AttributeHelper.SelectXmlElementName(prop)),
+        new CodePrimitiveExpression(AttributeHelper.SelectXmlElementNamespace(prop)),
         new CodePrimitiveExpression(false));
       CodeVariableDeclarationStatement elementDecl = new CodeVariableDeclarationStatement(
         typeof(XmlElement), "element", findElementInvoke);

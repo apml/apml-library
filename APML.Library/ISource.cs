@@ -14,6 +14,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace APML {
   /// <summary>
@@ -39,21 +40,23 @@ namespace APML {
     /// <summary>
     /// The type of this source. Expressed as a mime-type (such as application/rss+xml for example).
     /// </summary>
+    [XmlAttribute("type")]
     string Type { get; set; }
 
     /// <summary>
     /// The friendly-name of this source.
     /// </summary>
+    [XmlAttribute("name")]
     string Name { get; set; }
 
     /// <summary>
     /// Raised when the type changes.
     /// </summary>
-    event SourceTypeChangedEventHandler TypeChanged;
+//    event SourceTypeChangedEventHandler TypeChanged;
 
     /// <summary>
     /// Raised when the source name changes.
     /// </summary>
-    event SourceNameChangedEventHandler NameChanged;
+//    event SourceNameChangedEventHandler NameChanged;
   }
 }

@@ -21,7 +21,7 @@ namespace APML.AutoWrapper.Strategies {
       return new CodeObjectCreateExpression(
         pContext.LookupRequiredTypeName(pReturnType), 
         pElementExpression,
-        new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), "Generator"));
+        new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), "WrapperGenerator"));
     }
   }
 }

@@ -13,9 +13,13 @@
 /// limitations under the License.
 using System;
 using System.Collections.Generic;
+using System.Xml.Serialization;
+using APML.AutoWrapper;
 
 namespace APML {
   public delegate void ProfileNameChangedEventHandler(IProfile pSender, string pOldName, string pNewName);
+
+  public delegate void PropertyChangeHandler<T, U>(T pSender, U pOldValue, U pNewValue);
 
   /// <summary>
   /// Defines the object model for an APML profile.
@@ -24,80 +28,26 @@ namespace APML {
     /// <summary>
     /// The name of the profile.
     /// </summary>
+    [XmlAttribute("name", Namespace = APMLConstants.NAMESPACE_0_6)]
     string Name { get; set; }
-    
-    /// <summary>
-    /// Adds a new explicit concept to the user's profile.
-    /// </summary>
-    /// <param name="pKey">the key of the concept</param>
-    /// <param name="pValue">the value of the concept</param>
-    /// <returns>the generated explicit concept</returns>
-    IExplicitConcept AddExplicitConcept(string pKey, double pValue);
 
     /// <summary>
-    /// Adds a new implicit concept to the user's profile. Note that the
-    /// Updated and From fields are dynamically populated.
+    /// The implicit data for the profile.
     /// </summary>
-    /// <param name="pKey">the key of the concept</param>
-    /// <param name="pValue">the value of the concept</param>
-    /// <returns>the generated implicit concept</returns>
-    IImplicitConcept AddImplicitConcept(string pKey, double pValue);
+    [XmlElement(Namespace = APMLConstants.NAMESPACE_0_6)]
+    [AutoWrapperAutoInit]
+    IImplicitData ImplicitData { get; }
 
     /// <summary>
-    /// Adds a new explicit source to the user's profile.
+    /// The explicit data for the profile.
     /// </summary>
-    /// <param name="pKey">the key for the source</param>
-    /// <param name="pValue">the value for this source</param>
-    /// <param name="pName">the friendly name for the source</param>
-    /// <param name="pType">the type of the source, expressed as a mime-type</param>
-    /// <returns>the generated explicit source</returns>
-    IExplicitSource AddExplicitSource(string pKey, double pValue, string pName, string pType);
-
-    /// <summary>
-    /// Adds a new implicit source to the user's profile. Note that the
-    /// Updated and 
-    /// </summary>
-    /// <param name="pKey">the key for the source</param>
-    /// <param name="pValue">the value for this source</param>
-    /// <param name="pName">the friendly name for the source</param>
-    /// <param name="pType">the type of the source, expressed as a mime-type</param>
-    /// <returns>the generated implicit source</returns>
-    IImplicitSource AddImplicitSource(string pKey, double pValue, string pName, string pType);
-
-    /// <summary>
-    /// Clears the user's set of implicit concepts.
-    /// </summary>
-    void ClearImplicitConcepts();
-
-    /// <summary>
-    /// Clears the user's set of implicit concepts, where the provided from tag is matched.
-    /// <param name="pFrom">the application to clear the concepts from</param>
-    /// </summary>
-    void ClearImplicitConcepts(string pFrom);
-
-    /// <summary>
-    /// Retrieves all of the user's explicit concepts.
-    /// </summary>
-    IReadOnlyDictionary<string, IExplicitConcept> ExplicitConcepts { get; }
-
-    /// <summary>
-    /// Retrieves all of the implicit concepts managed by this application.
-    /// </summary>
-    IReadOnlyDictionary<string, IList<IImplicitConcept>> ImplicitConcepts { get; }
-
-    /// <summary>
-    /// Retrieves all of the user's explicit sources.
-    /// </summary>
-    IReadOnlyDictionary<string, IExplicitSource> ExplicitSources { get; }
-
-    /// <summary>
-    /// Retrieves all of the user's implicit sources.
-    /// </summary>
-    IReadOnlyDictionary<string, IList<IImplicitSource>> ImplicitSources { get; }
+    [XmlElement(Namespace = APMLConstants.NAMESPACE_0_6)]
+    [AutoWrapperAutoInit]
+    IExplicitData ExplicitData { get; }
 
     /// <summary>
     /// Event issued when the name of the profile changes.
     /// </summary>
-    event ProfileNameChangedEventHandler NameChanged;
+//    event PropertyChangeHandler<IProfile, string> NameChanged;
   }
 }

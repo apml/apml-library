@@ -24,7 +24,7 @@ namespace APML.AutoWrapper.Strategies {
 
     #region SequencePropertyStrategy Members
     protected override Type GetResultType(PropertyInfo pProp) {
-      return typeof (Dictionary<,>).MakeGenericType(typeof (string), typeof(List<>).MakeGenericType(GetElementType(pProp)));
+      return typeof (DictionaryOfLists<,>).MakeGenericType(typeof (string), GetElementType(pProp));
     }
 
     protected override Type GetElementType(PropertyInfo pProp) {
@@ -48,7 +48,7 @@ namespace APML.AutoWrapper.Strategies {
     protected override CodeMethodReturnStatement GetReturnStatement(GenerationContext pContext, PropertyInfo pProp, CodeExpression pResult) {
       return new CodeMethodReturnStatement(
         new CodeObjectCreateExpression(
-          typeof (ReadOnlyDictionary<,>).MakeGenericType(typeof (string), typeof(List<>).MakeGenericType(GetElementType(pProp))),
+          typeof (ReadOnlyDictionary<,>).MakeGenericType(typeof (string), typeof(IList<>).MakeGenericType(GetElementType(pProp))),
           pResult));
     }
     #endregion

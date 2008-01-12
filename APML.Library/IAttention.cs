@@ -12,6 +12,9 @@
 /// See the License for the specific language governing permissions and 
 /// limitations under the License.
 using System;
+using System.ComponentModel;
+using System.Xml.Serialization;
+using APML.AutoWrapper;
 
 namespace APML {
   /// <summary>
@@ -38,21 +41,24 @@ namespace APML {
     /// <summary>
     /// The key for this attention item.
     /// </summary>
+    [XmlAttribute("key", Namespace = APMLConstants.NAMESPACE_0_6)]
     string Key { get; set; }
 
     /// <summary>
     /// The value for this attention item.
     /// </summary>
+    [XmlAttribute("value", Namespace = APMLConstants.NAMESPACE_0_6)]
+    [AutoWrapperFieldConverter(typeof(APMLNumberConverter))]
     double Value { get; set; }
 
     /// <summary>
     /// Fires when the Key of the object changes
     /// </summary>
-    event KeyChangedEventHandler<T> KeyChanged;    
+//    event KeyChangedEventHandler<T> KeyChanged;    
 
     /// <summary>
     /// Fires when the Value of the object changes
     /// </summary>
-    event ValueChangedEventHandler<T> ValueChanged;
+//    event ValueChangedEventHandler<T> ValueChanged;
   }
 }
