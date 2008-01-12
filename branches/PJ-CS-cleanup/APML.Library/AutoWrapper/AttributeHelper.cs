@@ -35,5 +35,15 @@ namespace APML.AutoWrapper {
 
       return pProp.Name;
     }
+
+    /// <summary>
+    /// Works out the correct namespace for the XmlElement.
+    /// </summary>
+    /// <param name="pProp">the property to inspect</param>
+    /// <returns>the element namespace</returns>
+    public static string SelectXmlElementNamespace(MemberInfo pProp) {
+      XmlElementAttribute elTag = GetAttribute<XmlElementAttribute>(pProp);
+      return elTag.Namespace;
+    }
   }
 }

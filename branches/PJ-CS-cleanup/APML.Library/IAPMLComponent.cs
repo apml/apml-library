@@ -27,32 +27,32 @@ namespace APML {
     /// <summary>
     /// Removes the named APML item.
     /// </summary>
-    void Remove();
+//    void Remove();
 
     /// <summary>
     /// Fired when the component is removed from the document.
     /// </summary>
-    event APMLComponentRemovedHandler Removed;
+//    event APMLComponentRemovedHandler Removed;
 
     /// <summary>
     /// Sets an attribute on the component with the given value.
     /// </summary>
     /// <param name="pAttrName">the name of the attribute</param>
     /// <param name="pAttrValue">the value of the attribute</param>
-    void SetExtraAttribute(string pAttrName, string pAttrValue);
+//    void SetExtraAttribute(string pAttrName, string pAttrValue);
 
     /// <summary>
     /// Removes the attribute with the given name.
     /// </summary>
     /// <param name="pAttrName">the name of the attribute</param>
-    void ClearExtraAttribute(string pAttrName);
+//    void ClearExtraAttribute(string pAttrName);
 
     /// <summary>
     /// Retrieves the attribute with the given name.
     /// </summary>
     /// <param name="pAttrName">the name of the attribute</param>
     /// <returns>the value of the attribute, or null if the attribute isn't set</returns>
-    string GetExtraAttribute(string pAttrName);
+//    string GetExtraAttribute(string pAttrName);
 
     /// <summary>
     /// Provides access to the underlying XmlNode.

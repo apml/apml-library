@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Xml.Serialization;
 using APML.AutoWrapper;
 
@@ -13,35 +11,46 @@ namespace APML {
     /// Adds a new implicit concept to the user's profile. Note that the
     /// Updated and From fields are dynamically populated.
     /// </summary>
-    /// <param name="pKey">the key of the concept</param>
-    /// <param name="pValue">the value of the concept</param>
+    /// <param name="key">the key of the concept</param>
+    /// <param name="value">the value of the concept</param>
     /// <returns>the generated implicit concept</returns>
-    IImplicitConcept AddImplicitConcept(string pKey, double pValue);
+    IImplicitConcept AddImplicitConcept(string key, double value);
 
     /// <summary>
     /// Adds a new implicit source to the user's profile. Note that the
     /// Updated and 
     /// </summary>
-    /// <param name="pKey">the key for the source</param>
-    /// <param name="pValue">the value for this source</param>
-    /// <param name="pName">the friendly name for the source</param>
-    /// <param name="pType">the type of the source, expressed as a mime-type</param>
+    /// <param name="key">the key for the source</param>
+    /// <param name="value">the value for this source</param>
+    /// <param name="name">the friendly name for the source</param>
+    /// <param name="type">the type of the source, expressed as a mime-type</param>
     /// <returns>the generated implicit source</returns>
-    IImplicitSource AddImplicitSource(string pKey, double pValue, string pName, string pType);
+    IImplicitSource AddImplicitSource(string key, double value, string name, string type);
+
+    /// <summary>
+    /// Clears the user's set of implicit concepts.
+    /// </summary>
+    void ClearImplicitConcepts();
+
+    /// <summary>
+    /// Clears the user's set of implicit concepts, where the provided from tag is matched.
+    /// <param name="from">the application to clear the concepts from</param>
+    /// </summary>
+    void ClearImplicitConcepts(string from);
 
     /// <summary>
     /// Retrieves all of the implicit concepts managed by this application.
     /// </summary>
-    [XmlArray("Concepts")]
-    [XmlArrayItem("Concept")]
+    [XmlArray("Concepts", Namespace = APMLConstants.NAMESPACE_0_6)]
+    [XmlArrayItem("Concept", Namespace = APMLConstants.NAMESPACE_0_6)]
     [AutoWrapperKey("Key")]
     IReadOnlyDictionary<string, IList<IImplicitConcept>> ImplicitConcepts { get; }
 
     /// <summary>
     /// Retrieves all of the user's implicit sources.
     /// </summary>
-    [XmlArray("Sources")]
-    [XmlArrayItem("Source")]
+    [XmlArray("Sources", Namespace = APMLConstants.NAMESPACE_0_6)]
+    [XmlArrayItem("Source", Namespace = APMLConstants.NAMESPACE_0_6)]
     [AutoWrapperKey("Key")]
     IReadOnlyDictionary<string, IList<IImplicitSource>> ImplicitSources { get; }
   }

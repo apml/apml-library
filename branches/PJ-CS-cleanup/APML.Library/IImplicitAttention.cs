@@ -14,17 +14,22 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml.Serialization;
+using APML.AutoWrapper;
 
 namespace APML {
   public interface IImplicitAttention {
     /// <summary>
     /// The tool/source that provided this item.
     /// </summary>
+    [XmlAttribute("from", Namespace = APMLConstants.NAMESPACE_0_6)]
     string From { get; set; }
 
     /// <summary>
     /// The time this implicit record was last updated.
     /// </summary>
+    [XmlAttribute("updated", Namespace = APMLConstants.NAMESPACE_0_6)]
+    [AutoWrapperFieldConverter(typeof(APMLDateConverter))]
     DateTime? Updated { get; set; }
   }
 }

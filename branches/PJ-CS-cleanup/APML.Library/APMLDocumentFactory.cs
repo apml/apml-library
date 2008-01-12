@@ -17,8 +17,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Xml;
-using APML.XmlWrappers.v0_6;
-using APML.XmlWrappers.v0_5;
+using APML.AutoWrapper;
 
 namespace APML {
   public class APMLDocumentFactory {
@@ -42,18 +41,28 @@ namespace APML {
     /// </param>
     /// <returns>a document instance</returns>
     public static IAPMLDocument LoadDocument(string pFile, bool pShouldUpgrade) {
+      XmlDocument doc;
+      bool created;
+
       // If the file doesn't exist, just create a new file of the latest version
       if (!File.Exists(pFile)) {
-        IAPMLDocument newDoc = new APMLFile0_6(pFile);
-        newDoc.ApplicationID = DefaultApplicationId;
+        doc = new XmlDocument();
+        doc.AppendChild(doc.CreateXmlDeclaration("1.0", "UTF-8", null));
+        doc.AppendChild(doc.CreateElement("APML", APMLConstants.NAMESPACE_0_6));
+        created = true;
 
-        return newDoc;
+//        IAPMLDocument newDoc = new APMLFile0_6(pFile);
+//        newDoc.ApplicationID = DefaultApplicationId;
+
+//        return newDoc;
+      } else {
+        doc = new XmlDocument();
+        doc.Load(pFile);
+        created = false;
       }
 
-      XmlDocument doc = new XmlDocument();
-      doc.Load(pFile);
-
-      XmlAttributeCollection docElAttr = doc.DocumentElement.Attributes;
+      
+      /*XmlAttributeCollection docElAttr = doc.DocumentElement.Attributes;
       if (docElAttr["Version"] != null && docElAttr["Version"].Value == "0.5") {
         if (pShouldUpgrade) {
           // Backup the old version
@@ -70,15 +79,15 @@ namespace APML {
         IAPMLDocument aDoc = new APMLFile0_6(pFile, doc);
         aDoc.ApplicationID = DefaultApplicationId;
         return aDoc;
-      }
+      }*/
 
       // For the moment, just return an APMLFile instance
-      IAPMLDocument result = new APMLFile0_6(pFile, doc);
+      IAPMLDocument result = new APMLFile(pFile, doc, created);
       result.ApplicationID = DefaultApplicationId;
       return result;
     }
 
-    private static IAPMLDocument UpgradeDocument(IAPMLDocument pOld, params UpgradeOption[] pOptions) {
+    /*private static IAPMLDocument UpgradeDocument(IAPMLDocument pOld, params UpgradeOption[] pOptions) {
       // Generate the temporary file name, and make sure it doesn't exist
       string tempFile = pOld.Filename + ".apmlupgrade";
       File.Delete(tempFile);
@@ -150,7 +159,7 @@ namespace APML {
 
       // Load a new document off the updated file
       return new APMLFile0_6(pOld.Filename);
-    }
+    }*/
 
     /// <summary>
     /// Tests whether the given list of options contains the desired option.
@@ -158,7 +167,7 @@ namespace APML {
     /// <param name="pOptions">the list of options to test</param>
     /// <param name="pTest">the option to test for</param>
     /// <returns>true - the list contains the option</returns>
-    private static bool HasOption(UpgradeOption[] pOptions, UpgradeOption pTest) {
+    /*private static bool HasOption(UpgradeOption[] pOptions, UpgradeOption pTest) {
       foreach (UpgradeOption opt in pOptions) {
         if (opt == pTest) {
           return true;
@@ -166,7 +175,7 @@ namespace APML {
       }
 
       return false;
-    }
+    }*/
 
     /// <summary>
     /// Builds a name for a backup file. For instance C:\apml.apml will become C:\apml-0.5.apml when
@@ -177,7 +186,7 @@ namespace APML {
     /// <param name="pCurrentVersion">the version of the apml file</param>
     /// <param name="pMustNotExist">whether the backup file should be a unique name</param>
     /// <returns>the backup name</returns>
-    private static string BuildBackupName(string pFileName, string pCurrentVersion, bool pMustNotExist) {
+    /*private static string BuildBackupName(string pFileName, string pCurrentVersion, bool pMustNotExist) {
       FileInfo fileInfo = new FileInfo(pFileName);
 
       // Get the name without its extension
@@ -201,7 +210,7 @@ namespace APML {
 
       // Build the new name
       return curBase + fileInfo.Extension;
-    }
+    }*/
   }
 
   internal enum UpgradeOption {

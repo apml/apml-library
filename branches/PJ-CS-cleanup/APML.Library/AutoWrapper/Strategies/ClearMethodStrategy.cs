@@ -1,12 +1,11 @@
 using System;
 using System.CodeDom;
+using System.Collections.Generic;
 using System.Reflection;
+using System.Text;
 
 namespace APML.AutoWrapper.Strategies {
-  ///<summary>
-  /// Strategy for generating add methods.
-  ///</summary>
-  public class AddMethodStrategy : BaseStrategy, IMethodStrategy {
+  public class ClearMethodStrategy : BaseStrategy, IMethodStrategy {
     #region IStrategy Members
     /// <summary>
     /// Defines the priority of the strategy.
@@ -14,7 +13,7 @@ namespace APML.AutoWrapper.Strategies {
     public override StrategyPriority Priority {
       get { return StrategyPriority.BaseCode; }
     }
-    #endregion     
+    #endregion
 
     #region IMethodStrategy Members
     /// <summary>
@@ -23,7 +22,7 @@ namespace APML.AutoWrapper.Strategies {
     /// <param name="pMethod">the method to check</param>
     /// <returns>true - strategies apply</returns>
     public bool AppliesToMethod(MethodInfo pMethod) {
-      return pMethod.Name.StartsWith("Add");
+      return pMethod.Name.StartsWith("Clear");
     }
 
     /// <summary>
@@ -36,24 +35,24 @@ namespace APML.AutoWrapper.Strategies {
     /// <param name="pClass">the class being declared</param>
     public void Apply(GenerationContext pContext, MethodInfo pMethod, CodeMemberMethod pGeneratedMethod,
                       CodeTypeDeclaration pClass) {
-      if (pMethod.ReturnType == typeof(void)) {
-        throw new ArgumentException(pMethod.Name + " must return type of property being added");
+      if (pMethod.ReturnType != typeof(void)) {
+        throw new ArgumentException(pMethod.Name + " must return void");
       }
 
       // Find the property, and see if it has a key value
-      PropertyInfo prop = MethodHelper.FindRelevantProperty(pMethod, "Add");
+      PropertyInfo prop = MethodHelper.FindRelevantProperty(pMethod, "Clear");
       if (prop == null) {
         throw new ArgumentException("No matching property found for method " + pClass.Name + "." + pMethod.Name);
       }
       AutoWrapperKeyAttribute keyAttr = AttributeHelper.GetAttribute<AutoWrapperKeyAttribute>(prop);
 
       // Generate the call parameters
-      CodeExpression[] baseParameters = new CodeExpression[0];
+      /*CodeExpression[] baseParameters = new CodeExpression[0];
       if (keyAttr != null) {
         // Find the parameter that matches the base parameter name
         foreach (CodeParameterDeclarationExpression param in pGeneratedMethod.Parameters) {
           if (param.Name.ToLower() == keyAttr.KeyAttribute.ToLower()) {
-            baseParameters = new CodeExpression[] {new CodeVariableReferenceExpression(param.Name)};
+            baseParameters = new CodeExpression[] { new CodeVariableReferenceExpression(param.Name) };
             break;
           }
         }
@@ -65,8 +64,8 @@ namespace APML.AutoWrapper.Strategies {
           pMethod.ReturnType,
           "result",
           new CodeMethodInvokeExpression(
-            new CodeThisReferenceExpression(), 
-            "Add" + prop.Name,
+            new CodeThisReferenceExpression(),
+            pGeneratedMethod.Name,
             baseParameters));
       pGeneratedMethod.Statements.Add(baseGenerate);
 
@@ -74,7 +73,8 @@ namespace APML.AutoWrapper.Strategies {
       pGeneratedMethod.Statements.AddRange(MethodHelper.GeneratePropertyApplications(pMethod, pMethod.ReturnType, new CodeVariableReferenceExpression("result")));
 
       // Return the result if necessary
-      pGeneratedMethod.Statements.Add(new CodeMethodReturnStatement(new CodeVariableReferenceExpression("result")));
+      pGeneratedMethod.Statements.Add(new CodeMethodReturnStatement(new CodeVariableReferenceExpression("result")));*/
+      // TODO: Implement
     }
 
     #endregion
