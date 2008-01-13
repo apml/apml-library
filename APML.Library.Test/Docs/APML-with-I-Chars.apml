@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<APML version="0.6">
+  <Head>
+    <Generator>APML Test Cases</Generator>
+    <Title>Test APML File</Title>
+    <UserEmail>user2@example.com</UserEmail>
+    <DateCreated>2007-03-25T02:22:00Z</DateCreated>
+  </Head>
+  <Body defaultprofile="Home">
+    <Profile name="Home">
+      <ImplicitData>
+        <Concepts>
+          <Concept key="MyImplConcept" value="1,00" updated="2007-04-11T23:35:14Z" from="APMLUnitTests" />
+        </Concepts>
+        <Sources>
+          <Source key="http://www.apml.org/sample2" value="0,50" name="APMLSample2" type="application/rss+xml" updated="2007-04-11T23:35:14Z" from="APMLUnitTests">
+            <Author key="Author1" value="1,00" updated="2007-04-11T23:35:14Z" from="APMLUnitTests" />
+          </Source>
+        </Sources>
+      </ImplicitData>
+      <ExplicitData>
+        <Concepts>
+          <Concept key="MyConcept" value="1,00" />
+        </Concepts>
+        <Sources>
+          <Source key="http://www.apml.org/sample" value="0,50" name="APMLSample" type="application/rss+xml">
+            <Author key="Author1" value="1,00" />
+          </Source>
+        </Sources>
+      </ExplicitData>
+    </Profile>
+  </Body>
+</APML>
