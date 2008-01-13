@@ -18,6 +18,6 @@ namespace APML {
   /// <summary>
   /// Defines an implicit author.
   /// </summary>
-  public interface IImplicitAuthor : IImplicitAttention, IAttention<IImplicitAuthor> {
+  public interface IImplicitAuthor : IAttention<IImplicitAuthor>, IImplicitAttention {
   }
 }

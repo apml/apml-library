@@ -12,6 +12,7 @@ namespace APML {
     [XmlArray("Concepts", Namespace = APMLConstants.NAMESPACE_0_6)]
     [XmlArrayItem("Concept", Namespace = APMLConstants.NAMESPACE_0_6)]
     [AutoWrapperKey("Key")]
+    [AutoWrapperAutoInit]
     IReadOnlyDictionary<string, IExplicitConcept> ExplicitConcepts { get; }
 
     /// <summary>
@@ -20,6 +21,7 @@ namespace APML {
     [XmlArray("Sources", Namespace = APMLConstants.NAMESPACE_0_6)]
     [XmlArrayItem("Source", Namespace = APMLConstants.NAMESPACE_0_6)]
     [AutoWrapperKey("Key")]
+    [AutoWrapperAutoInit]
     IReadOnlyDictionary<string, IExplicitSource> ExplicitSources { get; }
 
     /// <summary>

@@ -12,24 +12,27 @@
 /// See the License for the specific language governing permissions and 
 /// limitations under the License.
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Xml.Serialization;
 using APML.AutoWrapper;
 
 namespace APML {
+  /// <summary>
+  /// Base set of properties that are present in all nodes that handle implicit attention.
+  /// </summary>
   public interface IImplicitAttention {
-    /// <summary>
-    /// The tool/source that provided this item.
-    /// </summary>
-    [XmlAttribute("from", Namespace = APMLConstants.NAMESPACE_0_6)]
-    string From { get; set; }
-
     /// <summary>
     /// The time this implicit record was last updated.
     /// </summary>
     [XmlAttribute("updated", Namespace = APMLConstants.NAMESPACE_0_6)]
     [AutoWrapperFieldConverter(typeof(APMLDateConverter))]
+    [AutoWrapperAutoInit]
     DateTime? Updated { get; set; }
+
+    /// <summary>
+    /// The tool/source that provided this item.
+    /// </summary>
+    [XmlAttribute("from", Namespace = APMLConstants.NAMESPACE_0_6)]
+    [AutoWrapperAutoInit]
+    string From { get; set; }
   }
 }

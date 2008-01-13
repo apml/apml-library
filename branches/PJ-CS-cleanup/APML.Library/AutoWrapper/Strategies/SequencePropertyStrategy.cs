@@ -48,6 +48,7 @@ namespace APML.AutoWrapper.Strategies {
 
       // Generate the default support methods
       GenerateAddMethod(pContext, pProp, pClass);
+      GenerateInitMethod(pContext, pProp, pClass);
       GenerateRemoveMethod();
     }
 
@@ -244,6 +245,40 @@ namespace APML.AutoWrapper.Strategies {
       addMethod.Statements.Add(returnStmt);
 
       pClass.Members.Add(addMethod);
+    }
+
+    /// <summary>
+    /// Generates an Init method for the given class. For container elements, this will generate the container. For non-container elements,
+    /// the method is not generated.
+    /// </summary>
+    /// <param name="pContext">the context of the generation</param>
+    /// <param name="pProp">the property being generated</param>
+    /// <param name="pClass">the class being generated</param>
+    protected virtual void GenerateInitMethod(GenerationContext pContext, PropertyInfo pProp, CodeTypeDeclaration pClass) {
+      // Retrieve the necessary attributes
+      XmlArrayAttribute arrAttr = AttributeHelper.GetAttribute<XmlArrayAttribute>(pProp);
+      
+      // If this doesn't have a container attribute, then we aren't interested
+      if (arrAttr == null) {
+        return;
+      }
+
+      // Start building the method
+      CodeMemberMethod initMethod = new CodeMemberMethod();
+      initMethod.Attributes = MemberAttributes.Public;
+      initMethod.Name = "Init" + pProp.Name;
+      initMethod.ReturnType = new CodeTypeReference(typeof(void));
+      
+      CodeMethodInvokeExpression addElementInvoke;
+      addElementInvoke = new CodeMethodInvokeExpression(
+        new CodeBaseReferenceExpression(), "AddElement",
+        new CodePrimitiveExpression(null),
+        new CodePrimitiveExpression(null),
+        new CodePrimitiveExpression(arrAttr.ElementName),
+        new CodePrimitiveExpression(arrAttr.Namespace));
+      initMethod.Statements.Add(addElementInvoke);
+
+      pClass.Members.Add(initMethod);
     }
 
     /// <summary>

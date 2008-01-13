@@ -21,14 +21,15 @@ namespace APML {
   /// <summary>
   /// Defines an implicit source.
   /// </summary>
-  public interface IImplicitSource : ISource, IImplicitAttention, IAttention<IImplicitSource> {
+  public interface IImplicitSource : IAttention<IImplicitSource>, ISource, IImplicitAttention {
     /// <summary>
     /// Creates a new author for this source.
     /// </summary>
     /// <param name="key">the key for the author</param>
     /// <param name="value">the value for the author</param>
+    /// <param name="from">the application adding this author</param>
     /// <returns>the added author</returns>
-    IImplicitAuthor AddAuthor(string key, double value);
+    IImplicitAuthor AddAuthor(string key, double value, string from);
 
     /// <summary>
     /// The authors attached to this source.

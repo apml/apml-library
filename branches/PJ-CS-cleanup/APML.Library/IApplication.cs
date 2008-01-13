@@ -19,7 +19,7 @@ namespace APML {
     /// <summary>
     /// Name of the Application
     /// </summary>
-    [XmlAttribute]
+    [XmlAttribute("name")]
     string Name { get; }
 
     /// <summary>
