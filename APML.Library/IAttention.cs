@@ -42,6 +42,7 @@ namespace APML {
     /// The key for this attention item.
     /// </summary>
     [XmlAttribute("key", Namespace = APMLConstants.NAMESPACE_0_6)]
+    [AutoWrapperAutoInit]
     string Key { get; set; }
 
     /// <summary>
@@ -49,6 +50,7 @@ namespace APML {
     /// </summary>
     [XmlAttribute("value", Namespace = APMLConstants.NAMESPACE_0_6)]
     [AutoWrapperFieldConverter(typeof(APMLNumberConverter))]
+    [AutoWrapperAutoInit]
     double Value { get; set; }
 
     /// <summary>

@@ -1,3 +1,4 @@
+using System.Globalization;
 using APML.AutoWrapper;
 
 namespace APML {
@@ -26,13 +27,17 @@ namespace APML {
         return null;
       }
 
-      // Use a generic parse
-      return double.Parse(pNumStr);
+      if (CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator == "," && pNumStr.Contains(",")) {
+        // We need to parse in the local culture, cause otherwise a 1,00 would be interpreted as 100
+        return double.Parse(pNumStr);
+      } else {
+        return double.Parse(pNumStr, CultureInfo.InvariantCulture);
+      }
     }
 
     public string ToString(double? pNum) {
       if (pNum != null) {
-        return pNum.Value.ToString("f2");
+        return pNum.Value.ToString("f2", CultureInfo.InvariantCulture);
       }
 
       return null;

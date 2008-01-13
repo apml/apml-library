@@ -15,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml.Serialization;
+using APML.AutoWrapper;
 
 namespace APML {
   /// <summary>
@@ -38,16 +39,18 @@ namespace APML {
   /// </summary>
   public interface ISource : IAPMLComponent {
     /// <summary>
-    /// The type of this source. Expressed as a mime-type (such as application/rss+xml for example).
-    /// </summary>
-    [XmlAttribute("type")]
-    string Type { get; set; }
-
-    /// <summary>
     /// The friendly-name of this source.
     /// </summary>
     [XmlAttribute("name")]
+    [AutoWrapperAutoInit]
     string Name { get; set; }
+
+    /// <summary>
+    /// The type of this source. Expressed as a mime-type (such as application/rss+xml for example).
+    /// </summary>
+    [XmlAttribute("type")]
+    [AutoWrapperAutoInit]
+    string Type { get; set; }
 
     /// <summary>
     /// Raised when the type changes.

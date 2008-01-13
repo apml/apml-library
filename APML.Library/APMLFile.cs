@@ -14,12 +14,12 @@ namespace APML {
     private string mApplicationId;
     private IProfile mActiveProfile;
 
-    public APMLFile(string pFileName, XmlDocument pDoc, bool pWasCreated) {
+    public APMLFile(string pFileName, XmlDocument pDoc, bool pWasCreated, AutoWrapperGenerator pGenerator) {
       mFileName = pFileName;
       mDoc = pDoc;
       mWasCreated = pWasCreated;
 
-      mGenerator = new AutoWrapperGenerator();
+      mGenerator = pGenerator;
       mRoot = mGenerator.GenerateWrapper<IAPMLRoot>(mDoc.DocumentElement);
 
       mActiveProfile = DefaultProfile;

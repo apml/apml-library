@@ -22,6 +22,7 @@ using APML.AutoWrapper;
 namespace APML {
   public class APMLDocumentFactory {
     private static string mDefaultApplicationId;
+    private static AutoWrapperGenerator mGenerator = new AutoWrapperGenerator();
 
     /// <summary>
     /// The default application id set on documents.
@@ -59,6 +60,13 @@ namespace APML {
         doc = new XmlDocument();
         doc.Load(pFile);
         created = false;
+
+        // Check if we need to fix the namespace
+        if (doc.DocumentElement.Name == "APML" && doc.DocumentElement.NamespaceURI == string.Empty) {
+          // We have a non-namespaced doc. Apply the namespace and reload it.
+          doc.DocumentElement.SetAttribute("xmlns", APMLConstants.NAMESPACE_0_6);
+          doc.LoadXml(doc.OuterXml);
+        }
       }
 
       
@@ -82,7 +90,7 @@ namespace APML {
       }*/
 
       // For the moment, just return an APMLFile instance
-      IAPMLDocument result = new APMLFile(pFile, doc, created);
+      IAPMLDocument result = new APMLFile(pFile, doc, created, mGenerator);
       result.ApplicationID = DefaultApplicationId;
       return result;
     }
