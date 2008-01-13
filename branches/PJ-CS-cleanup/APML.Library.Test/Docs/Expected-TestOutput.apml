@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<APML version="0.6" xmlns="http://www.apml.org/apml-0.6">
+  <Head>
+    <Title>Test APML File</Title>
+    <Generator>Test Cases</Generator>
+    <UserEmail>user@example.com</UserEmail>
+    <DateCreated>2007-03-25T02:22:00Z</DateCreated>
+  </Head>
+  <Body defaultprofile="Home">
+    <Profile name="Home">
+      <ImplicitData>
+        <Concepts />
+        <Sources />
+      </ImplicitData>
+      <ExplicitData>
+        <Concepts />
+        <Sources />
+      </ExplicitData>
+    </Profile>
+  </Body>
+</APML>
