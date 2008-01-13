@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<project name="APMLStream" default="compile" basedir=".">
+	<property file="build.properties"/>
+	
+	<!-- Set the CLASSPATH (xstream and xpp3) -->
+    <path id="cp">
+        <fileset dir="${lib.dir}">
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>
+
+	<!-- Initialize -->
+    <target name="init">
+        <tstamp/>
+    </target>
+	
+	<!-- Compile the source -->
+    <target name="compile" depends="init" description="Compiles all java sources">
+        <mkdir dir="${build.dir}/classes"/>
+        <javac
+            destdir="${build.dir}/classes"
+            classpathref="cp"
+            debug="${compile.debug}"
+            deprecation="${compile.deprecation}"
+            optimize="${compile.optimize}"
+            nowarn="${compile.nowarn}"
+            >
+            <src path="${java.dir}"/>
+        </javac>
+    </target>
+	
+	<!-- Package the source -->
+    <target name="jar" depends="compile" description="Packages source into .JAR">
+        <mkdir dir="${dist.dir}"/>
+        <jar destfile="${dist.dir}/${app.name}-${app.version}.jar">
+            <fileset dir="${build.dir}/classes"/>
+        </jar>
+    </target>
+	
+	<!-- Generate the documentation -->
+    <target name="javadocs" depends="init" description="Generates JavaDoc">
+        <mkdir dir="${dist.dir}/docs/api"/>
+        <javadoc sourcepath="${java.dir}"
+            destdir="${dist.dir}/docs/api"
+            packagenames="org.apml.*"
+            classpathref="cp"
+            author="true"
+            version="true"
+            windowTitle="${app.fullname} ${app.version} API"
+            doctitle="${app.fullname} ${app.version} API"
+            footer="Tim Schultz and &lt;a href=&quot;http://www.apml.org&quot;&gt;APML.org&lt;/a&gt;"
+            use="true"
+            verbose="true">
+            	<link href="http://java.sun.com/javase/6/docs/api/"/>
+        </javadoc>
+    </target>
+
+	<!-- Clean build artifacts -->
+    <target name="clean" description="Removes all build files">
+        <delete dir="${build.dir}"/>
+        <delete dir="${dist.dir}"/>
+    </target>
+    	
+</project>

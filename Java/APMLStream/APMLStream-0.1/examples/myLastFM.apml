@@ -1,0 +1,133 @@
+<?xml version="1.0"?>
+<APML xmlns="http://www.apml.org/apml-0.6" version="0.6" >
+<Head>
+   <Title>Taste for last.fm user Phocion55</Title>
+   <Generator>Created by TasteBroker.org </Generator>
+   <DateCreated>2008-01-13T16:53:52Z</DateCreated>
+</Head>
+<Body defaultprofile="music">
+    <Profile name="music">
+        <ImplicitData>
+            <Concepts>
+                <Concept key="rock" value="1.0" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="Power metal" value="0.7613355" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="seen live" value="0.73397064" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="alternative" value="0.64450467" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="metal" value="0.528646" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="symphonic metal" value="0.4856406" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="Progressive metal" value="0.44079897" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="indie" value="0.3949299" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="alternative rock" value="0.2764523" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="Progressive rock" value="0.2483455" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="classic rock" value="0.24269381" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="punk" value="0.22916773" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="comedy" value="0.1845048" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="indie rock" value="0.18049067" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="Classical" value="0.17878307" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="punk rock" value="0.16629387" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="christmas" value="0.16178507" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="pop" value="0.1565391" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="finnish" value="0.15443495" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="heavy metal" value="0.14094135" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="melodic metal" value="0.13382968" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="hard rock" value="0.11856511" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="Gothic Metal" value="0.11382807" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="emo" value="0.11038648" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="instrumental" value="0.10981068" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="electronic" value="0.10948271" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="tv" value="0.10208544" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="pop punk" value="0.10054591" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="orchestral" value="0.10029496" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="singer songwriter" value="0.089534536" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="Drum and bass" value="0.08007962" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="sid metal" value="0.07441743" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="tv shows" value="0.074002616" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="Female fronted metal" value="0.07349311" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="american" value="0.06971991" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="trance" value="0.06816558" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="Jam" value="0.06461564" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="male vocalists" value="0.06455982" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="britpop" value="0.062219586" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="acoustic" value="0.057513166" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="favorites" value="0.057141513" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="dance" value="0.055233393" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="Progressive" value="0.054252032" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="folk" value="0.052709285" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="indie pop" value="0.052322008" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="jam band" value="0.05193917" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="british" value="0.05093136" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="Gothic" value="0.048817657" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="Grunge" value="0.04872493" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="electronica" value="0.04635157" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="80s" value="0.044944376" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="90s" value="0.04297004" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="female vocalists" value="0.0419709" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="psychedelic" value="0.03814974" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="techno" value="0.03793488" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="americans improving british comedy" value="0.037001308" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="Hip Hop" value="0.03356081" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="close harmony" value="0.03277155" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="Soundtrack" value="0.032679074" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="hardcore" value="0.03266415" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="Symphonic Rock" value="0.03206144" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="pop rock" value="0.0316387" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+            </Concepts>
+        </ImplicitData>
+        <ExplicitData>
+            <Concepts>
+                <Concept key="Sonata Arctica" value="1.0" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="Trans Siberian Orchestra" value="0.9616788" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="Nightwish" value="0.6587591" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="Guster" value="0.56569344" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="DragonForce" value="0.44343066" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="The Office" value="0.40693432" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="Kamelot" value="0.37226278" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="Blink 182" value="0.32664233" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="It s Always Sunny in Philadelphia" value="0.28284672" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="Machinae Supremacy" value="0.25182483" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="Rhapsody" value="0.229927" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="Stratovarius" value="0.22445256" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="API" value="0.22262774" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="Symphony X" value="0.21715328" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="Blue October" value="0.20985402" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="Phish" value="0.20072992" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="The Moody Blues" value="0.1970803" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="Coldplay" value="0.19343066" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="MGMT" value="0.17883211" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="Velvet Revolver" value="0.17153284" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="Blind Guardian" value="0.16788322" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="The Killers" value="0.15875912" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="Jimmy Buffett" value="0.1569343" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="Gorillaz" value="0.1459854" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="Snow Patrol" value="0.14233577" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="Modest Mouse" value="0.1350365" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="Live" value="0.12773722" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="Screeching Weasel" value="0.12591241" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="Warren Zevon" value="0.11131387" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="Muse" value="0.10948905" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="Collective Soul" value="0.107664235" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="Tom Petty" value="0.107664235" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="Stone Temple Pilots" value="0.10218978" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="Gabry Ponte" value="0.09854015" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="dj Nate" value="0.09671533" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="Good Charlotte" value="0.091240875" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="30 Seconds to Mars" value="0.08759124" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="Electric Light Orchestra" value="0.08576642" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="Savatage" value="0.08576642" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="Elvis Costello" value="0.08029197" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="Nickel Creek" value="0.08029197" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="Cheap Trick" value="0.08029197" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="The Fray" value="0.07846715" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="My Chemical Romance" value="0.076642334" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="Rancid" value="0.076642334" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="cornandbeans" value="0.071167886" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="Bob Sinclar" value="0.071167886" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="Poco" value="0.06751825" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="The All American Rejects" value="0.06751825" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+                <Concept key="R E M" value="0.06751825" from="tastebroker.org" updated="2008-01-13T16:53:52Z" />
+            </Concepts>
+        </ExplicitData>
+    </Profile>
+</Body>
+</APML>
+
