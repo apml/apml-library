@@ -30,6 +30,21 @@ public class Head
 	private String DateCreated = null;
 	
 	public Head(){}
+	
+	/**
+	 * Constructor
+	 * @param title The title of the APML list
+	 * @param generator The name of the generating application
+	 * @param userEmail The user email address
+	 * @param dateCreated The date created
+	 */
+	public Head(String title, String generator, String userEmail, String dateCreated)
+	{
+		this.Title = title;
+		this.Generator = generator;
+		this.UserEmail = userEmail;
+		this.DateCreated = dateCreated;
+	}
 
 	public String getTitle() {
 		return Title;
