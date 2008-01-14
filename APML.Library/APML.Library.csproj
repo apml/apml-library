@@ -95,9 +95,6 @@
     <Compile Include="ReadOnlyDictionary.cs" />
     <Compile Include="Utilities\XmlHelper.cs" />
     <Compile Include="IImplicitAttention.cs" />
-    <Compile Include="XmlWrappers\Common\APMLFileBase.cs" />
-    <Compile Include="XmlWrappers\Common\XmlAPMLComponentBase.cs" />
-    <Compile Include="XmlWrappers\Common\XmlWrapperBase.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
