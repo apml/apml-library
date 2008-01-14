@@ -55,7 +55,7 @@ public class APMLTools
 	 * @param email
 	 * @return The MD5 hash of the user's email
 	 */
-	public String userEmailMD5(String email)
+	public static String userEmailMD5(String email)
 	{        
 		byte[] bytes = email.getBytes();
 		byte mDigest[] = null;

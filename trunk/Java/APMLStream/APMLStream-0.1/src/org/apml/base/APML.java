@@ -18,6 +18,8 @@
 
 package org.apml.base;
 
+import org.apml.base.exceptions.ProfileNotFoundException;
+
 /**
  * <p>The Java implementation of the &lt;APML&gt; tag.</p>
  * @author Tim Schultz
@@ -35,8 +37,9 @@ public class APML
 	 * Constructor
 	 * @param version The specified APML spec version
 	 */
-	public APML(String version) {
+	public APML(String version, String xmlns) {
 		this.version = version;
+		this.xmlns = xmlns;
 	}
 
 	public String getVersion() {
@@ -69,5 +72,19 @@ public class APML
 
 	public void setXmlns(String xmlns) {
 		this.xmlns = xmlns;
+	}
+	
+	/**
+	 * Auto-builds a full empty APML object
+	 * @return The instantiated APML file containing empty structures
+	 */
+	public APML createEmptyAPMLContainer() throws ProfileNotFoundException
+	{
+		this.setHead(new Head());
+		this.setBody(new Body());
+		this.getBody().getProfiles().add(new Profile());
+		this.getBody().getDefaultProfile().setExplicitData(new ExplicitData());
+		this.getBody().getDefaultProfile().setImplicitData(new ImplicitData());
+		return this;
 	}
 }
