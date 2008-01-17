@@ -51,6 +51,103 @@ namespace APML.AutoWrapper.Strategies {
           typeof (ReadOnlyDictionary<,>).MakeGenericType(typeof (string), typeof(IList<>).MakeGenericType(GetElementType(pProp))),
           pResult));
     }
+
+    protected override CodeStatement[] GenerateEnumerateForWalk(GenerationContext pContext, PropertyInfo pProp, GenerateHandleItemDelegate pHandleItemDelegate) {
+      CodeExpression cacheRef = MethodHelper.GenerateCacheExpression(pProp);
+
+      // Take a snapshot of all the lists
+      CodeExpression keyColExpr = new CodePropertyReferenceExpression(cacheRef, "Keys");
+      Type keyArrayType = typeof(string[]);
+      CodeVariableDeclarationStatement keyArrDecl = new CodeVariableDeclarationStatement(keyArrayType, "keys",
+        new CodeArrayCreateExpression(keyArrayType, new CodePropertyReferenceExpression(cacheRef, "Count")));
+      CodeVariableReferenceExpression keyArrRefExpr = new CodeVariableReferenceExpression("keys");
+      CodeMethodInvokeExpression copyToArrayExpr =
+        new CodeMethodInvokeExpression(keyColExpr, "CopyTo", keyArrRefExpr, new CodePrimitiveExpression(0));
+
+      CodeVariableReferenceExpression listIndexerExpr = new CodeVariableReferenceExpression("i");
+      CodeIterationStatement iterate = new CodeIterationStatement(
+        new CodeVariableDeclarationStatement(typeof(int), "i", new CodePrimitiveExpression(0)),
+        new CodeBinaryOperatorExpression(listIndexerExpr, CodeBinaryOperatorType.LessThanOrEqual, new CodePropertyReferenceExpression(keyArrRefExpr, "Length")),
+        new CodeAssignStatement(listIndexerExpr, new CodeBinaryOperatorExpression(listIndexerExpr, CodeBinaryOperatorType.Add, new CodePrimitiveExpression(1))));
+      CodeExpression keyExpr = new CodeIndexerExpression(keyArrRefExpr, listIndexerExpr);
+      CodeVariableDeclarationStatement listDecl =
+        new CodeVariableDeclarationStatement(typeof(IList<>).MakeGenericType(GetElementType(pProp)), "list", 
+          new CodeIndexerExpression(cacheRef, keyExpr));
+      CodeExpression listValueRef = new CodeVariableReferenceExpression("list");
+      AutoWrapperKeyAttribute keyAttr = AttributeHelper.GetAttribute<AutoWrapperKeyAttribute>(pProp);
+
+      CodeVariableReferenceExpression itemIndexerExpr = new CodeVariableReferenceExpression("j");
+      CodeIterationStatement childIterate = new CodeIterationStatement(
+        new CodeVariableDeclarationStatement(typeof(int), "j", new CodePrimitiveExpression(0)),
+        new CodeBinaryOperatorExpression(itemIndexerExpr, CodeBinaryOperatorType.LessThanOrEqual, new CodePropertyReferenceExpression(listValueRef, "Count")),
+        new CodeAssignStatement(itemIndexerExpr, new CodeBinaryOperatorExpression(itemIndexerExpr, CodeBinaryOperatorType.Add, new CodePrimitiveExpression(1))));
+      CodeExpression itemValueRef = new CodeIndexerExpression(listValueRef, itemIndexerExpr);
+      iterate.Statements.Add(listDecl);
+      iterate.Statements.Add(childIterate);
+
+      // Remove empty lists
+      CodeConditionStatement emptyCheck = new CodeConditionStatement(
+        new CodeBinaryOperatorExpression(new CodePropertyReferenceExpression(listValueRef, "Count"),
+                                         CodeBinaryOperatorType.LessThanOrEqual, new CodePrimitiveExpression(0)));
+      emptyCheck.TrueStatements.Add(
+        new CodeMethodInvokeExpression(cacheRef, "Remove", keyExpr));
+      iterate.Statements.Add(emptyCheck);
+
+      childIterate.Statements.AddRange(pHandleItemDelegate(
+        itemValueRef,
+        new CodeStatement[] {
+          // Remove from the list, then go back a value in the iteration variable
+          new CodeExpressionStatement(new CodeMethodInvokeExpression(cacheRef, "Remove", new CodePropertyReferenceExpression(itemValueRef, keyAttr.KeyAttribute))),
+          new CodeAssignStatement(itemIndexerExpr, new CodeBinaryOperatorExpression(itemIndexerExpr, CodeBinaryOperatorType.Subtract, new CodePrimitiveExpression(1))),
+        }));
+
+      return new CodeStatement[] { keyArrDecl, new CodeExpressionStatement(copyToArrayExpr), iterate };
+    }
+
+    /*protected override CodeStatement[] GenerateEnumerateForWalk(GenerationContext pContext, PropertyInfo pProp, GenerateHandleItemDelegate pHandleItemDelegate) {
+      CodeExpression cacheRef = MethodHelper.GenerateCacheExpression(pProp);
+
+      // Take a snapshot of all the lists
+      CodeExpression valueListColExpr = new CodePropertyReferenceExpression(cacheRef, "Values");
+      Type listArrayType = typeof (IList<>).MakeGenericType(GetElementType(pProp)).MakeArrayType();
+      CodeVariableDeclarationStatement valueListArrDecl = new CodeVariableDeclarationStatement(listArrayType, "valueLists",
+        new CodeArrayCreateExpression(listArrayType, new CodePropertyReferenceExpression(cacheRef, "Count")));
+      CodeVariableReferenceExpression valueListArrRefExpr = new CodeVariableReferenceExpression("valueLists");
+      CodeMethodInvokeExpression copyToArrayExpr =
+        new CodeMethodInvokeExpression(valueListColExpr, "CopyTo", valueListArrRefExpr, new CodePrimitiveExpression(0));
+
+      CodeVariableReferenceExpression listIndexerExpr = new CodeVariableReferenceExpression("i");
+      CodeIterationStatement iterate = new CodeIterationStatement(
+        new CodeVariableDeclarationStatement(typeof(int), "i", new CodePrimitiveExpression(0)),
+        new CodeBinaryOperatorExpression(listIndexerExpr, CodeBinaryOperatorType.LessThanOrEqual, new CodePropertyReferenceExpression(valueListArrRefExpr, "Length")),
+        new CodeAssignStatement(listIndexerExpr, new CodeBinaryOperatorExpression(listIndexerExpr, CodeBinaryOperatorType.Add, new CodePrimitiveExpression(1))));
+      CodeExpression listValueRef = new CodeIndexerExpression(valueListArrRefExpr, listIndexerExpr);
+      AutoWrapperKeyAttribute keyAttr = AttributeHelper.GetAttribute<AutoWrapperKeyAttribute>(pProp);
+
+      CodeVariableReferenceExpression itemIndexerExpr = new CodeVariableReferenceExpression("j");
+      CodeIterationStatement childIterate = new CodeIterationStatement(
+        new CodeVariableDeclarationStatement(typeof(int), "j", new CodePrimitiveExpression(0)),
+        new CodeBinaryOperatorExpression(itemIndexerExpr, CodeBinaryOperatorType.LessThanOrEqual, new CodePropertyReferenceExpression(listValueRef, "Count")),
+        new CodeAssignStatement(itemIndexerExpr, new CodeBinaryOperatorExpression(itemIndexerExpr, CodeBinaryOperatorType.Add, new CodePrimitiveExpression(1))));
+      CodeExpression itemValueRef = new CodeIndexerExpression(listValueRef, itemIndexerExpr);
+      iterate.Statements.Add(childIterate);
+      
+      // TODO: Remove empty lists - this will require knowing the key, which this code currently doesn't let us know
+      CodeConditionStatement emptyCheck = new CodeConditionStatement(
+        new CodeBinaryOperatorExpression(new CodePropertyReferenceExpression(listValueRef, "Count"),
+                                         CodeBinaryOperatorType.LessThanOrEqual, new CodePrimitiveExpression(0)));
+
+
+      childIterate.Statements.AddRange(pHandleItemDelegate(
+        itemValueRef,
+        new CodeStatement[] {
+          // Remove from the list, then go back a value in the iteration variable
+          new CodeExpressionStatement(new CodeMethodInvokeExpression(cacheRef, "Remove", new CodePropertyReferenceExpression(itemValueRef, keyAttr.KeyAttribute))),
+          new CodeAssignStatement(itemIndexerExpr, new CodeBinaryOperatorExpression(itemIndexerExpr, CodeBinaryOperatorType.Subtract, new CodePrimitiveExpression(1))),
+        }));
+
+      return new CodeStatement[] { valueListArrDecl, new CodeExpressionStatement(copyToArrayExpr), iterate };
+    }*/
     #endregion
   }
 }

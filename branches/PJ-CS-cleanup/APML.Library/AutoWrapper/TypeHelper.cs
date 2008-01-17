@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
@@ -16,7 +17,7 @@ namespace APML.AutoWrapper {
     /// <param name="pType">the type to check</param>
     /// <returns>true - the type is nullable</returns>
     public static bool IsNullable(Type pType) {
-      return pType.IsGenericType && pType.GetGenericTypeDefinition() == typeof (Nullable<>);
+      return pType.IsGenericType && pType.GetGenericTypeDefinition() == typeof(Nullable<>);
     }
 
     /// <summary>
@@ -46,6 +47,36 @@ namespace APML.AutoWrapper {
           yield return prop;
         }
       }
+    }
+
+    /// <summary>
+    /// Retrieves the element type for the given type.
+    /// </summary>
+    /// <param name="pType">the type to find the element type for</param>
+    /// <returns>the element type</returns>
+    public static Type GetElementType(Type pType) {
+      if (!pType.IsInterface) {
+        return pType;
+      }
+      if (!typeof(IEnumerable).IsAssignableFrom(pType)) {
+        return pType;
+      }
+      if (pType.IsGenericType) {
+        if (typeof(IList<>).IsAssignableFrom(pType.GetGenericTypeDefinition())) {
+          return pType.GetGenericArguments()[0];
+        }
+        if (typeof(IReadOnlyDictionary<,>).IsAssignableFrom(pType.GetGenericTypeDefinition())) {
+          if (!typeof(IEnumerable).IsAssignableFrom(pType.GetGenericArguments()[1])) {
+            return pType.GetGenericArguments()[1];
+          }
+          if (pType.GetGenericArguments()[1].IsGenericType &&
+              typeof(IList<>).IsAssignableFrom(pType.GetGenericArguments()[1].GetGenericTypeDefinition())) {
+            return pType.GetGenericArguments()[1].GetGenericArguments()[0];
+          }
+        }
+      }
+
+      throw new ArgumentException("Cannot get Element type for " + pType.FullName);
     }
   }
 }

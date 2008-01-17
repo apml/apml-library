@@ -49,26 +49,30 @@ namespace APML.AutoWrapper.Strategies {
       }
 
       // Add our various default support methods
-      MethodHelper.GenerateBaseInitMethod(pProp, pClass);
+      MethodHelper.GenerateBaseInitMethod(pProp, pClass, true, 
+        delegate (CodeExpression storeExpr) {
+          return new CodeStatement[] {
+                                       GetCacheAssignStatement(pContext, pProp, storeExpr)
+                                     };
+        });
       MethodHelper.GenerateClearMethod(pProp, pClass);
     }
     #endregion
 
-    private CodeStatement[] GetComplexElementStrategy(GenerationContext context, PropertyInfo prop) {
-      CodeExpression cacheRef = MethodHelper.GenerateCacheExpression(prop);
-      CodeStatement cacheTest = MethodHelper.GenerateCheckCacheAndReturnValue(prop, cacheRef);
+    private CodeStatement[] GetComplexElementStrategy(GenerationContext pContext, PropertyInfo pProp) {
+      CodeExpression cacheRef = MethodHelper.GenerateCacheExpression(pProp);
+      CodeStatement cacheTest = MethodHelper.GenerateCheckCacheAndReturnValue(pProp, cacheRef);
 
       CodeMethodInvokeExpression findElementInvoke = new CodeMethodInvokeExpression(
         new CodeThisReferenceExpression(), "FindElement",
-        new CodePrimitiveExpression(AttributeHelper.SelectXmlElementName(prop)),
-        new CodePrimitiveExpression(AttributeHelper.SelectXmlElementNamespace(prop)),
+        new CodePrimitiveExpression(AttributeHelper.SelectXmlElementName(pProp)),
+        new CodePrimitiveExpression(AttributeHelper.SelectXmlElementNamespace(pProp)),
         new CodePrimitiveExpression(false));
       CodeVariableDeclarationStatement elementDecl = new CodeVariableDeclarationStatement(
         typeof(XmlElement), "element", findElementInvoke);
-      CodeExpression createWrapper =
-        CreateCreateObjectExpression(context, prop.PropertyType, new CodeVariableReferenceExpression("element"));
+      CodeStatement cacheAssignStmt = GetCacheAssignStatement(pContext, pProp, new CodeVariableReferenceExpression("element"));
       CodeMethodReturnStatement returnNullStmt = new CodeMethodReturnStatement(new CodePrimitiveExpression(null));
-      CodeAssignStatement cacheAssignStmt = new CodeAssignStatement(cacheRef, createWrapper);
+      
       CodeMethodReturnStatement returnWrapperStmt = new CodeMethodReturnStatement(cacheRef);
       CodeConditionStatement checkElementStmt = new CodeConditionStatement(
         new CodeBinaryOperatorExpression(
@@ -79,6 +83,14 @@ namespace APML.AutoWrapper.Strategies {
         new CodeStatement[] { returnNullStmt });
 
       return new CodeStatement[] { cacheTest, elementDecl, checkElementStmt };
+    }
+
+    private CodeStatement GetCacheAssignStatement(GenerationContext pContext, PropertyInfo pProp, CodeExpression pValExpr) {
+      CodeExpression cacheRef = MethodHelper.GenerateCacheExpression(pProp);
+      CodeExpression createWrapper =
+        CreateCreateObjectExpression(pContext, pProp.PropertyType, pValExpr);
+
+      return new CodeAssignStatement(cacheRef, createWrapper);
     }
   }
 }

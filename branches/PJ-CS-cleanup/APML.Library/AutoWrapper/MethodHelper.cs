@@ -34,17 +34,31 @@ namespace APML.AutoWrapper {
     ///<param name="pProp">the property this init method is related to</param>
     ///<param name="pClass">the class being generated</param>
     public static void GenerateBaseInitMethod(PropertyInfo pProp, CodeTypeDeclaration pClass) {
+      GenerateBaseInitMethod(pProp, pClass, false, null);
+    }
+
+    ///<summary>
+    /// Generate a method for initialising an element.
+    ///</summary>
+    ///<param name="pProp">the property this init method is related to</param>
+    ///<param name="pClass">the class being generated</param>
+    ///<param name="pShouldInitCache">whether the method should init the cache</param>
+    ///<param name="pStoreDelegate">delegate for storing into the cache</param>
+    public static void GenerateBaseInitMethod(PropertyInfo pProp, CodeTypeDeclaration pClass, bool pShouldInitCache, GenerateCacheStoreDelegate pStoreDelegate) {
       CodeMemberMethod method = new CodeMemberMethod();
       method.Name = "Init" + pProp.Name;
       method.Attributes = MemberAttributes.Family;
-      method.ReturnType = new CodeTypeReference(typeof (XmlElement));
-      method.Statements.Add(
-        new CodeMethodReturnStatement(
-          new CodeMethodInvokeExpression(
-            new CodeBaseReferenceExpression(),
-            "InitElement",
-            new CodePrimitiveExpression(AttributeHelper.SelectXmlElementName(pProp)),
-            new CodePrimitiveExpression(AttributeHelper.SelectXmlElementNamespace(pProp)))));
+
+      CodeMethodInvokeExpression initInvoke = new CodeMethodInvokeExpression(
+        new CodeBaseReferenceExpression(),
+        "InitElement",
+        new CodePrimitiveExpression(AttributeHelper.SelectXmlElementName(pProp)),
+        new CodePrimitiveExpression(AttributeHelper.SelectXmlElementNamespace(pProp)));
+      if (pShouldInitCache) {
+        method.Statements.AddRange(pStoreDelegate(initInvoke));
+      } else {
+        method.Statements.Add(initInvoke);
+      }
       pClass.Members.Add(method);
     }
 
@@ -83,24 +97,50 @@ namespace APML.AutoWrapper {
     /// <returns>the statements to use</returns>
     /// <param name="pTarget">the target object for the assignments</param>
     public static CodeStatement[] GeneratePropertyApplications(MethodInfo pMethod, Type pPropertyType, CodeExpression pTarget) {
-      List<CodeStatement> result = new List<CodeStatement>();
+      ParameterInfo[] methodParams = pMethod.GetParameters();
+      CodeStatement[] result = new CodeStatement[methodParams.Length];
+      PropertyInfo[] paramProps = MatchPropertiesForParams(pMethod, pPropertyType);
 
       // For each parameter, find a property that matches
-      foreach (ParameterInfo param in pMethod.GetParameters()) {
+      for (int i = 0; i < result.Length; ++i) {
+        // We've found the property that we want
+        result[i] = new CodeAssignStatement(
+          new CodePropertyReferenceExpression(
+            pTarget,
+            paramProps[i].Name),
+          new CodeVariableReferenceExpression(methodParams[i].Name));
+      }
+
+      return result;
+    }
+
+    /// <summary>
+    /// Finds the relevant properties for the parameters in the given method.
+    /// </summary>
+    /// <param name="pMethod">the method the parameters should be matched for</param>
+    /// <param name="pPropertyType">the type of the property the method is working with</param>
+    /// <returns>the relevant properties</returns>
+    public static PropertyInfo[] MatchPropertiesForParams(MethodInfo pMethod, Type pPropertyType) {
+      ParameterInfo[] methodParams = pMethod.GetParameters();
+      PropertyInfo[] result = new PropertyInfo[methodParams.Length];
+
+      // For each parameter, find a property that matches
+      for (int i = 0; i < methodParams.Length; ++i) {
         foreach (PropertyInfo childProp in TypeHelper.GetAllProperties(pPropertyType)) {
-          if (childProp.Name.ToLower() == param.Name.ToLower()) {
-            // We've found the property that we want
-            CodeAssignStatement assign = new CodeAssignStatement(
-              new CodePropertyReferenceExpression(
-                pTarget,
-                childProp.Name),
-              new CodeVariableReferenceExpression(param.Name));
-            result.Add(assign);
+          if (childProp.Name.ToLower() == methodParams[i].Name.ToLower()) {
+            result[i] = childProp;
+            break;
           }
+        }
+
+        if (result[i] == null) {
+          throw new ArgumentException(methodParams[i].Name + " in " + pMethod.DeclaringType.FullName + "." +
+                                      pMethod.Name + " could not be matched with a property in " +
+                                      pPropertyType.FullName);
         }
       }
 
-      return result.ToArray();
+      return result;
     }
 
     ///<summary>
@@ -300,4 +340,11 @@ namespace APML.AutoWrapper {
   /// <param name="pStoreVariable">a variable containing the variable to be stored</param>
   /// <returns></returns>
   public delegate CodeExpression GenerateValueStoreDelegate(Type pStoreType, CodeExpression pStoreVariable);
+
+  /// <summary>
+  /// Delegate that provides the code to store a given expression into the cache.
+  /// </summary>
+  /// <param name="pStoreExpr">the expression that generates the value to be stored</param>
+  /// <returns>the statements performing the store</returns>
+  public delegate CodeStatement[] GenerateCacheStoreDelegate(CodeExpression pStoreExpr);
 }
