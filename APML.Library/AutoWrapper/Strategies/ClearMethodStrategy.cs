@@ -48,6 +48,9 @@ namespace APML.AutoWrapper.Strategies {
 //      AutoWrapperKeyAttribute keyAttr = AttributeHelper.GetAttribute<AutoWrapperKeyAttribute>(prop);
       ParameterInfo[] clearParams = pMethod.GetParameters();
 
+      // Ensure that the cache is built
+      pGeneratedMethod.Statements.Add(new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), "EnsureCacheFor" + prop.Name));
+       
       // Generate our support method
       Type elementType = TypeHelper.GetElementType(prop.PropertyType);
       CodeMemberMethod checkMethod = new CodeMemberMethod();
