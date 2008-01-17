@@ -50,6 +50,26 @@ namespace APML.AutoWrapper.Strategies {
     protected override CodeStatement GetConvertedResultStoreStatement(GenerationContext pContext, CodeExpression pResult, CodeExpression pPosition, CodeExpression pConverted) {
       return new CodeExpressionStatement(new CodeMethodInvokeExpression(pResult, "Add", pConverted));
     }
+
+    protected override CodeStatement[] GenerateEnumerateForWalk(GenerationContext pContext, PropertyInfo pProp, GenerateHandleItemDelegate pHandleItemDelegate) {
+      CodeExpression cacheRef = MethodHelper.GenerateCacheExpression(pProp);
+
+      CodeVariableReferenceExpression indexerExpr = new CodeVariableReferenceExpression("i");
+      CodeIterationStatement iterate = new CodeIterationStatement(
+        new CodeVariableDeclarationStatement(typeof(int), "i", new CodePrimitiveExpression(0)),
+        new CodeBinaryOperatorExpression(indexerExpr, CodeBinaryOperatorType.LessThanOrEqual, new CodePropertyReferenceExpression(cacheRef, "Count")),
+        new CodeAssignStatement(indexerExpr, new CodeBinaryOperatorExpression(indexerExpr, CodeBinaryOperatorType.Add, new CodePrimitiveExpression(1))));
+
+      iterate.Statements.AddRange(pHandleItemDelegate(
+        new CodeIndexerExpression(cacheRef, indexerExpr),
+        new CodeStatement[] {
+          new CodeExpressionStatement(new CodeMethodInvokeExpression(cacheRef, "RemoveAt", indexerExpr)),
+          new CodeAssignStatement(indexerExpr, new CodeBinaryOperatorExpression(indexerExpr, CodeBinaryOperatorType.Subtract, new CodePrimitiveExpression(1))),
+//          new CodeThrowExceptionStatement(new CodeObjectCreateExpression(typeof(NotImplementedException)))
+        }));
+
+      return new CodeStatement[] {iterate};
+    }
     #endregion
   }
 }

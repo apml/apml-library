@@ -202,6 +202,24 @@ namespace APML.AutoWrapper {
     }
 
     /// <summary>
+    /// Removes all child nodes where the given attributes have the given values.
+    /// </summary>
+    /// <remarks>
+    /// If no attribute names are specified, then all children will be removed.
+    /// </remarks>
+    /// <param name="pContainerName">the name of the container for the children, or null if there is no container</param>
+    /// <param name="pContainerNamespace">the namespace for the container of the children, or null if there is no container/namespace</param>
+    /// <param name="pElName">the element names that should be removed</param>
+    /// <param name="pElNamespace">the namespace of the element to be removed</param>
+    /// <param name="pAttributeNames">the names of the attributes to match</param>
+    /// <param name="pAttributeValues">the values of the attributes to match</param>
+    protected void RemoveByAttributes(string pContainerName, string pContainerNamespace, string pElName, string pElNamespace, string[] pAttributeNames, string[] pAttributeValues) {
+      XmlElement container = pContainerName != null ? FindElement(pContainerName, pContainerNamespace, true) : mElement;
+
+      // TODO: Finish
+    }
+
+    /// <summary>
     /// Compares a node namespace and an expected namespace.
     /// </summary>
     /// <param name="pNodeNamespace">the namespace of the declared node</param>

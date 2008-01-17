@@ -58,6 +58,26 @@ namespace APML.AutoWrapper.Strategies {
     protected override bool HasUpdateableCache {
       get { return false; }
     }
+
+    protected override CodeStatement[] GenerateEnumerateForWalk(GenerationContext pContext, PropertyInfo pProp, GenerateHandleItemDelegate pHandleItemDelegate) {
+      CodeExpression cacheRef = MethodHelper.GenerateCacheExpression(pProp);
+
+      CodeVariableReferenceExpression indexerExpr = new CodeVariableReferenceExpression("i");
+      CodeIterationStatement iterate = new CodeIterationStatement(
+        new CodeVariableDeclarationStatement(typeof(int), "i", new CodePrimitiveExpression(0)),
+        new CodeBinaryOperatorExpression(indexerExpr, CodeBinaryOperatorType.LessThanOrEqual, new CodePropertyReferenceExpression(cacheRef, "Length")),
+        new CodeAssignStatement(indexerExpr, new CodeBinaryOperatorExpression(indexerExpr, CodeBinaryOperatorType.Add, new CodePrimitiveExpression(1))));
+
+      iterate.Statements.AddRange(pHandleItemDelegate(
+        new CodeIndexerExpression(cacheRef, indexerExpr),
+        new CodeStatement[] {
+          // TODO: Add remove code!
+          // No need to backtrack, as we've taken a static snapshot in the array
+//          new CodeThrowExceptionStatement(new CodeObjectCreateExpression(typeof(NotImplementedException)))
+        }));
+
+      return new CodeStatement[] { iterate };
+    }
     #endregion
   }
 }

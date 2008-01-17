@@ -49,7 +49,7 @@ namespace APML.AutoWrapper.Strategies {
       // Generate the default support methods
       GenerateAddMethod(pContext, pProp, pClass);
       GenerateInitMethod(pContext, pProp, pClass);
-      GenerateRemoveMethod();
+      GenerateRemoveMethodFramework(pContext, pProp, pClass);
     }
 
     /// <summary>
@@ -313,8 +313,63 @@ namespace APML.AutoWrapper.Strategies {
     /// <summary>
     /// Generates the method to remove elements.
     /// </summary>
-    protected virtual void GenerateRemoveMethod() {
-      // TODO:
+    protected virtual void GenerateRemoveMethodFramework(GenerationContext pContext, PropertyInfo pProp, CodeTypeDeclaration pClass) {
+      // Retrieve the necessary attributes
+      XmlElementAttribute elAttr = AttributeHelper.GetAttribute<XmlElementAttribute>(pProp);
+      XmlArrayAttribute arrAttr = AttributeHelper.GetAttribute<XmlArrayAttribute>(pProp);
+      XmlArrayItemAttribute arrItemAttr = AttributeHelper.GetAttribute<XmlArrayItemAttribute>(pProp);
+
+      CodeTypeDelegate delegateDecl = new CodeTypeDelegate(pProp.Name + "WalkCallbackDelegate");
+      delegateDecl.ReturnType = new CodeTypeReference(typeof (bool));
+      delegateDecl.Parameters.Add(new CodeParameterDeclarationExpression(GetElementType(pProp), "item"));
+      pClass.Members.Add(delegateDecl);
+
+      // Start building the method
+      CodeMemberMethod removeMethod = new CodeMemberMethod();
+      removeMethod.Attributes = MemberAttributes.Public;
+      removeMethod.Name = "Walk" + pProp.Name;
+      removeMethod.Parameters.Add(new CodeParameterDeclarationExpression(delegateDecl.Name, "checkDelegate"));
+
+      removeMethod.Statements.AddRange(
+        GenerateEnumerateForWalk(
+          pContext, pProp,
+          delegate(CodeExpression pItemExpr, CodeStatement[] pRemoveStatements) {
+            CodeConditionStatement condition = new CodeConditionStatement(new CodeDelegateInvokeExpression(new CodeVariableReferenceExpression("checkDelegate"), pItemExpr));
+            
+            // Add the node removal statement
+            CodeVariableDeclarationStatement nodeDecl = new CodeVariableDeclarationStatement(typeof(XmlNode), "xmlNode", 
+              new CodePropertyReferenceExpression(new CodeCastExpression(typeof (AutoWrapperBase), pItemExpr), "Node"));
+            CodeExpression nodeExpr = new CodeVariableReferenceExpression("xmlNode");
+            CodeMethodInvokeExpression removeInvoke = new CodeMethodInvokeExpression(
+              new CodePropertyReferenceExpression(nodeExpr, "ParentNode"), "RemoveChild", nodeExpr);
+            condition.TrueStatements.Add(nodeDecl);
+            condition.TrueStatements.Add(removeInvoke);
+            
+            // Add the passed remove statements
+            condition.TrueStatements.AddRange(pRemoveStatements);
+            
+            return new CodeStatement[] { condition };
+          }));
+
+      pClass.Members.Add(removeMethod);
     }
+
+    /// <summary>
+    /// Method to be implemented by subclasses that allows enumeration of all elements for the given property, and the ability to remove those
+    /// elements.
+    /// </summary>
+    /// <param name="pContext">the generation context</param>
+    /// <param name="pProp">the property being generated</param>
+    /// <param name="pHandleItemDelegate">the delegate to be called to check and action the removal</param>
+    /// <returns></returns>
+    protected abstract CodeStatement[] GenerateEnumerateForWalk(GenerationContext pContext, PropertyInfo pProp, GenerateHandleItemDelegate pHandleItemDelegate); //{
   }
+
+  /// <summary>
+  /// Delegate used to handle generating code to handle a given item.
+  /// </summary>
+  /// <param name="pItemExpr">the expression that provides the item</param>
+  /// <param name="pRemoveStatements">statements to be used to remove the given item</param>
+  /// <returns>the item</returns>
+  public delegate CodeStatement[] GenerateHandleItemDelegate(CodeExpression pItemExpr, CodeStatement[] pRemoveStatements);
 }

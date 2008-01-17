@@ -67,6 +67,40 @@ namespace APML.AutoWrapper.Strategies {
         new CodeAssignStatement(new CodePropertyReferenceExpression(pResultExpr, keyAttr.KeyAttribute), new CodeVariableReferenceExpression("p" + keyAttr.KeyAttribute))
                                  };
     }
+
+    protected override CodeStatement[] GenerateEnumerateForWalk(GenerationContext pContext, PropertyInfo pProp, GenerateHandleItemDelegate pHandleItemDelegate) {
+      CodeExpression cacheRef = MethodHelper.GenerateCacheExpression(pProp);
+
+      CodeVariableDeclarationStatement valueColDecl =
+        new CodeVariableDeclarationStatement(typeof (ICollection<>).MakeGenericType(GetElementType(pProp)), "valuesCol",
+                                             new CodePropertyReferenceExpression(cacheRef, "Values"));
+      CodeVariableReferenceExpression valuesColRef = new CodeVariableReferenceExpression("valuesCol");
+      CodeVariableDeclarationStatement valueArrDecl = new CodeVariableDeclarationStatement(GetElementType(pProp).MakeArrayType(), "values",
+        new CodeArrayCreateExpression(GetElementType(pProp).MakeArrayType(), new CodePropertyReferenceExpression(valuesColRef, "Count")));
+      CodeVariableReferenceExpression valueArrRefExpr = new CodeVariableReferenceExpression("values");
+      CodeMethodInvokeExpression copyToArrayExpr =
+        new CodeMethodInvokeExpression(valuesColRef, "CopyTo", valueArrRefExpr, new CodePrimitiveExpression(0));
+
+      CodeVariableReferenceExpression indexerExpr = new CodeVariableReferenceExpression("i");
+      
+      CodeIterationStatement iterate = new CodeIterationStatement(
+        new CodeVariableDeclarationStatement(typeof(int), "i", new CodePrimitiveExpression(0)),
+        new CodeBinaryOperatorExpression(indexerExpr, CodeBinaryOperatorType.LessThanOrEqual, new CodePropertyReferenceExpression(valueArrRefExpr, "Length")),
+        new CodeAssignStatement(indexerExpr, new CodeBinaryOperatorExpression(indexerExpr, CodeBinaryOperatorType.Add, new CodePrimitiveExpression(1))));
+      CodeExpression valueRef = new CodeIndexerExpression(valueArrRefExpr, indexerExpr);
+
+      AutoWrapperKeyAttribute keyAttr = AttributeHelper.GetAttribute<AutoWrapperKeyAttribute>(pProp);
+
+      iterate.Statements.AddRange(pHandleItemDelegate(
+        valueRef,
+        new CodeStatement[] {
+          // No need to change indexer, since we took a static snapshot
+
+          new CodeExpressionStatement(new CodeMethodInvokeExpression(cacheRef, "Remove", new CodePropertyReferenceExpression(valueRef, keyAttr.KeyAttribute))),
+        }));
+
+      return new CodeStatement[] { valueColDecl, valueArrDecl, new CodeExpressionStatement(copyToArrayExpr), iterate };
+    }
     #endregion
   }
 }
