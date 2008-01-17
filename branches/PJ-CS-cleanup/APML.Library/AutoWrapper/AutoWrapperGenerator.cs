@@ -110,6 +110,8 @@ namespace APML.AutoWrapper {
       sw.Close();
 #endif
       CompilerParameters compileParams = new CompilerParameters();
+      compileParams.IncludeDebugInformation = true;
+      compileParams.GenerateInMemory = false;
       CompilerResults result = csp.CompileAssemblyFromDom(compileParams, unit);
       if (result.Errors.HasErrors) {
         foreach (CompilerError error in result.Errors) {

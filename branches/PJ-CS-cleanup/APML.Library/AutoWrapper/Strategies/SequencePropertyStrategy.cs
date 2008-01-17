@@ -40,7 +40,7 @@ namespace APML.AutoWrapper.Strategies {
       pClass.Members.Add(MethodHelper.GenerateCacheField(pProp, GetResultType(pProp)));
 
       if (pProp.CanRead) {
-        pGeneratedProp.GetStatements.AddRange(GetSequenceListStrategy(pContext, pProp));
+        pGeneratedProp.GetStatements.AddRange(GetSequenceListStrategy(pContext, pProp, pClass));
       }
       if (pProp.CanWrite) {
         throw new ArgumentException("Setters are not supported on sequence list elements");
@@ -58,16 +58,21 @@ namespace APML.AutoWrapper.Strategies {
     /// <param name="pContext">context of the generation</param>
     /// <param name="pProp">the property being generated</param>
     /// <returns>the result</returns>
-    protected CodeStatement[] GetSequenceListStrategy(GenerationContext pContext, PropertyInfo pProp) {
+    protected CodeStatement[] GetSequenceListStrategy(GenerationContext pContext, PropertyInfo pProp, CodeTypeDeclaration pClass) {
       // Retrieve the necessary attributes
       XmlElementAttribute elAttr = AttributeHelper.GetAttribute<XmlElementAttribute>(pProp);
       XmlArrayAttribute arrAttr = AttributeHelper.GetAttribute<XmlArrayAttribute>(pProp);
       XmlArrayItemAttribute arrItemAttr = AttributeHelper.GetAttribute<XmlArrayItemAttribute>(pProp);
 
-      // Check for the cache
+      // Generate the EnsureCache method
+      CodeMemberMethod ensureCacheMethod = new CodeMemberMethod();
+      ensureCacheMethod.Name = "EnsureCacheFor" + pProp.Name;
+      ensureCacheMethod.Attributes = MemberAttributes.Private;
+
+      // Check for the cache already existing
       CodeExpression cacheRef = MethodHelper.GenerateCacheExpression(pProp);
       CodeStatement cacheCheck =
-        MethodHelper.GenerateCheckCacheAndReturnValue(pProp, cacheRef, GetReturnStatement(pContext, pProp, cacheRef));
+        MethodHelper.GenerateCacheGuardedStatements(pProp, cacheRef, new CodeMethodReturnStatement());
 
       // Build the get method
       CodeMethodInvokeExpression getElementsInvoke;
@@ -111,11 +116,23 @@ namespace APML.AutoWrapper.Strategies {
             GetElementType(pProp), 
             new CodeArrayIndexerExpression(new CodeVariableReferenceExpression("elements"), new CodeVariableReferenceExpression("i")))));
       
+      // Build the content of the Ensure method
+      ensureCacheMethod.Statements.Add(cacheCheck);
+      ensureCacheMethod.Statements.Add(elementsDecl);
+      ensureCacheMethod.Statements.Add(resultDecl);
+      ensureCacheMethod.Statements.Add(conversionIt);
+
+      // Add the ensure cache method to the type
+      pClass.Members.Add(ensureCacheMethod);
+
+      // Generate the ensure cache call
+      CodeMethodInvokeExpression methodInvoke = new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), ensureCacheMethod.Name);
+
       // Return the result
       CodeMethodReturnStatement returnResultStmt =
         GetReturnStatement(pContext, pProp, cacheRef);
       
-      return new CodeStatement[] { cacheCheck, elementsDecl, resultDecl, conversionIt, returnResultStmt };
+      return new CodeStatement[] { new CodeExpressionStatement(methodInvoke), returnResultStmt };
     }
 
     /// <summary>
@@ -336,17 +353,19 @@ namespace APML.AutoWrapper.Strategies {
           delegate(CodeExpression pItemExpr, CodeStatement[] pRemoveStatements) {
             CodeConditionStatement condition = new CodeConditionStatement(new CodeDelegateInvokeExpression(new CodeVariableReferenceExpression("checkDelegate"), pItemExpr));
             
-            // Add the node removal statement
+            // Add the node removal preparation statement
             CodeVariableDeclarationStatement nodeDecl = new CodeVariableDeclarationStatement(typeof(XmlNode), "xmlNode", 
               new CodePropertyReferenceExpression(new CodeCastExpression(typeof (AutoWrapperBase), pItemExpr), "Node"));
             CodeExpression nodeExpr = new CodeVariableReferenceExpression("xmlNode");
             CodeMethodInvokeExpression removeInvoke = new CodeMethodInvokeExpression(
               new CodePropertyReferenceExpression(nodeExpr, "ParentNode"), "RemoveChild", nodeExpr);
             condition.TrueStatements.Add(nodeDecl);
-            condition.TrueStatements.Add(removeInvoke);
             
             // Add the passed remove statements
             condition.TrueStatements.AddRange(pRemoveStatements);
+
+            // Add the remove invoke statement
+            condition.TrueStatements.Add(removeInvoke);
             
             return new CodeStatement[] { condition };
           }));

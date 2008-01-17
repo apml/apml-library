@@ -85,7 +85,7 @@ namespace APML.AutoWrapper.Strategies {
       
       CodeIterationStatement iterate = new CodeIterationStatement(
         new CodeVariableDeclarationStatement(typeof(int), "i", new CodePrimitiveExpression(0)),
-        new CodeBinaryOperatorExpression(indexerExpr, CodeBinaryOperatorType.LessThanOrEqual, new CodePropertyReferenceExpression(valueArrRefExpr, "Length")),
+        new CodeBinaryOperatorExpression(indexerExpr, CodeBinaryOperatorType.LessThan, new CodePropertyReferenceExpression(valueArrRefExpr, "Length")),
         new CodeAssignStatement(indexerExpr, new CodeBinaryOperatorExpression(indexerExpr, CodeBinaryOperatorType.Add, new CodePrimitiveExpression(1))));
       CodeExpression valueRef = new CodeIndexerExpression(valueArrRefExpr, indexerExpr);
 

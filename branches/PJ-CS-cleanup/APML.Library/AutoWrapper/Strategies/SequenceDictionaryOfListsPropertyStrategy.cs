@@ -67,7 +67,7 @@ namespace APML.AutoWrapper.Strategies {
       CodeVariableReferenceExpression listIndexerExpr = new CodeVariableReferenceExpression("i");
       CodeIterationStatement iterate = new CodeIterationStatement(
         new CodeVariableDeclarationStatement(typeof(int), "i", new CodePrimitiveExpression(0)),
-        new CodeBinaryOperatorExpression(listIndexerExpr, CodeBinaryOperatorType.LessThanOrEqual, new CodePropertyReferenceExpression(keyArrRefExpr, "Length")),
+        new CodeBinaryOperatorExpression(listIndexerExpr, CodeBinaryOperatorType.LessThan, new CodePropertyReferenceExpression(keyArrRefExpr, "Length")),
         new CodeAssignStatement(listIndexerExpr, new CodeBinaryOperatorExpression(listIndexerExpr, CodeBinaryOperatorType.Add, new CodePrimitiveExpression(1))));
       CodeExpression keyExpr = new CodeIndexerExpression(keyArrRefExpr, listIndexerExpr);
       CodeVariableDeclarationStatement listDecl =
@@ -79,7 +79,7 @@ namespace APML.AutoWrapper.Strategies {
       CodeVariableReferenceExpression itemIndexerExpr = new CodeVariableReferenceExpression("j");
       CodeIterationStatement childIterate = new CodeIterationStatement(
         new CodeVariableDeclarationStatement(typeof(int), "j", new CodePrimitiveExpression(0)),
-        new CodeBinaryOperatorExpression(itemIndexerExpr, CodeBinaryOperatorType.LessThanOrEqual, new CodePropertyReferenceExpression(listValueRef, "Count")),
+        new CodeBinaryOperatorExpression(itemIndexerExpr, CodeBinaryOperatorType.LessThan, new CodePropertyReferenceExpression(listValueRef, "Count")),
         new CodeAssignStatement(itemIndexerExpr, new CodeBinaryOperatorExpression(itemIndexerExpr, CodeBinaryOperatorType.Add, new CodePrimitiveExpression(1))));
       CodeExpression itemValueRef = new CodeIndexerExpression(listValueRef, itemIndexerExpr);
       iterate.Statements.Add(listDecl);
@@ -97,7 +97,7 @@ namespace APML.AutoWrapper.Strategies {
         itemValueRef,
         new CodeStatement[] {
           // Remove from the list, then go back a value in the iteration variable
-          new CodeExpressionStatement(new CodeMethodInvokeExpression(cacheRef, "Remove", new CodePropertyReferenceExpression(itemValueRef, keyAttr.KeyAttribute))),
+          new CodeExpressionStatement(new CodeMethodInvokeExpression(listValueRef, "RemoveAt", itemIndexerExpr)),
           new CodeAssignStatement(itemIndexerExpr, new CodeBinaryOperatorExpression(itemIndexerExpr, CodeBinaryOperatorType.Subtract, new CodePrimitiveExpression(1))),
         }));
 
