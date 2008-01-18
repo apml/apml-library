@@ -288,11 +288,10 @@ namespace APML.AutoWrapper.Strategies {
       
       CodeMethodInvokeExpression addElementInvoke;
       addElementInvoke = new CodeMethodInvokeExpression(
-        new CodeBaseReferenceExpression(), "AddElement",
-        new CodePrimitiveExpression(null),
-        new CodePrimitiveExpression(null),
+        new CodeBaseReferenceExpression(), "FindElement",
         new CodePrimitiveExpression(arrAttr.ElementName),
-        new CodePrimitiveExpression(arrAttr.Namespace));
+        new CodePrimitiveExpression(arrAttr.Namespace),
+        new CodePrimitiveExpression(true));
       initMethod.Statements.Add(addElementInvoke);
 
       pClass.Members.Add(initMethod);
