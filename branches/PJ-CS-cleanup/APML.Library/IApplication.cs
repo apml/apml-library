@@ -20,7 +20,7 @@ namespace APML {
     /// Name of the Application
     /// </summary>
     [XmlAttribute("name")]
-    string Name { get; }
+    string Name { get; set; }
 
     /// <summary>
     /// Returns whether the given item exists.
@@ -28,7 +28,7 @@ namespace APML {
     /// <param name="pElName">the name of the element</param>
     /// <param name="pMatchKey">the key to match</param>
     /// <returns></returns>
-    bool HasItem(string pElName, string pMatchKey);
+//    bool HasItem(string pElName, string pMatchKey);
 
     /// <summary>
     /// Adds an item with the given element name.
@@ -36,33 +36,33 @@ namespace APML {
     /// <param name="pElName">the element name</param>
     /// <param name="pKeyName">the key name for the element</param>
     /// <returns>the created item</returns>
-    IGenericItem AddItem(string pElName, string pKeyName);
+//    IGenericItem AddItem(string pElName, string pKeyName);
 
     /// <summary>
     /// Retrieves the list of available items.
     /// </summary>
-    IReadOnlyDictionary<string, IGenericItem> Items { get; }
+//    IReadOnlyDictionary<string, IGenericItem> Items { get; }
 
     /// <summary>
     /// The xml document owning this application.
     /// </summary>
-    XmlDocument OwnerDocument { get; }
+//    XmlDocument OwnerDocument { get; }
 
     /// <summary>
     /// The child nodes of this application.
     /// </summary>
-    XmlNodeList ChildNodes { get; }
+//    XmlNodeList ChildNodes { get; }
 
     /// <summary>
     /// Adds the given child node.
     /// </summary>
     /// <param name="pChild">the child</param>
-    void AppendChild(XmlNode pChild);
+//    void AppendChild(XmlNode pChild);
 
     /// <summary>
     /// Removes the given child node.
     /// </summary>
     /// <param name="pChild"></param>
-    void RemoveChild(XmlNode pChild);
+//    void RemoveChild(XmlNode pChild);
   }
 }
