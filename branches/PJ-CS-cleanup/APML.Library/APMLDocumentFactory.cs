@@ -22,7 +22,16 @@ using APML.AutoWrapper;
 namespace APML {
   public class APMLDocumentFactory {
     private static string mDefaultApplicationId;
-    private static AutoWrapperGenerator mGenerator = new AutoWrapperGenerator();
+
+    /// <summary>
+    /// The AutoWrapperGenerator used for creating APML wrappers.
+    /// </summary>
+    private static readonly AutoWrapperGenerator sGenerator = new AutoWrapperGenerator();
+
+    /// <summary>
+    /// Lock used to ensure that generator isn't accessed from multiple classes at once.
+    /// </summary>
+    private static object sGeneratorLock = new object();
 
     /// <summary>
     /// The default application id set on documents.
@@ -90,9 +99,11 @@ namespace APML {
       }*/
 
       // For the moment, just return an APMLFile instance
-      IAPMLDocument result = new APMLFile(pFile, doc, created, mGenerator);
-      result.ApplicationID = DefaultApplicationId;
-      return result;
+      lock (sGeneratorLock) {
+        IAPMLDocument result = new APMLFile(pFile, doc, created, sGenerator);
+        result.ApplicationID = DefaultApplicationId;
+        return result;
+      }
     }
 
     /*private static IAPMLDocument UpgradeDocument(IAPMLDocument pOld, params UpgradeOption[] pOptions) {
