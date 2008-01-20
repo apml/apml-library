@@ -48,7 +48,7 @@
             version="true"
             windowTitle="${app.fullname} ${app.version} API"
             doctitle="${app.fullname} ${app.version} API"
-            footer="Tim Schultz and &lt;a href=&quot;http://www.apml.org&quot;&gt;APML.org&lt;/a&gt;"
+            footer="&lt;a href=&quot;http://www.ramandwhiskey.com&quot;&gt;Tim Schultz&lt;/a&gt; and &lt;a href=&quot;http://www.apml.org&quot;&gt;APML.org&lt;/a&gt;"
             use="true"
             verbose="true">
             	<link href="http://java.sun.com/javase/6/docs/api/"/>
