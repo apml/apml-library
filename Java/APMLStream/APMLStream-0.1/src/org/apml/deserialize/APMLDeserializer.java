@@ -20,7 +20,9 @@ package org.apml.deserialize;
 
 import java.io.File;
 import java.net.URL;
-import org.apml.base.APML;
+import org.apml.base.*;
+import org.apml.converters.ApplicationsConverter;
+
 import com.thoughtworks.xstream.XStream;
 
 /**
@@ -30,6 +32,7 @@ import com.thoughtworks.xstream.XStream;
 public class APMLDeserializer
 {
 	private XStream xstream = null;
+    private ApplicationsConverter appConv = null;
 	
 	/**
 	 * Constructor - Sets up the XStream in accordance to APML specs
@@ -38,35 +41,39 @@ public class APMLDeserializer
 	{
 		// Set up the XStream to generate the APML object
 		xstream = new XStream();
-		xstream.alias("APML", org.apml.base.APML.class);
-		xstream.useAttributeFor(org.apml.base.APML.class, "version");
-		xstream.useAttributeFor(org.apml.base.APML.class, "xmlns");
-		xstream.alias("Head", org.apml.base.Head.class);
-		xstream.alias("Body", org.apml.base.Body.class);
-		xstream.useAttributeFor(org.apml.base.Body.class, "defaultprofile");
-		xstream.addImplicitCollection(org.apml.base.Body.class, "Profiles");
-		xstream.alias("Profile", org.apml.base.Profile.class);
-		xstream.useAttributeFor(org.apml.base.Profile.class, "name");
-		xstream.alias("ImplicitData", org.apml.base.ImplicitData.class);
-		xstream.alias("ExplicitData", org.apml.base.ExplicitData.class);
-		xstream.alias("Concept", org.apml.base.Concept.class);
-		xstream.useAttributeFor(org.apml.base.Concept.class, "key");
-		xstream.useAttributeFor(org.apml.base.Concept.class, "value");
-		xstream.useAttributeFor(org.apml.base.Concept.class, "from");
-		xstream.useAttributeFor(org.apml.base.Concept.class, "updated");
-		xstream.alias("Source", org.apml.base.Source.class);
-		xstream.useAttributeFor(org.apml.base.Source.class, "key");
-		xstream.useAttributeFor(org.apml.base.Source.class, "name");
-		xstream.useAttributeFor(org.apml.base.Source.class, "value");
-		xstream.useAttributeFor(org.apml.base.Source.class, "from");
-		xstream.useAttributeFor(org.apml.base.Source.class, "updated");
-		xstream.alias("Author", org.apml.base.Author.class);
-		xstream.useAttributeFor(org.apml.base.Author.class, "key");
-		xstream.useAttributeFor(org.apml.base.Author.class, "value");
-		xstream.useAttributeFor(org.apml.base.Author.class, "from");
-		xstream.useAttributeFor(org.apml.base.Author.class, "updated");
-		xstream.alias("Application", org.apml.base.Application.class);
-		xstream.useAttributeFor(org.apml.base.Application.class, "name");
+		appConv = new ApplicationsConverter(xstream.getMapper());
+		xstream.alias("APML", APML.class);
+		xstream.useAttributeFor(APML.class, "version");
+		xstream.useAttributeFor(APML.class, "xmlns");
+		xstream.alias("Head", Head.class);
+		xstream.alias("Body", Body.class);
+		xstream.useAttributeFor(Body.class, "defaultprofile");
+		xstream.addImplicitCollection(Body.class, "Profiles");
+		xstream.alias("Profile", Profile.class);
+		xstream.useAttributeFor(Profile.class, "name");
+		xstream.alias("ImplicitData", ImplicitData.class);
+		xstream.alias("ExplicitData", ExplicitData.class);
+		xstream.alias("Concept", Concept.class);
+		xstream.useAttributeFor(Concept.class, "key");
+		xstream.useAttributeFor(Concept.class, "value");
+		xstream.useAttributeFor(Concept.class, "from");
+		xstream.useAttributeFor(Concept.class, "updated");
+		xstream.alias("Source", Source.class);
+		xstream.useAttributeFor(Source.class, "key");
+		xstream.useAttributeFor(Source.class, "name");
+		xstream.useAttributeFor(Source.class, "value");
+		xstream.useAttributeFor(Source.class, "from");
+		xstream.useAttributeFor(Source.class, "updated");
+		xstream.alias("Author", Author.class);
+		xstream.useAttributeFor(Author.class, "key");
+		xstream.useAttributeFor(Author.class, "value");
+		xstream.useAttributeFor(Author.class, "from");
+		xstream.useAttributeFor(Author.class, "updated");
+		xstream.registerConverter(appConv);
+		xstream.alias("Applications",Applications.class);
+		xstream.alias("Application", Application.class);
+		//xstream.alias("Application", Application.class);
+		//xstream.useAttributeFor(Application.class, "name");
 	}
 	
 	/**

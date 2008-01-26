@@ -33,7 +33,8 @@ import org.apml.tools.APMLTools;
  * <p>Tests and demos the functionality of the APML serializer and deserializer.</p>
  * @author Tim Schultz
  */
-public class APMLDeserializeTest {
+public class APMLDeserializeTest
+{
 
 	/**
 	 * Simple test to demo and show features
@@ -73,7 +74,7 @@ public class APMLDeserializeTest {
 			System.out.println(myAPML.getBody().getDefaultProfileName());
 			
 			// Get a specific profile
-			Profile p = myAPML.getBody().getProfileByName("music");
+			Profile p = myAPML.getBody().getProfileByName("overall-music");
 			// Or get a default profile
 			Profile defaultP = myAPML.getBody().getDefaultProfile();
 			System.out.println(p.getName());
