@@ -20,7 +20,7 @@ package org.apml.base;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import org.apml.base.Applications;
 import org.apml.base.exceptions.ProfileNotFoundException;
 
 /**
@@ -30,7 +30,7 @@ import org.apml.base.exceptions.ProfileNotFoundException;
 public class Body
 {
 	private String defaultprofile = "";
-	private List<Application> Applications = null;
+	private Applications<Application> Applications = null;
 	private List<Profile> Profiles = null;
 	
 	public Body(){}
@@ -43,7 +43,7 @@ public class Body
 	{
 		this.defaultprofile = defaultProfile;
 		this.Profiles = new ArrayList();
-		this.Applications = new ArrayList();
+		this.Applications = new Applications();
 	}
 
 	public String getDefaultProfileName() {
@@ -55,10 +55,10 @@ public class Body
 	}
 
 	public List<Application> getApplications() {
-		return Applications;
+		return this.Applications;
 	}
 
-	public void setApplications(List<Application> applications) {
+	public void setApplications(Applications<Application> applications) {
 		this.Applications = applications;
 	}
 

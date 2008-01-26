@@ -19,6 +19,7 @@
 package org.apml.serialize;
 
 import org.apml.base.*;
+import org.apml.converters.ApplicationsConverter;
 import com.thoughtworks.xstream.XStream;
 
 /**
@@ -28,6 +29,7 @@ import com.thoughtworks.xstream.XStream;
 public class APMLSerializer
 {
 	private XStream xstream = null;
+	private ApplicationsConverter appConv = null;
 	
 	/**
 	 * Constructor - Sets up the XStream in accordance to APML spec
@@ -35,6 +37,7 @@ public class APMLSerializer
 	public APMLSerializer()
 	{
 		xstream = new XStream();
+		appConv = new ApplicationsConverter(xstream.getMapper());
 		xstream.alias("APML", APML.class);
 		xstream.useAttributeFor(APML.class, "version");
 		xstream.useAttributeFor(APML.class, "xmlns");
@@ -62,8 +65,11 @@ public class APMLSerializer
 		xstream.useAttributeFor(Author.class, "value");
 		xstream.useAttributeFor(Author.class, "from");
 		xstream.useAttributeFor(Author.class, "updated");
+		xstream.registerConverter(appConv);
+		xstream.alias("Applications",Applications.class);
 		xstream.alias("Application", Application.class);
-		xstream.useAttributeFor(Application.class, "name");
+		//xstream.alias("Application", Application.class);
+		//xstream.useAttributeFor(Application.class, "name");
 	}
 	
 	/**
