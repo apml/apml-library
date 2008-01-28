@@ -3,7 +3,7 @@
 Plugin Name: APML support for WordPress
 Plugin URI: http://notizblog.org/projects/apml-for-wordpress/
 Description: This plugin creates an APML Feed using the tags and categories.
-Version: 2.3
+Version: 2.3.3
 Author: Matthias Pfefferle
 Author URI: http://notizblog.org/
 */
@@ -16,20 +16,121 @@ require_once('libs/apml_parser.php');
 if (isset($wp_version)) {
   add_filter('query_vars', array('APML', 'query_vars'));
   add_action('parse_query', array('APML', 'apml_xml'));
+  add_action('widgets_init', array('APML', 'widget_init'));
   add_action('init', array('APML', 'init'));
   add_filter('generate_rewrite_rules', array('APML', 'rewrite_rules'));
   
   add_action('wp_head', array('APML', 'insert_meta_tags'), 5);
-  add_action('widgets_init', array('APML', 'widget_init'));
 }
 
 global $taglist;
 
-// apml class
+/**
+ * APML Class
+ * 
+ */
 class APML {
   function init() {
     global $wp_rewrite;
     $wp_rewrite->flush_rules();
+
+    wp_enqueue_script( 'jquery' );
+    wp_enqueue_script( 'apml', APML::get_path() . '/js/apml.js', array('jquery') );
+  }
+  
+  function widget_init() {
+    global $wp_version, $wp_rewrite, $wp_query;
+    
+    /**
+     * sidebar widget code to display the search form
+     */
+    function apml_search_widget($args) {
+      global $wp_rewrite, $before_widget, $before_title, $after_title, $after_widget;
+    
+      extract($args);
+    
+      echo $before_widget;
+      echo $before_title;
+      echo (!empty($title)) ? $title : "Find interesting posts";
+      echo $after_title; 
+?>
+    <p>Use your <a href="http://www.apml.org/endusers/overview/"><abbr title="Attention Profiling Mark-up Language">APML</abbr>-Feed</a> to find weblog-posts that might interest you.</p>
+    <form name="apml" method="get" action="<?php echo get_option('home').($wp_rewrite->using_mod_rewrite_permalinks() ? '/apml/search/' : '/index.php?apml=search') ?>" class="apml-search-form">  
+      <?php if (!$wp_rewrite->using_mod_rewrite_permalinks())  { echo '<input type="hidden" name="apml" value="search" />'; } ?>
+      <input type="text" name="s" class="apml-search-field" />
+      <input type="submit" value="Go" class="apml-search-button" />
+    </form>
+<?php
+      echo $after_widget;  
+    }
+    
+    /**
+     * sidebar widget code to display the search form
+     */
+    function apml_meta_widget($args) {
+      global $wp_rewrite, $wp_query, $before_widget, $before_title, $after_title, $after_widget;
+    
+      if ($wp_query->query_vars['apml'] == "search" && $wp_query->query_vars['apml_matching'] != null) {
+        extract($args);
+    
+        echo $before_widget;
+        echo $before_title;
+        echo (!empty($title)) ? $title : "APML Matching";
+        echo $after_title;
+      
+        $tags = explode(",", $wp_query->query_vars['tag']);
+      
+        //print_r($wp_query);
+        $endtag = false;
+?>
+        <p>Your interests are matching with this blog:</p>
+        <div style="width: 100%; border: 1px solid #000; text-align: left;">
+          <p style="width: <?php echo $wp_query->query_vars['apml_matching']; ?>; text-align: center; background: #ccc; padding: 0; margin: 0; color: #000"><?php echo $wp_query->query_vars['apml_matching']; ?></p>
+        </div>
+        <div>The matching "tags" are:
+<?php for ($i = 0; $i < count($tags); $i++) { ?>
+          <a href="<?php echo get_tag_link() . $tags[$i]; ?>" rel="tag"><?php echo $tags[$i]; ?></a>
+          <?php if ($i == 20 && count($tags) > 20) { 
+            $endtag = true;
+          ?>
+            <div id="apml_tags">
+          <?php } ?>
+<?php } ?>
+          <?php if($endtag == true) { ?>
+          	</div>
+            <p><a href="#" id="apml_more_link">show/hide more</a></p>
+          <?php } ?>
+        </div>
+        <p>APML url: <a href="<?php echo htmlspecialchars( attribute_escape( $wp_query->query_vars['s'] ) )?>"><?php echo htmlspecialchars( attribute_escape( $wp_query->query_vars['s'] ) )?></a></p>
+<?php      
+        echo $after_widget;
+      }
+    }
+    
+    if ($wp_version >= 2.3 && (!function_exists( "register_sidebar_widget" ) || !function_exists( "register_widget_control" )))
+      return;
+    
+    register_sidebar_widget('APML Matching', 'apml_search_widget');
+    register_sidebar_widget('APML Meta', 'apml_meta_widget');
+  }
+  
+  /**
+   * Set the path for the plugin.
+   */
+  function get_path($abs = false) {
+    $plugin = 'wp-apml';
+
+    $base = plugin_basename(__FILE__);
+    if ($base != __FILE__) {
+      $plugin = dirname($base);
+    }
+
+    $path = 'wp-content/plugins/' . $plugin;
+    
+    if ($abs)
+      return ABSPATH . $path;
+    else
+      return get_option('siteurl') . '/' . $path;
   }
   
   /**
@@ -46,7 +147,7 @@ class APML {
 
   /**
    * Add 'apml' as a valid query variables.
-   **/
+   */
   function query_vars($vars) {
     $vars[] = 'apml';
 
@@ -55,21 +156,17 @@ class APML {
 
   /**
    * Print APML document if 'apml' query variable is present
-   **/
+   */
   function apml_xml() {
     global $wp_query, $wp_version;;
     
-    $vars = array('tags', 'categories', 'links');
+    $vars = array('tags', 'categories', 'links', 'feeds');
     
     $var = $wp_query->query_vars['apml'];
     
     if( isset( $var )) {
     	if ($var == 'search' && $wp_version >= 2.3) {
     		add_action('template_redirect', array('APML', 'template_redirect'));
-        //add_filter('the_title', array('APML', 'template_title'));
-        //add_filter('posts_join', array('APML','posts_join'));
-        //add_filter('posts_where', array('APML','posts_where'));
-        //add_filter('posts_distinct', array('APML','posts_distinct'));
       } elseif (in_array($var, $vars)) {
         APML::printAPML($var);
       } else {
@@ -92,29 +189,50 @@ class APML {
     $wp_query->is_archive = false;
     $wp_query->is_tag = false;
     $wp_query->is_search = false;
+
+    $apml_array = APML::get_apml_as_array();
     
-    // define url of .apml file
-    $url = get_query_var('s');
+    if ($apml_array != null) {
+      // find matching tags
+      $matching_tags = array_intersect($apml_array, WordPressSources::getTagsArray());
     
-    // define new parser class
-    $parser = new APML_Parser();
-    $apml_array = $parser->getAPMLConcepts($url);
+      $matching = round(count($matching_tags)*100/count($apml_array), 2) . "%";
     
-    $tags = array_intersect($apml_array, WordPressSources::getTagsArray());
+      $taglist = implode (',',$matching_tags);
     
-    foreach ($tags as $tag) {
-      $t[] = '"'.$tag.'"';
+      $s = $wp_query->query_vars['s'];
+
+      $wp_query->query('tag='.$taglist);
+    
+      $wp_query->set("s", $s);
+      $wp_query->set("apml", "search");
+      $wp_query->set("apml_matching", $matching);
     }
     
-    $taglist = implode (',',$tags);
-
-    query_posts('tag='.$taglist);
+    $wp_query->is_search = true;
   }
   
-  
-  function template_title($content) {
-    return "<h3>Jiha</h3>" . $content;
-  } 
+  /**
+   * 
+   */
+  function get_apml_as_array() {
+  	global $wp_query;
+    
+  	// define url of .apml file
+    $url = $wp_query->query_vars['s'];
+
+    $apml_array = wp_cache_get($url);
+    if ($apml_array == false) {
+      // define new parser class
+      $parser = new APML_Parser();
+    
+      // get concepts
+      $apml_array = $parser->getAPMLConcepts($url);
+    
+      wp_cache_add($url, $apml_array);
+    }
+    return $apml_array;
+  }
   
   /**
    * Insert the meta tags
@@ -124,7 +242,7 @@ class APML {
     
     $css_path = APML::get_path() . '/css/apml-style.css';
         
-    echo '<link rel="meta" type="text+xml" title="APML" href="'.get_option('home').($wp_rewrite->using_mod_rewrite_permalinks() ? '/apml/' : '/index.php?apml=apml').'" />' . "\n";
+    echo '<link rel="meta" type="text/xml" title="APML" href="'.get_option('home').($wp_rewrite->using_mod_rewrite_permalinks() ? '/apml/' : '/index.php?apml=apml').'" />' . "\n";
     echo '<link rel="stylesheet" type="text/css" href="'.$css_path.'" />' . "\n";
   }
   
@@ -145,7 +263,7 @@ class APML {
 <APML xmlns="http://www.apml.org/apml-0.6" version="0.6" >
 <Head>
    <Title>APML for <?php echo get_bloginfo('name', 'display') ?></Title>
-   <Generator>wordpress/<?php echo $wp_version ?> and wp-apml/2.3</Generator>
+   <Generator>wordpress/<?php echo $wp_version ?></Generator>
    <DateCreated><?php echo $date; ?></DateCreated>
 </Head>
 <Body defaultprofile="<?php echo $var == 'apml' ? 'tags' : $var ?>">
@@ -197,98 +315,26 @@ class APML {
             </Concepts>
         </ExplicitData>
     </Profile>
+<?php
+  }
+  
+  if ($var == 'feeds' OR $var == 'apml') {
+    $feed_links = WordPressSources::getFeedLinks();
+?>
+    <Profile name="feeds">
+        <ExplicitData>
+            <Concepts>
+<?php foreach ($feed_links as $link) { ?>
+                <Source key="<?php echo $link->link_rss ?>" name="<?php echo $link->link_name ?>" value="<?php echo $link->link_rating != 0 ? $link->link_rating*100/9/100 : "1.0"; ?>" type="text/xml" from="<?php echo $url; ?>" updated="<?php echo $date; ?>" />
+<?php } ?>
+            </Concepts>
+        </ExplicitData>
+    </Profile>
 <?php } ?>
 </Body>
 </APML>
 <?php
 exit;
-  }
-    
-  function posts_join($join) {
-    global $wpdb;
-
-    $join .= " INNER JOIN $wpdb->term_relationships p2t on $wpdb->posts.ID = p2t.object_id INNER JOIN $wpdb->terms t on p2t.term_taxonomy_id = t.term_id ";
-
-    return $join;
-  }
-
-  function posts_distinct() {
-
-    return " DISTINCT ";
-  }
-  
-  function posts_where() {
-  	global $wpdb, $wp_query;
-
-    // define url of .apml file
-    $url = get_query_var('s');
-    
-    // define new parser class
-    $parser = new APML_Parser();
-    $apml_array = $parser->getAPMLConcepts($url);
-    
-    $tags = array_intersect($apml_array, WordPressSources::getTagsArray());
-    
-    foreach ($tags as $tag) {
-    	$t[] = '"'.$tag.'"';
-    }
-    
-    $taglist = implode (',',$t);
-    
-    $where .= " AND t.name IN ($taglist) ";
-    
-    return $where;
-  }
-  
-  function widget_init() {
-  	global $wp_version;
-    
-    /**
-     * sidebar widget code to display the search form
-     */
-    function apml_search_widget($args) {
-      global $wp_rewrite, $before_widget, $before_title, $after_title, $after_widget;
-    
-      extract($args);
-    
-      echo $before_widget;
-      echo $before_title;
-      echo (!empty($title)) ? $title : "APML Search";
-      echo $after_title; 
-?>
-    <p>Use your <a href="http://www.apml.org/endusers/overview/"><abbr title="Attention Profiling Mark-up Language">APML</abbr>-Feed</a> to search through this Weblog.</p>
-    <form name="apml" method="get" action="<?php echo get_option('home').($wp_rewrite->using_mod_rewrite_permalinks() ? '/apml/search/' : '/index.php?apml=search') ?>" class="apml-search-form">  
-      <input type="hidden" name="apml" value="search" />
-      <input type="text" name="s" class="apml-search-field" />
-      <input type="submit" value="Search" class="apml-search-button" />
-    </form>
-<?php
-      echo $after_widget;  
-    }
-    
-    if ($wp_version >= 2.3 && (!function_exists( "register_sidebar_widget" ) || !function_exists( "register_widget_control" )))
-      return;
-    
-    register_sidebar_widget('APML Search', 'apml_search_widget');
-  }
-  
-  /**
-   * Set the path for the plugin.
-   **/
-  function get_path($abs = false) {
-    $plugin = 'wp-apml';
-
-    $base = plugin_basename(__FILE__);
-    if ($base != __FILE__) {
-      $plugin = dirname($base);
-    }
-
-    $path = 'wp-content/plugins/' . $plugin;
-    
-    if ($abs)
-      return ABSPATH . $path;
-    else
-      return get_option('siteurl') . '/' . $path;
   }
 }
 ?>
