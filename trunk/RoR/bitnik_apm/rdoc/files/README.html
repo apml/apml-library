@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>File: README</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href=".././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+  <div id="fileHeader">
+    <h1>README</h1>
+    <table class="header-table">
+    <tr class="top-aligned-row">
+      <td><strong>Path:</strong></td>
+      <td>README
+      </td>
+    </tr>
+    <tr class="top-aligned-row">
+      <td><strong>Last Update:</strong></td>
+      <td>Mon Jan 28 00:21:23 +0100 2008</td>
+    </tr>
+    </table>
+  </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+
+    <div id="description">
+      <p>
+BitnikApm
+</p>
+<h6>===</h6>
+<p>
+<a href="../classes/Bitnik.html">Bitnik</a> APM is a Ruby on Rails plugin
+that offers the next APM functionality for a rails application:
+</p>
+<ul>
+<li>Support for defining attention destinies from application models, later
+exposed as APML concepts.
+
+</li>
+<li>Support for defining attention sources from application models.
+
+</li>
+<li>The plugin offers methods that allow a defined attention source to give
+attention values to the defined concepts, later exposed as APML
+&quot;value&quot; attributes.
+
+</li>
+<li>Support for defining attention destiny references, identified by an
+external URL, later transleted into APML sources.
+
+</li>
+<li>APML files writer.
+
+</li>
+<li>APML files parser.
+
+</li>
+</ul>
+<p>
+Installation
+</p>
+<h6>======</h6>
+<p>
+Copy the plugin to your RAILS_ROOT/vendor/plugins directory and run:
+</p>
+<p>
+$script/generate bitnik_apm setup
+</p>
+<p>
+Run the migrations script:
+</p>
+<p>
+$rake db:migrate
+</p>
+<p>
+Now you are ready to use the plugin.
+</p>
+<p>
+Examples
+</p>
+<h6>=</h6>
+<p>
+-Defining a model to be an AttentionSource:
+</p>
+<p>
+class Model &lt; ActiveRecord::Base
+</p>
+<pre>
+  acts_as attention_source
+</pre>
+<p>
+end
+</p>
+<p>
+-Defining a model to be an <a
+href="../classes/AttentionDestiny.html">AttentionDestiny</a>, with the
+value provided by the attribute/method model_key_method for the APML key
+attribute of the concept element:
+</p>
+<p>
+class Model &lt; ActiveRecord::Base
+</p>
+<pre>
+  acts_as_attention_destiny :key_mapping =&gt; 'model_key_method'
+
+  def model_key_method
+    &quot;test_key&quot;
+  end
+</pre>
+<p>
+end
+</p>
+<p>
+-Giving attention values to an <a
+href="../classes/AttentionDestiny.html">AttentionDestiny</a>:
+</p>
+<p>
+attention_source.pay_attention_to(destiny, 20, :implicit)
+attention_source.pay_explicit_attention_to(destiny_2,12)
+</p>
+<p>
+-Generating the APML file for a given AttentionSource object:
+</p>
+<p>
+class ApmCalculator
+</p>
+<pre>
+  def compute_attention(concept,mode,value,total_attention_value)
+    #algorithm here
+  end
+</pre>
+<p>
+end attention_source.to_apml(:calculator =&gt; ApmCalculator.new, :test
+=&gt; &quot;test&quot;)
+</p>
+<p>
+-Parsing a APML file:
+</p>
+<p>
+doc = ApmlDocument.new(StringIO.new(&quot; xml here &quot;) <a
+href="http://"tv"">doc.profiles["home"].implicit_concepts</a>.value
+</p>
+<p>
+Tests
+</p>
+<h5></h5>
+<p>
+To pass the plugin tests, you must firstly setup some test models. You can
+set up these models using the following generator:
+</p>
+<p>
+$script/generator bitnik_apm test_infraestructure
+</p>
+<p>
+Run the migrations:
+</p>
+<p>
+$rake db:migrate
+</p>
+<p>
+Now, you can pass the tests:
+</p>
+<p>
+$ rake test:plugins
+</p>
+<p>
+If you want to clean your app your installation after passing the tests,
+you cant migrate the DB to the prior version and delete the generated
+migration:
+</p>
+<p>
+$ rake db:migrate VERSION N-1 $ rm
+db/migrate/xxx_create_apm_test_infraestructure
+</p>
+<p>
+Copyright (c) 2008 Antonio Garrote Hernández, released under the MIT
+license
+</p>
+
+    </div>
+
+
+   </div>
+
+
+  </div>
+
+
+    <!-- if includes -->
+
+    <div id="section">
+
+
+
+
+
+      
+
+
+    <!-- if method_list -->
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>
