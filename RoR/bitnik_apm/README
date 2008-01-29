@@ -1,0 +1,90 @@
+BitnikApm
+=========
+
+Bitnik APM is a Ruby on Rails plugin that offers the next APM functionality for a rails application:
+
+- Support for defining attention destinies from application models, later exposed as APML concepts.
+- Support for defining attention sources from application models.
+- The plugin offers methods that allow a defined attention source to give attention values to the defined concepts, later exposed as APML "value" attributes.
+- Support for defining attention destiny references, identified by an external URL, later transleted into APML sources.
+- APML files writer.
+- APML files parser.
+
+Installation
+============
+
+Copy the plugin to your RAILS_ROOT/vendor/plugins directory and run:
+
+$script/generate bitnik_apm setup
+
+Run the migrations script:
+
+$rake db:migrate
+
+Now you are ready to use the plugin.
+
+
+Examples
+=======
+
+-Defining a model to be an AttentionSource:
+
+class Model < ActiveRecord::Base
+  acts_as attention_source
+end
+
+-Defining a model to be an AttentionDestiny, with the value provided by
+the attribute/method model_key_method for the APML key attribute of the concept element:
+
+class Model < ActiveRecord::Base
+  acts_as_attention_destiny :key_mapping => 'model_key_method'
+
+  def model_key_method
+    "test_key"
+  end
+end
+
+-Giving attention values to an AttentionDestiny:
+
+attention_source.pay_attention_to(destiny, 20, :implicit)
+attention_source.pay_explicit_attention_to(destiny_2,12)
+
+-Generating the APML file for a given AttentionSource object:
+
+class ApmCalculator
+  def compute_attention(concept,mode,value,total_attention_value)
+    #algorithm here
+  end
+end
+attention_source.to_apml(:calculator => ApmCalculator.new, :test => "test")
+
+-Parsing a APML file:
+
+doc = ApmlDocument.new(StringIO.new(" xml here ")
+doc.profiles["home"].implicit_concepts["tv"].value
+
+
+Tests
+=====
+
+To pass the plugin tests, you must firstly setup some test models. You can set up these
+models using the following generator:
+
+$script/generator bitnik_apm test_infraestructure
+
+Run the migrations:
+
+$rake db:migrate
+
+Now, you can pass the tests:
+
+$ rake test:plugins
+
+If you want to clean your app your installation after passing the tests, you cant  migrate
+the DB to the prior version and delete the generated migration:
+
+$ rake db:migrate VERSION N-1
+$ rm db/migrate/xxx_create_apm_test_infraestructure
+
+
+Copyright (c) 2008 Antonio Garrote Hernández, released under the Apache license

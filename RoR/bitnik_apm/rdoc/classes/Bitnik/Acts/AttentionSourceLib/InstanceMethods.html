@@ -1,0 +1,1108 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Module: Bitnik::Acts::AttentionSourceLib::InstanceMethods</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href="../../../.././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+    <div id="classHeader">
+        <table class="header-table">
+        <tr class="top-aligned-row">
+          <td><strong>Module</strong></td>
+          <td class="class-name-in-header">Bitnik::Acts::AttentionSourceLib::InstanceMethods</td>
+        </tr>
+        <tr class="top-aligned-row">
+            <td><strong>In:</strong></td>
+            <td>
+                <a href="../../../../files/lib/acts_as_attention_source_lib_rb.html">
+                lib/acts_as_attention_source_lib.rb
+                </a>
+        <br />
+            </td>
+        </tr>
+
+        </table>
+    </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+
+
+
+   </div>
+
+    <div id="method-list">
+      <h3 class="section-bar">Methods</h3>
+
+      <div class="name-list">
+      <a href="#M000031">attention_destinies</a>&nbsp;&nbsp;
+      <a href="#M000037">attention_points_for</a>&nbsp;&nbsp;
+      <a href="#M000034">attention_reference_destinies</a>&nbsp;&nbsp;
+      <a href="#M000040">attention_total_value_for</a>&nbsp;&nbsp;
+      <a href="#M000043">build_attention_profile_mapping</a>&nbsp;&nbsp;
+      <a href="#M000046">build_attention_reference_profile_mapping</a>&nbsp;&nbsp;
+      <a href="#M000044">build_explicit_attention_profile_mapping</a>&nbsp;&nbsp;
+      <a href="#M000047">build_explicit_attention_reference_profile_mapping</a>&nbsp;&nbsp;
+      <a href="#M000045">build_implicit_attention_profile_mapping</a>&nbsp;&nbsp;
+      <a href="#M000048">build_implicit_attention_reference_profile_mapping</a>&nbsp;&nbsp;
+      <a href="#M000052">compute_total_attention_value</a>&nbsp;&nbsp;
+      <a href="#M000051">compute_total_explicit_attention_value</a>&nbsp;&nbsp;
+      <a href="#M000050">compute_total_implicit_attention_value</a>&nbsp;&nbsp;
+      <a href="#M000029">create_attention_profile</a>&nbsp;&nbsp;
+      <a href="#M000030">drop_attention_profile</a>&nbsp;&nbsp;
+      <a href="#M000032">explicit_attention_destinies</a>&nbsp;&nbsp;
+      <a href="#M000038">explicit_attention_points_for</a>&nbsp;&nbsp;
+      <a href="#M000035">explicit_attention_reference_destinies</a>&nbsp;&nbsp;
+      <a href="#M000041">explicit_attention_total_value_for</a>&nbsp;&nbsp;
+      <a href="#M000033">implicit_attention_destinies</a>&nbsp;&nbsp;
+      <a href="#M000039">implicit_attention_points_for</a>&nbsp;&nbsp;
+      <a href="#M000036">implicit_attention_reference_destinies</a>&nbsp;&nbsp;
+      <a href="#M000042">implicit_attention_total_value_for</a>&nbsp;&nbsp;
+      <a href="#M000026">pay_attention_to</a>&nbsp;&nbsp;
+      <a href="#M000027">pay_explicit_attention_to</a>&nbsp;&nbsp;
+      <a href="#M000028">pay_implicit_attention_to</a>&nbsp;&nbsp;
+      <a href="#M000049">setup_default_attention_profile</a>&nbsp;&nbsp;
+      <a href="#M000053">to_apml</a>&nbsp;&nbsp;
+      </div>
+    </div>
+
+  </div>
+
+
+    <!-- if includes -->
+
+    <div id="section">
+
+
+
+
+
+      
+
+
+    <!-- if method_list -->
+    <div id="methods">
+      <h3 class="section-bar">Public Instance methods</h3>
+
+      <div id="method-M000031" class="method-detail">
+        <a name="M000031"></a>
+
+        <div class="method-heading">
+          <a href="#M000031" class="method-signature">
+          <span class="method-name">attention_destinies</span><span class="method-args">(mode,profile=nil)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Returns all the <a
+href="../../../AttentionDestiny.html">AttentionDestiny</a> object, implicit
+and explicit, this attention source has payed attention to. Parameters:
+</p>
+<dl>
+<dt><tt>mode</tt></dt><dd>:implicit or :explicit attention.
+
+</dd>
+<dt><tt>profile</tt></dt><dd>the profile where to look for attention. By default the
+&#8216;default&#8217; profile is used.
+
+</dd>
+</dl>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000031-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000031-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/acts_as_attention_source_lib.rb, line 96</span>
+96:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">attention_destinies</span>(<span class="ruby-identifier">mode</span>,<span class="ruby-identifier">profile</span>=<span class="ruby-keyword kw">nil</span>)
+97:           <span class="ruby-identifier">profile</span> = <span class="ruby-identifier">profile_or_default</span>(<span class="ruby-identifier">profile</span>)
+98:           <span class="ruby-constant">AttentionDestiny</span>.<span class="ruby-identifier">find_by_sql</span>([<span class="ruby-value str">&quot;select d.* from attention_destinies as d, attention_points as p WHERE p.attention_profile_id=? and p.mode=? and d.id=p.attention_destiny_id group by d.id&quot;</span>,<span class="ruby-identifier">profile</span>.<span class="ruby-identifier">id</span>,<span class="ruby-identifier">mode</span>.<span class="ruby-identifier">to_s</span>]).<span class="ruby-identifier">collect</span>{ <span class="ruby-operator">|</span><span class="ruby-identifier">dst</span><span class="ruby-operator">|</span> <span class="ruby-identifier">dst</span>.<span class="ruby-identifier">attention_generator</span>}
+99:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000037" class="method-detail">
+        <a name="M000037"></a>
+
+        <div class="method-heading">
+          <a href="#M000037" class="method-signature">
+          <span class="method-name">attention_points_for</span><span class="method-args">(destiny,mode,profile=nil)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Returns all the <a href="../../../AttentionPoint.html">AttentionPoint</a>
+objects this source has assigned to a given attention destiny. Parameters:
+</p>
+<dl>
+<dt><tt>destiny</tt></dt><dd><a href="../../../AttentionDestiny.html">AttentionDestiny</a> or <a
+href="../../../AttentionDestinyReference.html">AttentionDestinyReference</a>
+object to check for attention points.
+
+</dd>
+<dt><tt>mode</tt></dt><dd>Check for :explicit or :implicit attention points.
+
+</dd>
+<dt><tt>profile</tt></dt><dd>The profile where to look for attention points.
+
+</dd>
+</dl>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000037-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000037-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/acts_as_attention_source_lib.rb, line 132</span>
+132:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">attention_points_for</span>(<span class="ruby-identifier">destiny</span>,<span class="ruby-identifier">mode</span>,<span class="ruby-identifier">profile</span>=<span class="ruby-keyword kw">nil</span>)
+133:           <span class="ruby-keyword kw">if</span>(<span class="ruby-identifier">destiny</span>.<span class="ruby-identifier">class!</span>=<span class="ruby-constant">AttentionDestinyReference</span>)
+134:             <span class="ruby-identifier">profile</span> = <span class="ruby-identifier">profile_or_default</span>(<span class="ruby-identifier">profile</span>)
+135:             <span class="ruby-identifier">points</span> = <span class="ruby-constant">AttentionPoint</span>.<span class="ruby-identifier">find_by_sql</span>([<span class="ruby-value str">&quot;select  p.* from attention_destinies as d, attention_points as p WHERE p.attention_profile_id=? and p.mode=? and d.id=p.attention_destiny_id and d.attention_generator_id=? and d.attention_generator_type=?&quot;</span>,<span class="ruby-identifier">profile</span>.<span class="ruby-identifier">id</span>,<span class="ruby-identifier">mode</span>.<span class="ruby-identifier">to_s</span>,<span class="ruby-identifier">destiny</span>.<span class="ruby-identifier">id</span>,<span class="ruby-identifier">destiny</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">to_s</span>])
+136:             <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">points</span>
+137:           <span class="ruby-keyword kw">else</span>
+138:             <span class="ruby-identifier">profile</span> = <span class="ruby-identifier">profile_or_default</span>(<span class="ruby-identifier">profile</span>)
+139:             <span class="ruby-identifier">points</span> = <span class="ruby-constant">AttentionReferencePoint</span>.<span class="ruby-identifier">find_by_sql</span>([<span class="ruby-value str">&quot;select  p.* from attention_destiny_references as d, attention_reference_points as p WHERE p.attention_profile_id=? and p.mode=? and d.id=p.attention_destiny_reference_id and d.id=?&quot;</span> ,<span class="ruby-identifier">profile</span>.<span class="ruby-identifier">id</span>,<span class="ruby-identifier">mode</span>.<span class="ruby-identifier">to_s</span>,<span class="ruby-identifier">destiny</span>.<span class="ruby-identifier">id</span>])
+140:             <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">points</span>
+141:           <span class="ruby-keyword kw">end</span>
+142:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000034" class="method-detail">
+        <a name="M000034"></a>
+
+        <div class="method-heading">
+          <a href="#M000034" class="method-signature">
+          <span class="method-name">attention_reference_destinies</span><span class="method-args">(mode,profile=nil)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Returns all the <a
+href="../../../AttentionDestinyReference.html">AttentionDestinyReference</a>
+objects, implicit and explicit, this attention source has payed attention
+to.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000034-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000034-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/acts_as_attention_source_lib.rb, line 112</span>
+112:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">attention_reference_destinies</span>(<span class="ruby-identifier">mode</span>,<span class="ruby-identifier">profile</span>=<span class="ruby-keyword kw">nil</span>)
+113:           <span class="ruby-identifier">profile</span> = <span class="ruby-identifier">profile_or_default</span>(<span class="ruby-identifier">profile</span>)
+114:           <span class="ruby-constant">AttentionDestinyReference</span>.<span class="ruby-identifier">find_by_sql</span>([<span class="ruby-value str">&quot;select d.* from attention_destiny_references as d, attention_reference_points as p WHERE p.attention_profile_id=? and p.mode=? and d.id=p.attention_destiny_reference_id group by d.id&quot;</span>,<span class="ruby-identifier">profile</span>.<span class="ruby-identifier">id</span>,<span class="ruby-identifier">mode</span>.<span class="ruby-identifier">to_s</span>])
+115:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000040" class="method-detail">
+        <a name="M000040"></a>
+
+        <div class="method-heading">
+          <a href="#M000040" class="method-signature">
+          <span class="method-name">attention_total_value_for</span><span class="method-args">(destiny,mode,profile=nil)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Computes the total attention value (implicit and explicit) for an <a
+href="../../../AttentionDestiny.html">AttentionDestiny</a> for a given mode
+and profile.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000040-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000040-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/acts_as_attention_source_lib.rb, line 155</span>
+155:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">attention_total_value_for</span>(<span class="ruby-identifier">destiny</span>,<span class="ruby-identifier">mode</span>,<span class="ruby-identifier">profile</span>=<span class="ruby-keyword kw">nil</span>)
+156:           <span class="ruby-identifier">count</span> = <span class="ruby-value">0</span>
+157:           <span class="ruby-identifier">attention_points_for</span>(<span class="ruby-identifier">destiny</span>,<span class="ruby-identifier">mode</span>,<span class="ruby-identifier">profile</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">point</span><span class="ruby-operator">|</span>
+158:             <span class="ruby-identifier">count</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">point</span>.<span class="ruby-identifier">value</span>
+159:           <span class="ruby-keyword kw">end</span>
+160:           <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">count</span>
+161:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000043" class="method-detail">
+        <a name="M000043"></a>
+
+        <div class="method-heading">
+          <a href="#M000043" class="method-signature">
+          <span class="method-name">build_attention_profile_mapping</span><span class="method-args">(mode,profile=nil)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Builds a hash map for the attention destinies of the source for a given
+mode and profile. The built map will ben of the form { <a
+href="../../../AttentionDestiny.html">AttentionDestiny</a> object =&gt;
+value } Parameters:
+</p>
+<dl>
+<dt><tt>mode</tt></dt><dd>:implicit or :explicit attention.
+
+</dd>
+<dt><tt>profile</tt></dt><dd>the profile where to look for attention. By default, &#8216;default&#8217;
+will be used.
+
+</dd>
+</dl>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000043-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000043-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/acts_as_attention_source_lib.rb, line 178</span>
+178:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">build_attention_profile_mapping</span>(<span class="ruby-identifier">mode</span>,<span class="ruby-identifier">profile</span>=<span class="ruby-keyword kw">nil</span>)
+179:           <span class="ruby-identifier">map</span> = <span class="ruby-constant">Hash</span>.<span class="ruby-identifier">new</span>
+180:           <span class="ruby-identifier">attention_destinies</span>(<span class="ruby-identifier">mode</span>,<span class="ruby-identifier">profile</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">destiny</span><span class="ruby-operator">|</span>
+181:             <span class="ruby-identifier">map</span>[<span class="ruby-identifier">destiny</span>] = <span class="ruby-identifier">attention_total_value_for</span>(<span class="ruby-identifier">destiny</span>,<span class="ruby-identifier">mode</span>,<span class="ruby-identifier">profile</span>)
+182:           <span class="ruby-keyword kw">end</span>
+183: 
+184:           <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">map</span>
+185:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000046" class="method-detail">
+        <a name="M000046"></a>
+
+        <div class="method-heading">
+          <a href="#M000046" class="method-signature">
+          <span class="method-name">build_attention_reference_profile_mapping</span><span class="method-args">(mode,profile=nil)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Builds a hash map for the attention destiny references of the source for a
+given mode and profile. The built map will ben of the form { <a
+href="../../../AttentionDestiny.html">AttentionDestiny</a> object =&gt;
+value } Parameters:
+</p>
+<dl>
+<dt><tt>mode</tt></dt><dd>:implicit or :explicit attention.
+
+</dd>
+<dt><tt>profile</tt></dt><dd>the profile where to look for attention. By default, &#8216;default&#8217;
+will be used.
+
+</dd>
+</dl>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000046-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000046-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/acts_as_attention_source_lib.rb, line 202</span>
+202:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">build_attention_reference_profile_mapping</span>(<span class="ruby-identifier">mode</span>,<span class="ruby-identifier">profile</span>=<span class="ruby-keyword kw">nil</span>)
+203:           <span class="ruby-identifier">map</span> = <span class="ruby-constant">Hash</span>.<span class="ruby-identifier">new</span>
+204: 
+205:           <span class="ruby-identifier">attention_reference_destinies</span>(<span class="ruby-identifier">mode</span>,<span class="ruby-identifier">profile</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">ref</span><span class="ruby-operator">|</span>
+206:             <span class="ruby-identifier">map</span>[<span class="ruby-identifier">ref</span>] = <span class="ruby-identifier">attention_total_value_for</span>(<span class="ruby-identifier">ref</span>,<span class="ruby-identifier">mode</span>,<span class="ruby-identifier">profile</span>)
+207:           <span class="ruby-keyword kw">end</span>
+208: 
+209:           <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">map</span>
+210:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000044" class="method-detail">
+        <a name="M000044"></a>
+
+        <div class="method-heading">
+          <a href="#M000044" class="method-signature">
+          <span class="method-name">build_explicit_attention_profile_mapping</span><span class="method-args">(profile=nil)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Equivalent to <a
+href="InstanceMethods.html#M000043">build_attention_profile_mapping</a>
+with an :explicit value for the mode parameter.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000044-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000044-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/acts_as_attention_source_lib.rb, line 188</span>
+188:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">build_explicit_attention_profile_mapping</span>(<span class="ruby-identifier">profile</span>=<span class="ruby-keyword kw">nil</span>)
+189:           <span class="ruby-identifier">build_attention_profile_mapping</span>(<span class="ruby-identifier">:explicit</span>,<span class="ruby-identifier">profile</span>)
+190:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000047" class="method-detail">
+        <a name="M000047"></a>
+
+        <div class="method-heading">
+          <a href="#M000047" class="method-signature">
+          <span class="method-name">build_explicit_attention_reference_profile_mapping</span><span class="method-args">(profile=nil)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Equivalent to <a
+href="InstanceMethods.html#M000046">build_attention_reference_profile_mapping</a>
+with an :explicit value for the mode parameter.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000047-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000047-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/acts_as_attention_source_lib.rb, line 213</span>
+213:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">build_explicit_attention_reference_profile_mapping</span>(<span class="ruby-identifier">profile</span>=<span class="ruby-keyword kw">nil</span>)
+214:           <span class="ruby-identifier">build_attention_reference_profile_mapping</span>(<span class="ruby-identifier">:explicit</span>,<span class="ruby-identifier">profile</span>)
+215:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000045" class="method-detail">
+        <a name="M000045"></a>
+
+        <div class="method-heading">
+          <a href="#M000045" class="method-signature">
+          <span class="method-name">build_implicit_attention_profile_mapping</span><span class="method-args">(profile=nil)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Equivalent to <a
+href="InstanceMethods.html#M000043">build_attention_profile_mapping</a>
+with an :implicit value for the mode parameter.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000045-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000045-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/acts_as_attention_source_lib.rb, line 193</span>
+193:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">build_implicit_attention_profile_mapping</span>(<span class="ruby-identifier">profile</span>=<span class="ruby-keyword kw">nil</span>)
+194:           <span class="ruby-identifier">build_attention_profile_mapping</span>(<span class="ruby-identifier">:implicit</span>,<span class="ruby-identifier">profile</span>)
+195:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000048" class="method-detail">
+        <a name="M000048"></a>
+
+        <div class="method-heading">
+          <a href="#M000048" class="method-signature">
+          <span class="method-name">build_implicit_attention_reference_profile_mapping</span><span class="method-args">(profile=nil)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Equivalent to <a
+href="InstanceMethods.html#M000046">build_attention_reference_profile_mapping</a>
+with an :implicit value for the mode parameter.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000048-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000048-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/acts_as_attention_source_lib.rb, line 218</span>
+218:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">build_implicit_attention_reference_profile_mapping</span>(<span class="ruby-identifier">profile</span>=<span class="ruby-keyword kw">nil</span>)
+219:           <span class="ruby-identifier">build_attention_reference_profile_mapping</span>(<span class="ruby-identifier">:implicit</span>,<span class="ruby-identifier">profile</span>)
+220:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000052" class="method-detail">
+        <a name="M000052"></a>
+
+        <div class="method-heading">
+          <a href="#M000052" class="method-signature">
+          <span class="method-name">compute_total_attention_value</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Computes the total implicit attention value for all the profiles for this
+source
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000052-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000052-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/acts_as_attention_source_lib.rb, line 270</span>
+270:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">compute_total_attention_value</span>
+271:           <span class="ruby-identifier">total</span> = <span class="ruby-value">0</span>
+272:           <span class="ruby-identifier">attention_profiles</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">profile</span><span class="ruby-operator">|</span>
+273:             <span class="ruby-identifier">explicit_attention_destinies</span>(<span class="ruby-identifier">profile</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">dst</span><span class="ruby-operator">|</span>
+274:               <span class="ruby-identifier">explicit_attention_points_for</span>(<span class="ruby-identifier">dst</span>,<span class="ruby-identifier">profile</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">point</span><span class="ruby-operator">|</span>
+275:                 <span class="ruby-identifier">total</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">point</span>.<span class="ruby-identifier">value</span>
+276:               <span class="ruby-keyword kw">end</span>
+277:             <span class="ruby-keyword kw">end</span>
+278:             <span class="ruby-identifier">implicit_attention_destinies</span>(<span class="ruby-identifier">profile</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">dst</span><span class="ruby-operator">|</span>
+279:               <span class="ruby-identifier">implicit_attention_points_for</span>(<span class="ruby-identifier">dst</span>,<span class="ruby-identifier">profile</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">point</span><span class="ruby-operator">|</span>
+280:                 <span class="ruby-identifier">total</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">point</span>.<span class="ruby-identifier">value</span>
+281:               <span class="ruby-keyword kw">end</span>
+282:             <span class="ruby-keyword kw">end</span>
+283:           <span class="ruby-keyword kw">end</span>
+284:           <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">total</span>
+285:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000051" class="method-detail">
+        <a name="M000051"></a>
+
+        <div class="method-heading">
+          <a href="#M000051" class="method-signature">
+          <span class="method-name">compute_total_explicit_attention_value</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Computes the total explicit attention value for all the profiles for this
+source
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000051-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000051-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/acts_as_attention_source_lib.rb, line 251</span>
+251:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">compute_total_explicit_attention_value</span>
+252:           <span class="ruby-identifier">total</span> = <span class="ruby-value">0</span>
+253:           <span class="ruby-identifier">attention_profiles</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">profile</span><span class="ruby-operator">|</span>
+254:             <span class="ruby-identifier">explicit_attention_destinies</span>(<span class="ruby-identifier">profile</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">dst</span><span class="ruby-operator">|</span>
+255:               <span class="ruby-identifier">explicit_attention_points_for</span>(<span class="ruby-identifier">dst</span>,<span class="ruby-identifier">profile</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">point</span><span class="ruby-operator">|</span>
+256:                 <span class="ruby-identifier">total</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">point</span>.<span class="ruby-identifier">value</span>
+257:               <span class="ruby-keyword kw">end</span>
+258:             <span class="ruby-keyword kw">end</span>
+259:             <span class="ruby-identifier">explicit_attention_reference_destinies</span>(<span class="ruby-identifier">profile</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">ref</span><span class="ruby-operator">|</span>
+260:               <span class="ruby-identifier">explicit_attention_points_for</span>(<span class="ruby-identifier">ref</span>,<span class="ruby-identifier">profile</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">point</span><span class="ruby-operator">|</span>
+261:                 <span class="ruby-identifier">total</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">point</span>.<span class="ruby-identifier">value</span>
+262:               <span class="ruby-keyword kw">end</span>
+263:             <span class="ruby-keyword kw">end</span>
+264: 
+265:           <span class="ruby-keyword kw">end</span>
+266:           <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">totla</span>
+267:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000050" class="method-detail">
+        <a name="M000050"></a>
+
+        <div class="method-heading">
+          <a href="#M000050" class="method-signature">
+          <span class="method-name">compute_total_implicit_attention_value</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Computes the total attention value for all the profiles and modes for this
+source
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000050-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000050-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/acts_as_attention_source_lib.rb, line 233</span>
+233:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">compute_total_implicit_attention_value</span>
+234:           <span class="ruby-identifier">total</span> = <span class="ruby-value">0</span>
+235:           <span class="ruby-identifier">attention_profiles</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">profile</span><span class="ruby-operator">|</span>
+236:             <span class="ruby-identifier">implicit_attention_destinies</span>(<span class="ruby-identifier">profile</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">dst</span><span class="ruby-operator">|</span>
+237:               <span class="ruby-identifier">implicit_attention_points_for</span>(<span class="ruby-identifier">dst</span>,<span class="ruby-identifier">profile</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">point</span><span class="ruby-operator">|</span>
+238:                 <span class="ruby-identifier">total</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">point</span>.<span class="ruby-identifier">value</span>
+239:               <span class="ruby-keyword kw">end</span>
+240:             <span class="ruby-keyword kw">end</span>
+241:             <span class="ruby-identifier">implicit_attention_reference_destinies</span>(<span class="ruby-identifier">profile</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">ref</span><span class="ruby-operator">|</span>
+242:               <span class="ruby-identifier">implicit_attention_points_for</span>(<span class="ruby-identifier">ref</span>,<span class="ruby-identifier">profile</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">point</span><span class="ruby-operator">|</span>
+243:                 <span class="ruby-identifier">total</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">point</span>.<span class="ruby-identifier">value</span>
+244:               <span class="ruby-keyword kw">end</span>
+245:             <span class="ruby-keyword kw">end</span>
+246:           <span class="ruby-keyword kw">end</span>
+247:           <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">total</span>
+248:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000029" class="method-detail">
+        <a name="M000029"></a>
+
+        <div class="method-heading">
+          <a href="#M000029" class="method-signature">
+          <span class="method-name">create_attention_profile</span><span class="method-args">(profile_name)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Associates a new profile with profile_name name value to this
+AttentionSource.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000029-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000029-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/acts_as_attention_source_lib.rb, line 79</span>
+79:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">create_attention_profile</span>(<span class="ruby-identifier">profile_name</span>)
+80:           <span class="ruby-identifier">origin</span> = <span class="ruby-constant">AttentionProfile</span>.<span class="ruby-identifier">new</span>
+81:           <span class="ruby-identifier">origin</span>.<span class="ruby-identifier">name</span> = <span class="ruby-identifier">profile_name</span>.<span class="ruby-identifier">to_s</span>
+82:           <span class="ruby-identifier">origin</span>.<span class="ruby-identifier">attention_source</span> = <span class="ruby-keyword kw">self</span>
+83:           <span class="ruby-identifier">origin</span>.<span class="ruby-identifier">save!</span>
+84:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000030" class="method-detail">
+        <a name="M000030"></a>
+
+        <div class="method-heading">
+          <a href="#M000030" class="method-signature">
+          <span class="method-name">drop_attention_profile</span><span class="method-args">(profile_name)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Removes an attention profile of name profile_name from this
+AttentionSource.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000030-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000030-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/acts_as_attention_source_lib.rb, line 87</span>
+87:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">drop_attention_profile</span>(<span class="ruby-identifier">profile_name</span>)
+88:           <span class="ruby-identifier">attention_profile</span> = <span class="ruby-constant">AttentionProfile</span>.<span class="ruby-identifier">find</span>(<span class="ruby-identifier">:first</span>, <span class="ruby-identifier">:conditions</span> =<span class="ruby-operator">&gt;</span> [<span class="ruby-value str">&quot;name=? AND attention_source_id=? AND attention_source_type=?&quot;</span>,<span class="ruby-identifier">profile_name</span>.<span class="ruby-identifier">to_s</span>,<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">id</span>,<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">to_s</span>])
+89:           <span class="ruby-identifier">attention_profile</span>.<span class="ruby-identifier">destroy</span>
+90:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000032" class="method-detail">
+        <a name="M000032"></a>
+
+        <div class="method-heading">
+          <a href="#M000032" class="method-signature">
+          <span class="method-name">explicit_attention_destinies</span><span class="method-args">(profile=nil)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Returns only the explicit attention destinies for this source.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000032-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000032-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/acts_as_attention_source_lib.rb, line 102</span>
+102:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">explicit_attention_destinies</span>(<span class="ruby-identifier">profile</span>=<span class="ruby-keyword kw">nil</span>)
+103:           <span class="ruby-identifier">attention_destinies</span>(<span class="ruby-identifier">:explicit</span>,<span class="ruby-identifier">profile</span>)
+104:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000038" class="method-detail">
+        <a name="M000038"></a>
+
+        <div class="method-heading">
+          <a href="#M000038" class="method-signature">
+          <span class="method-name">explicit_attention_points_for</span><span class="method-args">(destiny,profile=nil)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Equivalent to a call to <a
+href="InstanceMethods.html#M000037">attention_points_for</a> with an
+:explicit value for the mode parameter.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000038-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000038-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/acts_as_attention_source_lib.rb, line 145</span>
+145:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">explicit_attention_points_for</span>(<span class="ruby-identifier">destiny</span>,<span class="ruby-identifier">profile</span>=<span class="ruby-keyword kw">nil</span>)
+146:           <span class="ruby-identifier">attention_points_for</span>(<span class="ruby-identifier">destiny</span>,<span class="ruby-identifier">:explicit</span>,<span class="ruby-identifier">profile</span>)
+147:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000035" class="method-detail">
+        <a name="M000035"></a>
+
+        <div class="method-heading">
+          <a href="#M000035" class="method-signature">
+          <span class="method-name">explicit_attention_reference_destinies</span><span class="method-args">(profile=nil)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Returns only the explicit attention destiny references for this source.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000035-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000035-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/acts_as_attention_source_lib.rb, line 118</span>
+118:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">explicit_attention_reference_destinies</span>(<span class="ruby-identifier">profile</span>=<span class="ruby-keyword kw">nil</span>)
+119:           <span class="ruby-identifier">attention_reference_destinies</span>(<span class="ruby-identifier">:explicit</span>,<span class="ruby-identifier">profile</span>)
+120:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000041" class="method-detail">
+        <a name="M000041"></a>
+
+        <div class="method-heading">
+          <a href="#M000041" class="method-signature">
+          <span class="method-name">explicit_attention_total_value_for</span><span class="method-args">(destiny,profile=nil)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Computes the total explicit value for an <a
+href="../../../AttentionDestiny.html">AttentionDestiny</a> for a profile
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000041-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000041-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/acts_as_attention_source_lib.rb, line 164</span>
+164:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">explicit_attention_total_value_for</span>(<span class="ruby-identifier">destiny</span>,<span class="ruby-identifier">profile</span>=<span class="ruby-keyword kw">nil</span>)
+165:           <span class="ruby-identifier">attention_total_value_for</span>(<span class="ruby-identifier">destiny</span>,<span class="ruby-identifier">:explicit</span>,<span class="ruby-identifier">profile</span>)
+166:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000033" class="method-detail">
+        <a name="M000033"></a>
+
+        <div class="method-heading">
+          <a href="#M000033" class="method-signature">
+          <span class="method-name">implicit_attention_destinies</span><span class="method-args">(profile=nil)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Returns only the implicit attention destinies for this source.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000033-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000033-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/acts_as_attention_source_lib.rb, line 107</span>
+107:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">implicit_attention_destinies</span>(<span class="ruby-identifier">profile</span>=<span class="ruby-keyword kw">nil</span>)
+108:           <span class="ruby-identifier">attention_destinies</span>(<span class="ruby-identifier">:implicit</span>,<span class="ruby-identifier">profile</span>)
+109:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000039" class="method-detail">
+        <a name="M000039"></a>
+
+        <div class="method-heading">
+          <a href="#M000039" class="method-signature">
+          <span class="method-name">implicit_attention_points_for</span><span class="method-args">(destiny,profile=nil)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Equivalent to a call to <a
+href="InstanceMethods.html#M000037">attention_points_for</a> with an
+:implicit value for the mode parameter.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000039-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000039-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/acts_as_attention_source_lib.rb, line 150</span>
+150:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">implicit_attention_points_for</span>(<span class="ruby-identifier">destiny</span>,<span class="ruby-identifier">profile</span>=<span class="ruby-keyword kw">nil</span>)
+151:           <span class="ruby-identifier">attention_points_for</span>(<span class="ruby-identifier">destiny</span>,<span class="ruby-identifier">:implicit</span>,<span class="ruby-identifier">profile</span>)
+152:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000036" class="method-detail">
+        <a name="M000036"></a>
+
+        <div class="method-heading">
+          <a href="#M000036" class="method-signature">
+          <span class="method-name">implicit_attention_reference_destinies</span><span class="method-args">(profile=nil)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Returns only the implicit attention destiny references for this source.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000036-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000036-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/acts_as_attention_source_lib.rb, line 123</span>
+123:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">implicit_attention_reference_destinies</span>(<span class="ruby-identifier">profile</span>=<span class="ruby-keyword kw">nil</span>)
+124:           <span class="ruby-identifier">attention_reference_destinies</span>(<span class="ruby-identifier">:implicit</span>,<span class="ruby-identifier">profile</span>)
+125:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000042" class="method-detail">
+        <a name="M000042"></a>
+
+        <div class="method-heading">
+          <a href="#M000042" class="method-signature">
+          <span class="method-name">implicit_attention_total_value_for</span><span class="method-args">(destiny,profile=nil)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Computes the total implicit value for an <a
+href="../../../AttentionDestiny.html">AttentionDestiny</a> for a given mode
+and profile.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000042-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000042-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/acts_as_attention_source_lib.rb, line 169</span>
+169:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">implicit_attention_total_value_for</span>(<span class="ruby-identifier">destiny</span>,<span class="ruby-identifier">profile</span>=<span class="ruby-keyword kw">nil</span>)
+170:           <span class="ruby-identifier">attention_total_value_for</span>(<span class="ruby-identifier">destiny</span>,<span class="ruby-identifier">:implicit</span>,<span class="ruby-identifier">profile</span>)
+171:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000026" class="method-detail">
+        <a name="M000026"></a>
+
+        <div class="method-heading">
+          <a href="#M000026" class="method-signature">
+          <span class="method-name">pay_attention_to</span><span class="method-args">(attention_destiny,attention_value,mode,attention_profile=nil)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Assigns a value to the the attention an AttentionSource object pays to an
+<a href="../../../AttentionDestiny.html">AttentionDestiny</a> or <a
+href="../../../AttentionDestinyReference.html">AttentionDestinyReference</a>
+object. Parameters:
+</p>
+<dl>
+<dt><tt>attention_destiny</tt></dt><dd>An <a href="../../../AttentionDestiny.html">AttentionDestiny</a> or <a
+href="../../../AttentionDestinyReference.html">AttentionDestinyReference</a>
+object deserving the attention of the AttentionSource.
+
+</dd>
+<dt><tt>attention_value</tt></dt><dd>A representation of the value fo the attention the source is paying to the
+destiny.
+
+</dd>
+<dt><tt>mode</tt></dt><dd>Whether it is :explicit or :implicit attention. See the APML specification
+for more details.
+
+</dd>
+<dt><tt>attention_profile</tt></dt><dd>The context in which this source is paying attention the destiny. By
+default it will be the default profile.
+
+</dd>
+</dl>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000026-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000026-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/acts_as_attention_source_lib.rb, line 48</span>
+48:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">pay_attention_to</span>(<span class="ruby-identifier">attention_destiny</span>,<span class="ruby-identifier">attention_value</span>,<span class="ruby-identifier">mode</span>,<span class="ruby-identifier">attention_profile</span>=<span class="ruby-keyword kw">nil</span>)
+49:           <span class="ruby-identifier">attention_profile</span> = <span class="ruby-identifier">profile_or_default</span>(<span class="ruby-identifier">attention_profile</span>)
+50:           <span class="ruby-identifier">destiny</span> = <span class="ruby-identifier">check_destiny</span>(<span class="ruby-identifier">attention_destiny</span>)
+51: 
+52:           <span class="ruby-keyword kw">if</span>(<span class="ruby-identifier">destiny</span>.<span class="ruby-identifier">class</span><span class="ruby-operator">==</span><span class="ruby-constant">AttentionDestiny</span>)
+53:             <span class="ruby-identifier">points</span> = <span class="ruby-constant">AttentionPoint</span>.<span class="ruby-identifier">new</span>
+54:             <span class="ruby-identifier">points</span>.<span class="ruby-identifier">attention_destiny</span> = <span class="ruby-identifier">destiny</span>
+55:           <span class="ruby-keyword kw">else</span>
+56:             <span class="ruby-identifier">points</span> = <span class="ruby-constant">AttentionReferencePoint</span>.<span class="ruby-identifier">new</span>
+57:             <span class="ruby-identifier">points</span>.<span class="ruby-identifier">attention_destiny_reference</span> = <span class="ruby-identifier">destiny</span>
+58:           <span class="ruby-keyword kw">end</span>
+59: 
+60:           <span class="ruby-identifier">points</span>.<span class="ruby-identifier">mode</span> = <span class="ruby-identifier">mode</span>.<span class="ruby-identifier">to_s</span>
+61:           <span class="ruby-identifier">points</span>.<span class="ruby-identifier">attention_profile</span> = <span class="ruby-identifier">attention_profile</span>
+62:           <span class="ruby-identifier">points</span>.<span class="ruby-identifier">value</span> = <span class="ruby-identifier">attention_value</span>
+63: 
+64:           <span class="ruby-identifier">points</span>.<span class="ruby-identifier">save!</span>
+65: 
+66:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000027" class="method-detail">
+        <a name="M000027"></a>
+
+        <div class="method-heading">
+          <a href="#M000027" class="method-signature">
+          <span class="method-name">pay_explicit_attention_to</span><span class="method-args">(attention_destiny, attention_value,attention_profile=nil)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Equivalent to a call to <a
+href="InstanceMethods.html#M000026">pay_attention_to</a> with an :explicit
+value for the mode parameter.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000027-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000027-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/acts_as_attention_source_lib.rb, line 69</span>
+69:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">pay_explicit_attention_to</span>(<span class="ruby-identifier">attention_destiny</span>, <span class="ruby-identifier">attention_value</span>,<span class="ruby-identifier">attention_profile</span>=<span class="ruby-keyword kw">nil</span>)
+70:           <span class="ruby-identifier">pay_attention_to</span>(<span class="ruby-identifier">attention_destiny</span>,<span class="ruby-identifier">attention_value</span>,<span class="ruby-identifier">:explicit</span>,<span class="ruby-identifier">attention_profile</span>)
+71:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000028" class="method-detail">
+        <a name="M000028"></a>
+
+        <div class="method-heading">
+          <a href="#M000028" class="method-signature">
+          <span class="method-name">pay_implicit_attention_to</span><span class="method-args">(attention_destiny, attention_value,attention_profile=nil)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Equivalent to a call to <a
+href="InstanceMethods.html#M000026">pay_attention_to</a> with an :implicit
+value for the mode parameter.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000028-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000028-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/acts_as_attention_source_lib.rb, line 74</span>
+74:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">pay_implicit_attention_to</span>(<span class="ruby-identifier">attention_destiny</span>, <span class="ruby-identifier">attention_value</span>,<span class="ruby-identifier">attention_profile</span>=<span class="ruby-keyword kw">nil</span>)
+75:           <span class="ruby-identifier">pay_attention_to</span>(<span class="ruby-identifier">attention_destiny</span>,<span class="ruby-identifier">attention_value</span>,<span class="ruby-identifier">:implicit</span>,<span class="ruby-identifier">attention_profile</span>)
+76:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000049" class="method-detail">
+        <a name="M000049"></a>
+
+        <div class="method-heading">
+          <a href="#M000049" class="method-signature">
+          <span class="method-name">setup_default_attention_profile</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Callback that initializes the model when the source object is saved.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000049-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000049-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/acts_as_attention_source_lib.rb, line 223</span>
+223:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">setup_default_attention_profile</span>
+224:           <span class="ruby-keyword kw">if</span>(<span class="ruby-constant">AttentionProfile</span>.<span class="ruby-identifier">find</span>(<span class="ruby-identifier">:first</span>,<span class="ruby-identifier">:conditions</span> =<span class="ruby-operator">&gt;</span> [<span class="ruby-value str">&quot;attention_source_id=? AND attention_source_type=?&quot;</span>,<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">id</span>, <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">to_s</span>])<span class="ruby-operator">==</span><span class="ruby-keyword kw">nil</span>)
+225:             <span class="ruby-identifier">origin</span> = <span class="ruby-constant">AttentionProfile</span>.<span class="ruby-identifier">new</span>
+226:             <span class="ruby-identifier">origin</span>.<span class="ruby-identifier">name</span> = <span class="ruby-value str">&quot;default&quot;</span>
+227:             <span class="ruby-identifier">origin</span>.<span class="ruby-identifier">attention_source</span> = <span class="ruby-keyword kw">self</span>
+228:             <span class="ruby-identifier">origin</span>.<span class="ruby-identifier">save!</span>
+229:           <span class="ruby-keyword kw">end</span>
+230:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000053" class="method-detail">
+        <a name="M000053"></a>
+
+        <div class="method-heading">
+          <a href="#M000053" class="method-signature">
+          <span class="method-name">to_apml</span><span class="method-args">(options={ })</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Obtains the APML representation ot the attention profile of this source.
+Parameters hash:
+</p>
+<dl>
+<dt><tt>calculator</tt></dt><dd>an object that implements the method
+compute_attention(concept,mode,value,total_attention_value) used to
+calculate the attention APML attribute for an <a
+href="../../../AttentionDestiny.html">AttentionDestiny</a> or <a
+href="../../../AttentionDestinyReference.html">AttentionDestinyReference</a>.
+
+</dd>
+<dt><tt>title</tt></dt><dd>value for the &lt;Title&gt; APML element.
+
+</dd>
+<dt><tt>generator</tt></dt><dd>value for the &lt;Generator&gt; APML element.
+
+</dd>
+<dt><tt>user_email</tt></dt><dd>value for the UserEmail APML element.
+
+</dd>
+<dt><tt>default_profile</tt></dt><dd>value for the &#8216;default&#8217; attribute of the &lt;Profile&gt; APML
+element.
+
+</dd>
+</dl>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000053-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000053-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/acts_as_attention_source_lib.rb, line 295</span>
+295:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">to_apml</span>(<span class="ruby-identifier">options</span>={ })
+296: 
+297:           <span class="ruby-identifier">builder</span> = <span class="ruby-constant">Bitnik</span><span class="ruby-operator">::</span><span class="ruby-constant">Apm</span><span class="ruby-operator">::</span><span class="ruby-constant">Builder</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">options</span>[<span class="ruby-identifier">:calculator</span>])
+298: 
+299:           <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:title</span>] <span class="ruby-operator">!=</span> <span class="ruby-keyword kw">nil</span>
+300:             <span class="ruby-identifier">builder</span>.<span class="ruby-identifier">title</span> = <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:title</span>]
+301:           <span class="ruby-keyword kw">end</span>
+302: 
+303:           <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:generator</span>] <span class="ruby-operator">!=</span> <span class="ruby-keyword kw">nil</span>
+304:             <span class="ruby-identifier">builder</span>.<span class="ruby-identifier">generator</span> = <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:generator</span>]
+305:           <span class="ruby-keyword kw">end</span>
+306: 
+307:           <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:user_email</span>] <span class="ruby-operator">!=</span> <span class="ruby-keyword kw">nil</span>
+308:             <span class="ruby-identifier">builder</span>.<span class="ruby-identifier">user_email</span> = <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:user_email</span>]
+309:           <span class="ruby-keyword kw">end</span>
+310: 
+311:           <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:default_profile</span>] <span class="ruby-operator">!=</span> <span class="ruby-keyword kw">nil</span>
+312:             <span class="ruby-identifier">builder</span>.<span class="ruby-identifier">default_profile</span> = <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:default_profile</span>]
+313:           <span class="ruby-keyword kw">end</span>
+314: 
+315:           <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:from</span>] <span class="ruby-operator">!=</span> <span class="ruby-keyword kw">nil</span>
+316:             <span class="ruby-identifier">builder</span>.<span class="ruby-identifier">from</span> = <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:from</span>]
+317:           <span class="ruby-keyword kw">end</span>
+318: 
+319:           <span class="ruby-identifier">builder</span>.<span class="ruby-identifier">build_profile_for</span>(<span class="ruby-keyword kw">self</span>)
+320:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>
