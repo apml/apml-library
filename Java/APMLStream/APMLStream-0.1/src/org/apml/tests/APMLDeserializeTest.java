@@ -21,6 +21,8 @@ package org.apml.tests;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.net.URL;
+
 import org.apml.base.APML;
 import org.apml.base.ExplicitData;
 import org.apml.base.ImplicitData;
@@ -61,6 +63,7 @@ public class APMLDeserializeTest
 			// Create the APML object from the file contents
 			apmlDS = new APMLDeserializer();
 			APML myAPML = apmlDS.deserialize(payload);
+			//APML myAPML = apmlDS.deserialize(new URL("http://aura.darkstar.sunlabs.com/AttentionProfile/apml/last.fm/phocion55"));
 			
 			// ***********************************************
 			// *** Demonstrates how to use the APML object ***

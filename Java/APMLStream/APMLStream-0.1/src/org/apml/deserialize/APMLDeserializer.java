@@ -18,11 +18,17 @@
 
 package org.apml.deserialize;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.net.URL;
+import java.net.URLConnection;
+import java.util.Scanner;
 import org.apml.base.*;
+import org.apml.base.exceptions.InvalidAPMLFormatException;
 import org.apml.converters.ApplicationsConverter;
-
 import com.thoughtworks.xstream.XStream;
 
 /**
@@ -78,34 +84,61 @@ public class APMLDeserializer
 	
 	/**
 	 * Deserializes the APML payload to an APML object
-	 * @param xmlPayload
+	 * @param xmlPayload A string representation of an APML document
+	 * @throws InvalidAPMLFormatException
 	 * @return The APML object
 	 */
-	public APML deserialize(String xmlPayload)
+	public APML deserialize(String xmlPayload) throws InvalidAPMLFormatException
 	{
 		return (APML) this.xstream.fromXML(xmlPayload);
 	}
 	
 	/**
 	 * Deserializes a file specified by a URL 
-	 * @param file
+	 * @param file The URL pointing to an APML file
+	 * @throws IOException
+	 * @throws InvalidAPMLFormatException
 	 * @return The APML object
 	 */
-	public APML deserialize(URL file)
+	public APML deserialize(URL file) throws IOException, InvalidAPMLFormatException
 	{
-		// TODO
-		return (APML) this.xstream.fromXML("");
+		StringBuffer strBuff = null;
+		URLConnection connection = null;
+		Scanner scanner = null;
+		
+		strBuff = new StringBuffer();
+    	connection = file.openConnection();
+    	scanner = new Scanner(connection.getInputStream());
+    	scanner.useDelimiter(",\\n*");
+    		
+    	while(scanner.hasNext())
+    		strBuff.append(scanner.next());
+    		
+    	// Close the connection to the online resource
+    	scanner.close();
+		return (APML) this.xstream.fromXML(strBuff.toString());
 	}
 	
 	/**
 	 * Deserializes a file specified by a File object
-	 * @param file
+	 * @param file A File object pointing to an APML document
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 * @throws InvalidAPMLFormatException
 	 * @return The APML object
 	 */
-	public APML deserialize(File file)
+	public APML deserialize(File file) throws FileNotFoundException, IOException, InvalidAPMLFormatException
 	{
-		// TODO
-		return (APML) this.xstream.fromXML("");
+	    BufferedReader in = null;
+	    String lin = "";
+	    String payload = "";
+	    
+		in = new BufferedReader(new FileReader(file));
+		
+		while ((lin = in.readLine()) != null)
+			payload += lin;
+		
+		return (APML) this.xstream.fromXML(payload);
 	}
 	
 	/**
