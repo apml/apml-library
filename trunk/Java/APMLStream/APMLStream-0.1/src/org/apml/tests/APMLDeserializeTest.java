@@ -62,8 +62,9 @@ public class APMLDeserializeTest
 			
 			// Create the APML object from the file contents
 			apmlDS = new APMLDeserializer();
-			APML myAPML = apmlDS.deserialize(payload);
-			//APML myAPML = apmlDS.deserialize(new URL("http://aura.darkstar.sunlabs.com/AttentionProfile/apml/last.fm/phocion55"));
+			//APML myAPML = apmlDS.deserialize(payload);
+			//APML myAPML = apmlDS.deserialize(new File("myAPML.apml"));
+			APML myAPML = apmlDS.deserialize(new URL("http://aura.darkstar.sunlabs.com/AttentionProfile/apml/last.fm/phocion55"));
 			
 			// ***********************************************
 			// *** Demonstrates how to use the APML object ***
@@ -99,5 +100,4 @@ public class APMLDeserializeTest
 			ex.printStackTrace();
 		}
 	}
-
 }
