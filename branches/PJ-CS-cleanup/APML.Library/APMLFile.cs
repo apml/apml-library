@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Xml;
 using APML.AutoWrapper;
 
 namespace APML {
   public class APMLFile : IAPMLDocument {
-    private readonly string mFileName;
+    private string mFileName;
     private IAPMLRoot mRoot;
     private XmlDocument mDoc;
     private readonly bool mWasCreated;
@@ -41,6 +42,10 @@ namespace APML {
     }
 
     public void Save() {
+      if (mFileName == null) {
+        throw new ArgumentNullException("Filename", "Must set Filename before saving");
+      }
+
       mDoc.Save(mFileName);
     }
 
@@ -83,6 +88,19 @@ namespace APML {
       // TODO: Inform the root to reset!
     }
 
+    public string ToXml() {
+      XmlWriterSettings settings = new XmlWriterSettings();
+      settings.Indent = true;
+
+      StringWriter result = new StringWriter();
+      XmlWriter xw = XmlWriter.Create(result, settings);
+
+      mDoc.WriteTo(xw);
+      xw.Close();
+
+      return result.ToString();
+    }
+
     public IProfile ActiveProfile {
       get { return mActiveProfile; }
     }
@@ -121,6 +139,7 @@ namespace APML {
 
     public string Filename {
       get { return mFileName; }
+      set { mFileName = value; }
     }
 
     public string Generator {

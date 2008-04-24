@@ -39,6 +39,31 @@ namespace APML.Test {
       Assert.AreEqual(expected, actual, "Output should match expected");
     }
 
+    [Test]
+    public void TestGenerateByHandToXml() {
+      APMLDocumentFactory.DefaultApplicationId = "APMLUnitTests";
+      IAPMLDocument doc = APMLDocumentFactory.LoadXml(null);
+      doc.Generator = "APML Test Cases";
+      doc.Title = "Test APML File";
+      doc.UserEmail = "user2@example.com";
+      doc.DateCreated = new DateTime(2007, 03, 25, 2, 22, 00).ToLocalTime();
+
+      doc.SetActiveProfile(doc.DefaultProfile);
+      doc.ActiveProfile.ExplicitData.AddExplicitConcept("MyConcept", 1.0);
+      doc.ActiveProfile.ImplicitData.AddImplicitConcept("MyImplConcept", 1.0, "APMLUnitTests");
+      doc.ActiveProfile.ExplicitData.AddExplicitSource("http://www.apml.org/sample", 0.5, "APMLSample", "application/rss+xml");
+      doc.ActiveProfile.ExplicitData.ExplicitSources["http://www.apml.org/sample"].AddAuthor("Author1", 1.0);
+      doc.ActiveProfile.ImplicitData.AddImplicitSource("http://www.apml.org/sample2", 0.5, "APMLSample2", "application/rss+xml", "APMLUnitTests");
+      doc.ActiveProfile.ImplicitData.ImplicitSources["http://www.apml.org/sample2"][0].AddAuthor("Author1", 1.0, "APMLUnitTests");
+
+      TestUtils.FixUpdatedTimes(doc);
+
+      string expected = File.ReadAllText(TestUtils.FindFile("APML.Library.Test\\Docs\\Expected-TestGenerate.apml"));
+      string actual = doc.ToXml();
+
+      Assert.AreEqual(expected, actual, "Output should match expected");
+    }
+
     public void TestInternationalGenerated() {
       CultureInfo iCulture = new CultureInfo("fr-FR");
       CultureInfo defCulture = Thread.CurrentThread.CurrentCulture;
