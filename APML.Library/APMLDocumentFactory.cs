@@ -42,6 +42,41 @@ namespace APML {
     }
 
     /// <summary>
+    /// Returns an IAPMLDocument instance for the given content.
+    /// </summary>
+    /// <param name="pXml">the XML content</param>
+    /// <returns>a document instance</returns>
+    public static IAPMLDocument LoadXml(string pXml) {
+      XmlDocument doc;
+      bool created;
+
+      if (pXml == null) {
+        doc = new XmlDocument();
+        doc.AppendChild(doc.CreateXmlDeclaration("1.0", "UTF-8", null));
+        doc.AppendChild(doc.CreateElement("APML", APMLConstants.NAMESPACE_0_6));
+        created = true;
+      } else {
+        doc = new XmlDocument();
+        doc.LoadXml(pXml);
+        created = false;
+
+        // Check if we need to fix the namespace
+        if (doc.DocumentElement.Name == "APML" && doc.DocumentElement.NamespaceURI == string.Empty) {
+          // We have a non-namespaced doc. Apply the namespace and reload it.
+          doc.DocumentElement.SetAttribute("xmlns", APMLConstants.NAMESPACE_0_6);
+          doc.LoadXml(doc.OuterXml);
+        }
+      }
+
+      // For the moment, just return an APMLFile instance
+      lock (sGeneratorLock) {
+        IAPMLDocument result = new APMLFile(null, doc, created, sGenerator);
+        result.ApplicationID = DefaultApplicationId;
+        return result;
+      }
+    }
+
+    /// <summary>
     /// Returns an IAPMLDocument instance for the given file.
     /// </summary>
     /// <param name="pFile">the file to open</param>

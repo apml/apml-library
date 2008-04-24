@@ -25,6 +25,12 @@ namespace APML {
     void Reload();
 
     /// <summary>
+    /// Returns the document as XML.
+    /// </summary>
+    /// <returns></returns>
+    string ToXml();
+
+    /// <summary>
     /// Retrieves the active profile.
     /// </summary>
     IProfile ActiveProfile { get; }
@@ -58,7 +64,7 @@ namespace APML {
     /// <summary>
     /// Retrieves the APML filename.
     /// </summary>
-    string Filename { get; }
+    string Filename { get; set; }
 
     /// <summary>
     /// Manages the generator of this document.
